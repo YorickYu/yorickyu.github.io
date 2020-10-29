@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yloopdaed.icu","root":"/","scheme":"Pisces","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+
+  <meta name="description" content="相关对象的存储涉及内存的三部分：方法栈（存储指针）、方法区（存储类信息、常量、静态变量）、堆（存储对象的实例数据）。 对象在内存中存储的结构由三部分组成：对象头、实例数据、对齐填充。 Java对象在内存中存储布局结构图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java对象的内存布局">
+<meta property="og:url" content="http://yloopdaed.icu/2020/10/29/memory-layout-of-java-object/index.html">
+<meta property="og:site_name" content="yloopdaed">
+<meta property="og:description" content="相关对象的存储涉及内存的三部分：方法栈（存储指针）、方法区（存储类信息、常量、静态变量）、堆（存储对象的实例数据）。 对象在内存中存储的结构由三部分组成：对象头、实例数据、对齐填充。 Java对象在内存中存储布局结构图">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/Java%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/markword.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jol.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/ordertest.png">
+<meta property="article:published_time" content="2020-10-29T12:45:35.000Z">
+<meta property="article:modified_time" content="2020-10-29T14:34:19.222Z">
+<meta property="article:author" content="yloopdaed">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/Java%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg">
+
+
+<link rel="canonical" href="http://yloopdaed.icu/2020/10/29/memory-layout-of-java-object/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Java对象的内存布局 | yloopdaed</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">yloopdaed</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">YYYYYY iOS to Java. DON'T BE WILD</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3"><span class="nav-number">1.</span> <span class="nav-text">相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E5%AF%B9%E8%B1%A1%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E5%AD%98%E5%82%A8%E5%B8%83%E5%B1%80"><span class="nav-number">2.</span> <span class="nav-text">Java对象在内存中存储布局</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">结构图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%A4%B4%EF%BC%88Header%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">对象头（Header）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-markword%E7%BB%93%E6%9E%84"><span class="nav-number">2.2.1.</span> <span class="nav-text">1 markword结构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Klass-Pointer%EF%BC%88%E7%B1%BB%E5%9E%8B%E6%8C%87%E9%92%88%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">2 Klass Pointer（类型指针）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E6%95%B0%E6%8D%AE%EF%BC%88Instance-Data%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">实例数据（Instance Data）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E9%BD%90%E5%A1%AB%E5%85%85%EF%BC%88Padding%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">对齐填充（Padding）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JOL-java-object-layout-%E9%AA%8C%E8%AF%81"><span class="nav-number">2.5.</span> <span class="nav-text">JOL - java object layout 验证</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83"><span class="nav-number"></span> <span class="nav-text">内存分布</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%EF%BC%88Object%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">引用数据类型（Object）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E9%87%8D%E6%8E%92%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">字段重排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E5%9C%A8%E5%A0%86%E4%B8%8A%E8%BF%98%E6%98%AF%E6%A0%88%E4%B8%8A%EF%BC%9F"><span class="nav-number"></span> <span class="nav-text">对象存储在堆上还是栈上？</span></a></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yloopdaed"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">yloopdaed</p>
+  <div class="site-description" itemprop="description">可能是个非典型程序员吧 ^ ^</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/YorickYu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;YorickYu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yykeepbreak@gmail.com" title="E-Mail → mailto:yykeepbreak@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.jianshu.com/u/9901b7042663" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;9901b7042663" rel="noopener" target="_blank">简书</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/14337507/yloopdaed" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;14337507&#x2F;yloopdaed" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/YorickYu/YYTODOLIST" title="https:&#x2F;&#x2F;github.com&#x2F;YorickYu&#x2F;YYTODOLIST" rel="noopener" target="_blank">TODOLIST</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/YorickYu/IHAVEAQUESTION" title="https:&#x2F;&#x2F;github.com&#x2F;YorickYu&#x2F;IHAVEAQUESTION" rel="noopener" target="_blank">IHAVEAQUESTION</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://azh.ink/" title="http:&#x2F;&#x2F;azh.ink" rel="noopener" target="_blank">azh</a>
+        </li>
+    </ul>
+  </div>
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/10/29/memory-layout-of-java-object/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java对象的内存布局
+        </h1>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-10-29 20:45:35 / 修改时间：22:34:19" itemprop="dateCreated datePublished" datetime="2020-10-29T20:45:35+08:00">2020-10-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><p>对象的存储涉及内存的三部分：<strong>方法栈</strong>（存储指针）、<strong>方法区</strong>（存储类信息、常量、静态变量）、<strong>堆</strong>（存储对象的实例数据）。</p>
+<p>对象在内存中存储的结构由三部分组成：<strong>对象头</strong>、<strong>实例数据</strong>、<strong>对齐填充</strong>。</p>
+<h3 id="Java对象在内存中存储布局"><a href="#Java对象在内存中存储布局" class="headerlink" title="Java对象在内存中存储布局"></a>Java对象在内存中存储布局</h3><h4 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h4><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/Java%E5%AF%B9%E8%B1%A1%E7%BB%93%E6%9E%84.jpg" alt="Java对象在内存中存储布局"></p>
+<a id="more"></a>
+
+<blockquote>
+<p>注意：下文涉及到的占位大小都是基于64位操作系统</p>
+</blockquote>
+<h4 id="对象头（Header）"><a href="#对象头（Header）" class="headerlink" title="对象头（Header）"></a>对象头（Header）</h4><p>占用16个字节</p>
+<p>前8个字节是markword，会包含锁信息、GC信息、hashCode</p>
+<p>后面4个字节为class pinter，指针压缩，内存容量超过32G会存8位</p>
+<p>数组对象的对象头占用24个字节，启用压缩之后占用16个字节。</p>
+<h5 id="1-markword结构"><a href="#1-markword结构" class="headerlink" title="1 markword结构"></a>1 markword结构</h5><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/markword.png" alt="存储内容"></p>
+<h5 id="2-Klass-Pointer（类型指针）"><a href="#2-Klass-Pointer（类型指针）" class="headerlink" title="2 Klass Pointer（类型指针）"></a>2 Klass Pointer（类型指针）</h5><p>klass pointer存储的是该对象所属的类在方法区的地址，所以是一个指针，默认Jvm对指针进行了压缩，用4个字节存储，如果不压缩就是8个字节。</p>
+<p>如果对象是一个Java数组，那在对象头中还必须有一块用于记录数组长度的数据，这块占用4个字节。因为虚拟机可以通过普通Java对象的元数据信息确定Java对象的大小，但是从数组的元数据中无法确定数组的大小。</p>
+<h4 id="实例数据（Instance-Data）"><a href="#实例数据（Instance-Data）" class="headerlink" title="实例数据（Instance Data）"></a>实例数据（Instance Data）</h4><p>实例数据部分就是成员变量的值，其中包含父类的成员变量和本类的成员变量。也就是说，除去静态变量和常量值放在方法区，非静态变量的值是随着对象存储在堆中的。<br>因为修改静态变量会反映到方法区中class的数据结构中，故而推测对象保存的是静态变量和常量的引用。</p>
+<h4 id="对齐填充（Padding）"><a href="#对齐填充（Padding）" class="headerlink" title="对齐填充（Padding）"></a>对齐填充（Padding）</h4><p>用于确保对象的总长度为8字节的整数倍。<br>HotSpot要求对象的总长度必须是8字节的整数倍。由于对象头一定是8字节的整数倍，但实例数据部分的长度是任意的。因此需要对齐补充字段确保整个对象的总长度为8的整数倍。</p>
+<h4 id="JOL-java-object-layout-验证"><a href="#JOL-java-object-layout-验证" class="headerlink" title="JOL - java object layout 验证"></a>JOL - java object layout 验证</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.openjdk.jol&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;jol-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.9&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>相关代码可以在 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP"><strong><em>JPP</em></strong></a>/JolTest类中查看。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP"><strong><em>JPP</em></strong></a> 是一个Java技术分享的平台，欢迎大家加入</p>
+</blockquote>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jol.png" alt="JOL"></p>
+<hr>
+<h2 id="内存分布"><a href="#内存分布" class="headerlink" title="内存分布"></a>内存分布</h2><h3 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h3><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>存储大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean</td>
+<td>1</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>1</td>
+</tr>
+<tr>
+<td>short</td>
+<td>2</td>
+</tr>
+<tr>
+<td>char</td>
+<td>2</td>
+</tr>
+<tr>
+<td>int</td>
+<td>4</td>
+</tr>
+<tr>
+<td>float</td>
+<td>4</td>
+</tr>
+<tr>
+<td>long</td>
+<td>8</td>
+</tr>
+<tr>
+<td>double</td>
+<td>8</td>
+</tr>
+</tbody></table>
+<h3 id="引用数据类型（Object）"><a href="#引用数据类型（Object）" class="headerlink" title="引用数据类型（Object）"></a>引用数据类型（Object）</h3><p>在栈中存储一个引用（指针），指向堆中的对象本身。</p>
+<blockquote>
+<p>有看到一种说法：<br>一个普通的引用类型对象，会在内存中消耗24个字节，p指针占8个字节，Object对象占16个字节。</p>
+</blockquote>
+<p>我的理解是引用类型的指针存储在方法栈中，即klass pointer，指向方法区中的类信息，堆中存放的是对象的成员变量。</p>
+<p>这里就引出很多问题，因为时间和能力的关系，没有来得及考证：<br>1 引用类型中声明的基本数据类型到底存放在哪里？<br>2 引用类型中的属性，它的指针是存在哪里？<br>这类问题很绕，就像iOS中的结构体是声明在栈中的，但是结构体中声明一个class类型的属性又是存在在堆中的。</p>
+<p>所以，不过分纠结的话，只要了解一个引用类型的变量会在栈中存储一个指针，指向堆中的对象本身即可。以Object对象为例就是16字节。</p>
+<p>此外，这里还有一个压缩指针的概念（+UseCompressedOops），目的是提高内存的利用率。将原本占位8字节的指针压缩成4字节。</p>
+<h3 id="字段重排序"><a href="#字段重排序" class="headerlink" title="字段重排序"></a>字段重排序</h3><p>为了更高效的使用内存，实例数据字段将会重排序。排序的优先级为：<br>long = double &gt; int = float &gt; char = short &gt; byte &gt; boolean &gt; object reference</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class OrderTest&#123;</span><br><span class="line">    byte a;</span><br><span class="line">    int c;</span><br><span class="line">    boolean d;</span><br><span class="line">    long e;</span><br><span class="line">    People f;</span><br><span class="line">&#125;</span><br><span class="line">class People &#123;</span><br><span class="line">    int age;</span><br><span class="line">    String name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：<br>并不是完全符合，但是确实存在字段重排序</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/ordertest.png" alt="order"></p>
+<h2 id="对象存储在堆上还是栈上？"><a href="#对象存储在堆上还是栈上？" class="headerlink" title="对象存储在堆上还是栈上？"></a>对象存储在堆上还是栈上？</h2><p>看下面这段代码，循环创建一亿次Object对象，通常理解一个空Object对象创建会在栈中存在一个4字节的指针，指向堆中的对象16字节。<br>循环创建一亿次大概会占用1.6G的空间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">long startTime &#x3D; System.currentTimeMillis();</span><br><span class="line">for (int i &#x3D; 0; i &lt; 100000000; i++) &#123;</span><br><span class="line">    new Object();</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(&quot;use time: &quot; + (System.currentTimeMillis() - startTime) + &quot;ms&quot;);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>执行结果：use time: 38ms</p>
+</blockquote>
+<p><strong><em>这是为什么？</em></strong></p>
+<p>这里要提出一个概念<strong>指针逃逸</strong>，new Object() 新建的对象并没有在外部被使用，所以它被优化为在栈上分配，我们知道方法执行完成后该栈帧就会被清空，所以也就不会有GC。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">long startTime &#x3D; System.currentTimeMillis();</span><br><span class="line">for (int i &#x3D; 0; i &lt; 100000000; i++) &#123;</span><br><span class="line">    Object o &#x3D; new Object();</span><br><span class="line">    o.hashCode();</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(&quot;use time: &quot; + (System.currentTimeMillis() - startTime) + &quot;ms&quot;);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>执行结果：use time: 8014ms</p>
+</blockquote>
+<p>相关代码可以在 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP"><strong><em>JPP</em></strong></a>/NewObject类中查看。</p>
+<p>结论: 虚拟机指针逃逸分析是默认开启的，对象不会逃逸的时候优先在栈上分配，否则在堆上分配。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/10/21/Tri-colour-marking/" rel="prev" title="Tri-colour marking">
+                  <i class="fa fa-chevron-left"></i> Tri-colour marking
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yloopdaed</span>
+  
+  <a target="_blank" rel="noopener" href="http://beian.miit.gov.cn/">沪ICP备2020029595号-1</a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
