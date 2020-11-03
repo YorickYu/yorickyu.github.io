@@ -23,23 +23,21 @@
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","scheme":"Pisces","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="循序运行主条目：指令周期在早期的处理器中，指令的执行一般在以下的步骤中完成： 1 指令获取。2 如果输入的运算对象是可以获取的（比如已经存在于寄存器中），这条指令会被发送到合适的功能单元。如果一个或者更多的运算对象在当前的时钟周期中是不可获取的（通常需要从主存获取），处理器会开始等待直到它们是可以获取的。3 指令在合适的功能单元中被执行。4 功能单元将运算结果写回寄存器。 乱序执行这种范式通过以下">
+  <meta name="description" content="LeeCode p151 逐个翻转字符串中的每个单词 相关代码可以在 JPP&#x2F;ReverseWords类中查看。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475&amp;#">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CPU 乱序执行反证">
-<meta property="og:url" content="http://yloopdaed.icu/2020/10/19/CPU-Out-of-Order/index.html">
+<meta property="og:title" content="LeeCode reverse-words">
+<meta property="og:url" content="http://yloopdaed.icu/2020/11/03/reverse-words/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="循序运行主条目：指令周期在早期的处理器中，指令的执行一般在以下的步骤中完成： 1 指令获取。2 如果输入的运算对象是可以获取的（比如已经存在于寄存器中），这条指令会被发送到合适的功能单元。如果一个或者更多的运算对象在当前的时钟周期中是不可获取的（通常需要从主存获取），处理器会开始等待直到它们是可以获取的。3 指令在合适的功能单元中被执行。4 功能单元将运算结果写回寄存器。 乱序执行这种范式通过以下">
+<meta property="og:description" content="LeeCode p151 逐个翻转字符串中的每个单词 相关代码可以在 JPP&#x2F;ReverseWords类中查看。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475&amp;#">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/outoforder.png">
-<meta property="article:published_time" content="2020-10-19T01:20:49.000Z">
-<meta property="article:modified_time" content="2020-11-01T16:38:35.489Z">
+<meta property="article:published_time" content="2020-11-03T14:23:14.000Z">
+<meta property="article:modified_time" content="2020-11-03T14:50:11.572Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/outoforder.png">
 
 
-<link rel="canonical" href="http://yloopdaed.icu/2020/10/19/CPU-Out-of-Order/">
+<link rel="canonical" href="http://yloopdaed.icu/2020/11/03/reverse-words/">
 
 
 <script class="page-configurations">
@@ -52,7 +50,7 @@
   };
 </script>
 
-  <title>CPU 乱序执行反证 | yloopdaed</title>
+  <title>LeeCode reverse-words | yloopdaed</title>
   
 
 
@@ -168,7 +166,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -180,7 +178,6 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E5%BA%8F%E8%BF%90%E8%A1%8C"><span class="nav-number">1.</span> <span class="nav-text">循序运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%B1%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text">乱序执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%81%E6%98%8ECPU%E4%B9%B1%E5%BA%8F%E6%89%A7%E8%A1%8C%E5%AD%98%E5%9C%A8"><span class="nav-number">3.</span> <span class="nav-text">证明CPU乱序执行存在</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -277,7 +274,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/10/19/CPU-Out-of-Order/">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/03/reverse-words/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -290,7 +287,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          CPU 乱序执行反证
+          LeeCode reverse-words
         </h1>
 
         <div class="post-meta-container">
@@ -301,16 +298,10 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2020-10-19 09:20:49" itemprop="dateCreated datePublished" datetime="2020-10-19T09:20:49+08:00">2020-10-19</time>
+      <time title="创建时间：2020-11-03 22:23:14 / 修改时间：22:50:11" itemprop="dateCreated datePublished" datetime="2020-11-03T22:23:14+08:00">2020-11-03</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-11-02 00:38:35" itemprop="dateModified" datetime="2020-11-02T00:38:35+08:00">2020-11-02</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -331,20 +322,23 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="循序运行"><a href="#循序运行" class="headerlink" title="循序运行"></a>循序运行</h3><p>主条目：指令周期<br>在早期的处理器中，指令的执行一般在以下的步骤中完成：</p>
-<p>1 指令获取。<br>2 如果输入的运算对象是可以获取的（比如已经存在于寄存器中），这条指令会被发送到合适的功能单元。如果一个或者更多的运算对象在当前的时钟周期中是不可获取的（通常需要从主存获取），处理器会开始等待直到它们是可以获取的。<br>3 指令在合适的功能单元中被执行。<br>4 功能单元将运算结果写回寄存器。</p>
-<h3 id="乱序执行"><a href="#乱序执行" class="headerlink" title="乱序执行"></a>乱序执行</h3><p>这种范式通过以下步骤挑选可执行的指令先运行：</p>
-<p>1 指令获取。<br>2 指令被发送到一个指令序列中（也称执行缓冲区或者保留站）。<br>3 指令将在序列中等待直到它的数据运算对象是可以获取的。然后指令被允许在先进入的、旧的指令之前离开序列缓冲区。<br>4 指令被分配给一个合适的功能单元并由之执行。<br>5 结果被放到一个序列中。<br>6 仅当所有在该指令之前的指令都将他们的结果写入寄存器后，这条指令的结果才会被写入寄存器中。这个过程被称为毕业或者退休周期。</p>
-<p>乱序执行的重要概念是实现了<strong>避免计算机在用于运算的对象不可获取时的大量等待。</strong>在上述文字的要点中，乱序执行处理器避免了在顺序执行处理器处理过程第二步中当指令由于运算数据未到位所造成的等待。</p>
-<p>例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">b &#x3D; a * 5</span><br><span class="line">v &#x3D; b++</span><br><span class="line">c &#x3D; a + 3</span><br></pre></td></tr></table></figure>
-<p>由于1与3可并发运行，而2之b无法随即获得，因此可以先计算乘法1与加法3，再运行2。</p>
-<a id="more"></a>
+        <p>LeeCode p151 逐个翻转字符串中的每个单词</p>
+<p>相关代码可以在 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP"><strong><em>JPP</em></strong></a>/ReverseWords类中查看。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 给定一个字符串，逐个翻转字符串中的每个单词。 </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 说明： </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 无空格字符构成一个 单词 。 </span><br><span class="line">&#x2F;&#x2F; 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。 </span><br><span class="line">&#x2F;&#x2F; 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 1： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;the sky is blue&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;blue is sky the&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 示例 2： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;  hello world!  &quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;world! hello&quot;</span><br><span class="line">&#x2F;&#x2F;解释：输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 3： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;a good   example&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;example good a&quot;</span><br><span class="line">&#x2F;&#x2F;解释：如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 4： </span><br><span class="line">&#x2F;&#x2F; 输入：s &#x3D; &quot;  Bob    Loves  Alice   &quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;Alice Loves Bob&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 5： </span><br><span class="line">&#x2F;&#x2F; 输入：s &#x3D; &quot;Alice does not even like bob&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;bob like even not does Alice&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 提示： </span><br><span class="line">&#x2F;&#x2F; 1 &lt;&#x3D; s.length &lt;&#x3D; 104 </span><br><span class="line">&#x2F;&#x2F; s 包含英文大小写字母、数字和空格 &#39; &#39; </span><br><span class="line">&#x2F;&#x2F; s 中 至少存在一个 单词 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 进阶：  </span><br><span class="line">&#x2F;&#x2F; 请尝试使用 O(1) 额外空间复杂度的原地解法。 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; Related Topics 字符串 </span><br><span class="line">&#x2F;&#x2F; 👍 240 👎 0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import java.util.HashMap;</span><br><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">    public String reverseWords(String s) &#123;</span><br><span class="line">        StringBuffer sb &#x3D; new StringBuffer();</span><br><span class="line">        String[] strings &#x3D; s.split(&quot;\\s+&quot;);</span><br><span class="line">        HashMap m &#x3D; new HashMap();</span><br><span class="line">        int modCount &#x3D; 0;</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 0; i &lt; strings.length; i++) &#123;</span><br><span class="line">            String innerstring &#x3D; strings[i];</span><br><span class="line">            if (!innerstring.equals(&quot;&quot;)) &#123;</span><br><span class="line">                m.put(modCount++, innerstring);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (;modCount&gt;0;) &#123;</span><br><span class="line">            sb.append(m.get(--modCount));</span><br><span class="line">            if (modCount !&#x3D; 0)</span><br><span class="line">                sb.append(&quot; &quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h3 id="证明CPU乱序执行存在"><a href="#证明CPU乱序执行存在" class="headerlink" title="证明CPU乱序执行存在"></a>证明CPU乱序执行存在</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class OutOfOrder &#123;</span><br><span class="line">    private static int x &#x3D; 0, y &#x3D; 0;</span><br><span class="line">    private static int a &#x3D; 0, b &#x3D; 0;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line">        int i &#x3D; 0; &#x2F;&#x2F; 记录次数</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            x &#x3D; 0; y &#x3D; 0;</span><br><span class="line">            a &#x3D; 0; b &#x3D; 0;</span><br><span class="line">            Thread one &#x3D; new Thread(new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    a &#x3D; 1;</span><br><span class="line">                    x &#x3D; b;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            Thread two &#x3D; new Thread(new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    b &#x3D; 1;</span><br><span class="line">                    y &#x3D; a;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            one.start();two.start();</span><br><span class="line">            one.join();two.join();</span><br><span class="line">            if (x &#x3D;&#x3D; 0 &amp;&amp; y &#x3D;&#x3D;0) &#123;</span><br><span class="line">                System.out.println(&quot;第&quot;+i+&quot;次，出现(&quot;+x+&quot;,&quot;+y+&quot;)&quot;);</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解题思路就是用Java现有的API配合正则去拆分传入的字符串s，得到一个字符串数组</p>
+<p>然后利用HashMap查找O(1)的特性，将value值按序存入key，并记录key值</p>
+<p>最后倒序key值，取出value即可。</p>
+<blockquote>
+<p>这里其实一次for循环逆序遍历也可以得出答案，时间复杂度不会有太大差别，因为本身字符串数组长度不会很大。<br>我只是单纯的像仿照HashMap源码中modCount的想法记录一下编辑次数，所以for了两次。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public String reverseWords(String s) &#123;</span><br><span class="line">    String[] words &#x3D; s.trim().split(&quot;\\s+&quot;);</span><br><span class="line">    int len &#x3D; words.length;</span><br><span class="line">    StringBuilder ans &#x3D; new StringBuilder();</span><br><span class="line">    ans.append(words[len - 1]);</span><br><span class="line">    for (int i &#x3D; len - 2; i &gt;&#x3D; 0; i --) &#123;</span><br><span class="line">        if (words[i].equals(&quot;&quot;))</span><br><span class="line">            continue;</span><br><span class="line">        ans.append(&quot; &quot; + words[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    return ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>正常执行期待的结果不会出现x和y同时为0的情况<br>demo中测试的是语句级乱序的现象，语句级乱序的发生说明必定存在指令级乱序<br>如果出现则说明CPU存在乱序执行</p>
-<p>结果：<br><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/outoforder.png"></p>
+<p>最后，学了一下网上一些时间复杂度很低的解法，耗时的步骤都来源于数组的 <code>split</code> 方法。</p>
+<p>想要突破的可以自定义一个数组拆分的方法。</p>
+<p>还有，基本可以确定的是，使用 <code>StringBuilder</code> 的API拼接数组比直接使用 String 速度要快。</p>
+<p>先后提交了2次，结果如下：</p>
+<p>11 分钟前    通过    10 ms    38.9 MB    Java<br>20 分钟前    通过    12 ms    39.3 MB    Java</p>
 
     </div>
 
@@ -361,14 +355,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/10/12/hello-world/" rel="prev" title="Hello World">
-                  <i class="fa fa-chevron-left"></i> Hello World
+                <a href="/2020/11/03/concurrenthashmap-two-array-index/" rel="prev" title="JDK1.7 ConcurrentHashMap 两次数组下标计算问题">
+                  <i class="fa fa-chevron-left"></i> JDK1.7 ConcurrentHashMap 两次数组下标计算问题
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/10/21/Tri-colour-marking/" rel="next" title="Tri-colour marking">
-                  Tri-colour marking <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
