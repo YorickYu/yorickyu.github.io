@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yloopdaed.icu","root":"/","scheme":"Pisces","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+
+  <meta name="description" content="前言HashMap扩容的过程包含了很多巧妙的思考，思想简单易懂，但是代码的实现真的让人折服！ 今天快速浏览resize方法时，被两行代码绕住了：   可能是对于引用类型的理解不够深刻吧，这两行代码真的看了我一天！网上也很少有人分析这两行代码（可能因为太容易了吧） 最后我自己写了个Demo，算是把这个操作搞清楚了。因为是引用类型的指针指向问题，所以画图也不太好理解，只能自己写个Demo，一点点Deb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HashMap resize loTail.next&#x3D;e loTail&#x3D;e">
+<meta property="og:url" content="http://yloopdaed.icu/2020/11/06/hashmap-resize-lotail/index.html">
+<meta property="og:site_name" content="yloopdaed">
+<meta property="og:description" content="前言HashMap扩容的过程包含了很多巧妙的思考，思想简单易懂，但是代码的实现真的让人折服！ 今天快速浏览resize方法时，被两行代码绕住了：   可能是对于引用类型的理解不够深刻吧，这两行代码真的看了我一天！网上也很少有人分析这两行代码（可能因为太容易了吧） 最后我自己写了个Demo，算是把这个操作搞清楚了。因为是引用类型的指针指向问题，所以画图也不太好理解，只能自己写个Demo，一点点Deb">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/loTail.next%20%3D%20e.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep1.jpg">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep2.jpg">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep3.jpg">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep4.jpg">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/pend.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/hashmap%20resize%20%281%29.jpg">
+<meta property="article:published_time" content="2020-11-06T13:49:18.000Z">
+<meta property="article:modified_time" content="2020-11-06T13:51:24.668Z">
+<meta property="article:author" content="yloopdaed">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="HashMap">
+<meta property="article:tag" content="resize">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/loTail.next%20%3D%20e.png">
+
+
+<link rel="canonical" href="http://yloopdaed.icu/2020/11/06/hashmap-resize-lotail/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>HashMap resize loTail.next=e loTail=e | yloopdaed</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">yloopdaed</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">YYYYYY iOS to Java. DON'T BE WILD</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E9%93%BE%E8%A1%A8%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.1.</span> <span class="nav-text">准备一个简单的链表对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">简化过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%811-5%E8%A1%8C"><span class="nav-number">3.1.</span> <span class="nav-text">代码1-5行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-6%E8%A1%8C"><span class="nav-number">3.2.</span> <span class="nav-text">代码 6行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-7%E8%A1%8C"><span class="nav-number">3.3.</span> <span class="nav-text">代码 7行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-8%E8%A1%8C"><span class="nav-number">3.4.</span> <span class="nav-text">代码 8行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%93%BE%E8%A1%A8"><span class="nav-number">3.5.</span> <span class="nav-text">创建链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BF%E5%86%99resize%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81"><span class="nav-number">3.6.</span> <span class="nav-text">仿写resize核心代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">思考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yloopdaed"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">yloopdaed</p>
+  <div class="site-description" itemprop="description">可能是个非典型程序员吧 ^ ^</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/YorickYu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;YorickYu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yykeepbreak@gmail.com" title="E-Mail → mailto:yykeepbreak@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.jianshu.com/u/9901b7042663" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;9901b7042663" rel="noopener" target="_blank">简书</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/14337507/yloopdaed" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;14337507&#x2F;yloopdaed" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/YorickYu/YYTODOLIST" title="https:&#x2F;&#x2F;github.com&#x2F;YorickYu&#x2F;YYTODOLIST" rel="noopener" target="_blank">TODOLIST</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/YorickYu/IHAVEAQUESTION" title="https:&#x2F;&#x2F;github.com&#x2F;YorickYu&#x2F;IHAVEAQUESTION" rel="noopener" target="_blank">IHAVEAQUESTION</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://azh.ink/" title="http:&#x2F;&#x2F;azh.ink" rel="noopener" target="_blank">azh</a>
+        </li>
+    </ul>
+  </div>
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/06/hashmap-resize-lotail/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HashMap resize loTail.next=e loTail=e
+        </h1>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-11-06 21:49:18 / 修改时间：21:51:24" itemprop="dateCreated datePublished" datetime="2020-11-06T21:49:18+08:00">2020-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>HashMap扩容的过程包含了很多巧妙的思考，思想简单易懂，但是代码的实现真的让人折服！</p>
+<p>今天快速浏览resize方法时，被两行代码绕住了：</p>
+<img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/loTail.next%20%3D%20e.png" style="zoom:50%;" />
+
+<p>可能是对于引用类型的理解不够深刻吧，这两行代码真的看了我一天！网上也很少有人分析这两行代码（可能因为太容易了吧）</p>
+<p>最后我自己写了个Demo，算是把这个操作搞清楚了。因为是引用类型的指针指向问题，所以画图也不太好理解，只能自己写个Demo，一点点Debug分析过程。</p>
+<p>相关代码在：<a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">Jpp</a> /TailInsert类中</p>
+<a id="more"></a>
+
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="准备一个简单的链表对象"><a href="#准备一个简单的链表对象" class="headerlink" title="准备一个简单的链表对象"></a>准备一个简单的链表对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    K key;</span><br><span class="line">    V value;</span><br><span class="line">    Node&lt;K, V&gt; next;</span><br><span class="line"></span><br><span class="line">    Node(K key, V value, Node&lt;K, V&gt; next) &#123;</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
+
+<h2 id="简化过程"><a href="#简化过程" class="headerlink" title="简化过程"></a>简化过程</h2><p>先看下面的代码，理解这个过程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Node a &#x3D; null;</span><br><span class="line">Node b &#x3D; null;</span><br><span class="line">Node c &#x3D; new Node(&#39;c&#39;, &#39;c&#39;, null);</span><br><span class="line">b &#x3D; c;</span><br><span class="line">a &#x3D; c;</span><br><span class="line">c &#x3D; new Node(8,8, null);</span><br><span class="line">a.next &#x3D; c;</span><br><span class="line">a &#x3D; c;</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码1-5行"><a href="#代码1-5行" class="headerlink" title="代码1-5行"></a>代码1-5行</h3><p>声明了a，b两个Node类型的引用，声明c指向一个Node@478对象</p>
+<p>然后把a和b都指向了Node@478对象。如下图所示：</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep1.jpg" alt="p1"></p>
+<h3 id="代码-6行"><a href="#代码-6行" class="headerlink" title="代码 6行"></a>代码 6行</h3><p>创建了一个新的Node@479对象，将c引用指向这个对象。如下图所示：</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep2.jpg" alt="p1"></p>
+<h3 id="代码-7行"><a href="#代码-7行" class="headerlink" title="代码 7行"></a>代码 7行</h3><p>在Node@478中有一个next属性，a.next = c;表示将Node@478的next指向c引用指向的地址(即Node@479)</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep3.jpg" alt="p1"></p>
+<h3 id="代码-8行"><a href="#代码-8行" class="headerlink" title="代码 8行"></a>代码 8行</h3><p>a = c; 就是将a的引用重新指向c引用指向的地址(即Node@479)</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep4.jpg" alt="p1"></p>
+<p>所以最终的结果就是：</p>
+<p>a，c引用指向相同的Node@479对象</p>
+<p>b指向Node@478对象，其中Node@478的next引用指向Node@479对象</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/pend.png"></p>
+<p>理解了上面的过程，下面就非常容易了 ^ ^</p>
+<h3 id="创建链表"><a href="#创建链表" class="headerlink" title="创建链表"></a>创建链表</h3><p>创建链表并插入10个元素（尾插）来模拟HashMap数组中某一个节点的链表。</p>
+<blockquote>
+<p>JDK1.8中，链表长度超过 <strong>变树阈值</strong> 时会将链表变化成红黑树<br>这个变化需要满足两个条件：1 链表长度超过变树阈值 2 HashMap的size大于64</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Node tab = <span class="keyword">new</span> Node(<span class="number">0</span>,<span class="number">0</span>,<span class="keyword">null</span>); <span class="comment">// node链表</span></span><br><span class="line">Node p = tab;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++) &#123;</span><br><span class="line">    Node tail = <span class="keyword">new</span> Node(i, i, <span class="keyword">null</span>); <span class="comment">// 最后一个节点</span></span><br><span class="line">    <span class="keyword">if</span> (p.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        p.next = tail;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123; <span class="comment">// 尾插</span></span><br><span class="line">        Node e;</span><br><span class="line">        <span class="keyword">while</span> ((e = p.next) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (e.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">                e.next = tail;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            p = e;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="仿写resize核心代码"><a href="#仿写resize核心代码" class="headerlink" title="仿写resize核心代码"></a>仿写resize核心代码</h3><p>在HashMap扩容时有一个很巧妙的操作，就是数组长度扩容至原先两倍时，重新计算链表节点的插入角标会将原链表随机分布到新数组的两个位置：1 原来角标的位置 2 原角标+原数组长度的位置</p>
+<p>而这个操作在JDK1.7和JDK1.8中的思想是相同的，不过实现方式略有不同：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">假设：</span><br><span class="line">现在有两个链表节点</span><br><span class="line">他们的hash值低8位分别是 0110 1011 、1001 1011</span><br><span class="line">扩容前数组长度为16，扩容长度变为32</span><br><span class="line">扩容前他们都在数组角标11的位置</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; JDK1.7 e.hash &amp; (length-1)</span><br><span class="line">&#x2F;&#x2F; 第一个节点</span><br><span class="line">	0110 1011</span><br><span class="line">	0001 1111</span><br><span class="line">&amp; 0000 1011 角标11</span><br><span class="line">&#x2F;&#x2F; 第二个节点</span><br><span class="line">	1001 1011</span><br><span class="line">	0001 1111</span><br><span class="line">&amp; 0001 1011 角标27</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; JDK1.8 (e.hash &amp; oldCap) &#x3D;&#x3D; 0</span><br><span class="line">&#x2F;&#x2F; 第一个节点</span><br><span class="line">	0110 1011</span><br><span class="line">	0001 0000</span><br><span class="line">&amp; 0000 0000 结果0，在原数组位置</span><br><span class="line">&#x2F;&#x2F; 第二个节点</span><br><span class="line">	1001 1011</span><br><span class="line">	0001 0000</span><br><span class="line">&amp; 0001 0000 结果1，在新数组位置</span><br></pre></td></tr></table></figure>
+
+<p>JDK1.7中，直接通过hash值与新数组长度-1 按位与 得到新角标</p>
+<p>JDK1.8中，通过计算hash值对应的原数组位置是否为0，如果为0则插入tab[j]，否则插入tab[j+oldCap]</p>
+<hr>
+<p>我模拟的Demo中没有设计这么多复杂的数据，所以简化为节点value值的奇偶判断</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Node loHead = <span class="keyword">null</span>, loTail = <span class="keyword">null</span>;</span><br><span class="line">Node hiHead = <span class="keyword">null</span>, hiTail = <span class="keyword">null</span>;</span><br><span class="line">Node next;</span><br><span class="line">Node e = tab;</span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    next = e.next;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">int</span>)e.value % <span class="number">2</span> == <span class="number">0</span>) &#123; <span class="comment">// 进入次判断的节点为 0,2,4,6,8</span></span><br><span class="line">        <span class="keyword">if</span> (loTail == <span class="keyword">null</span>)</span><br><span class="line">            loHead = e;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            loTail.next = e;</span><br><span class="line">        loTail = e;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">int</span>)e.value % <span class="number">2</span> == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hiTail == <span class="keyword">null</span>)</span><br><span class="line">            hiHead = e;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            hiTail.next = e;</span><br><span class="line">        hiTail = e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">while</span> ((e = next) != <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+
+<p>以取模结果等于0为例：</p>
+<p>第一次进入，loHead = 0, loTail = 0。loTail和loHead指向相同的内存地址</p>
+<p>第二次进入，loTail.next = 2会移动loHead.next指向 2。随后loTail = 2，即loHead.next和loTail指向相同的内存地址</p>
+<p>第三次进入，loTail.next = 4也就是loHead.next.next指向4。随后loTail = 4，即loHead.next.next和loTail指向相同的内存地址</p>
+<p>以此类推，如下图：</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/hashmap%20resize%20%281%29.jpg"></p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>上面就是我对 <code>loTail.next = e; loTail = e;</code> 这两行代码的理解。</p>
+<p>进一步思考，为什么HashMap在 JDK1.7 的时候会选择头插法插入元素？</p>
+<p>不考虑JDK1.7中resize时的循环引用问题，我认为头插法无论是从理解的角度，还是从代码实现的角度都更胜一筹。甚至还可能能稍微优化一些查询的速率。</p>
+<p>就拿上面Demo中的尾插生成测试链表为例，我的写法是仿照JDK1.8的，中间要声明很多局部变量，所以你会看到 JDK1.8 的源码中有很多判断中赋值的操作。如果不这么写的话，估计JDK1.8的源码会再多几百行（本身实现了一套红黑树，代码量相较1.7膨胀了几乎一倍）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/HashMap/" rel="tag"># HashMap</a>
+              <a href="/tags/resize/" rel="tag"># resize</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/03/reverse-words/" rel="prev" title="LeeCode reverse-words">
+                  <i class="fa fa-chevron-left"></i> LeeCode reverse-words
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yloopdaed</span>
+  
+  <a target="_blank" rel="noopener" href="http://beian.miit.gov.cn/">沪ICP备2020029595号-1</a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
