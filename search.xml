@@ -1,101 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2020/10/12/hello-world/</url>
-    <content><![CDATA[<p>Hello ~ Here is a personal blog <a href="http://www.yloopdaed.icu/">www.yloopdaed.icu</a>.<br>yloopdaed which is my network aka is the reverse spelling of deadpooly.<br>This blog is serve to my Github project - <a href="https://github.com/YorickYu/JPP">JPP</a>(Java promotion process).<br>you can also check out my jianshu channel - <a href="https://www.jianshu.com/u/9901b7042663">YYYYYY25</a> where stores many iOS articles i wrote before.</p>
-<hr>
-<p>建站的目的是为 <a href="https://github.com/YorickYu/JPP">JPP</a> 开源项目提供文章支持<br>本身自己也有记录和分享的习惯，之前的技术分享集中在简书<a href="https://www.jianshu.com/u/9901b7042663">YYYYYY25</a><br>技术类的分享可能会在本站和简书同步更新，之前的技术类文章分享会选择性的移至本站</p>
-<p>✨ Love &amp; Peace ❤️</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>HashMap resize loTail.next=e loTail=e</title>
-    <url>/2020/11/06/hashmap-resize-lotail/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>HashMap扩容的过程包含了很多巧妙的思考，思想简单易懂，但是代码的实现真的让人折服！</p>
-<p>今天快速浏览resize方法时，被两行代码绕住了：</p>
-<img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/loTail.next%20%3D%20e.png" style="zoom:50%;" />
-
-<p>可能是对于引用类型的理解不够深刻吧，这两行代码真的看了我一天！网上也很少有人分析这两行代码（可能因为太容易了吧）</p>
-<p>最后我自己写了个Demo，算是把这个操作搞清楚了。因为是引用类型的指针指向问题，所以画图也不太好理解，只能自己写个Demo，一点点Debug分析过程。</p>
-<p>相关代码在：<a href="https://github.com/YorickYu/JPP">Jpp</a> /TailInsert类中</p>
-<a id="more"></a>
-
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="准备一个简单的链表对象"><a href="#准备一个简单的链表对象" class="headerlink" title="准备一个简单的链表对象"></a>准备一个简单的链表对象</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    K key;</span><br><span class="line">    V value;</span><br><span class="line">    Node&lt;K, V&gt; next;</span><br><span class="line"></span><br><span class="line">    Node(K key, V value, Node&lt;K, V&gt; next) &#123;</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
-
-<h2 id="简化过程"><a href="#简化过程" class="headerlink" title="简化过程"></a>简化过程</h2><p>先看下面的代码，理解这个过程：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Node a &#x3D; null;</span><br><span class="line">Node b &#x3D; null;</span><br><span class="line">Node c &#x3D; new Node(&#39;c&#39;, &#39;c&#39;, null);</span><br><span class="line">b &#x3D; c;</span><br><span class="line">a &#x3D; c;</span><br><span class="line">c &#x3D; new Node(8,8, null);</span><br><span class="line">a.next &#x3D; c;</span><br><span class="line">a &#x3D; c;</span><br></pre></td></tr></table></figure>
-
-<h3 id="代码1-5行"><a href="#代码1-5行" class="headerlink" title="代码1-5行"></a>代码1-5行</h3><p>声明了a，b两个Node类型的引用，声明c指向一个Node@478对象</p>
-<p>然后把a和b都指向了Node@478对象。如下图所示：</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep1.jpg" alt="p1"></p>
-<h3 id="代码-6行"><a href="#代码-6行" class="headerlink" title="代码 6行"></a>代码 6行</h3><p>创建了一个新的Node@479对象，将c引用指向这个对象。如下图所示：</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep2.jpg" alt="p1"></p>
-<h3 id="代码-7行"><a href="#代码-7行" class="headerlink" title="代码 7行"></a>代码 7行</h3><p>在Node@478中有一个next属性，a.next = c;表示将Node@478的next指向c引用指向的地址(即Node@479)</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep3.jpg" alt="p1"></p>
-<h3 id="代码-8行"><a href="#代码-8行" class="headerlink" title="代码 8行"></a>代码 8行</h3><p>a = c; 就是将a的引用重新指向c引用指向的地址(即Node@479)</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep4.jpg" alt="p1"></p>
-<p>所以最终的结果就是：</p>
-<p>a，c引用指向相同的Node@479对象</p>
-<p>b指向Node@478对象，其中Node@478的next引用指向Node@479对象</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/pend.png"></p>
-<p>理解了上面的过程，下面就非常容易了 ^ ^</p>
-<h3 id="创建链表"><a href="#创建链表" class="headerlink" title="创建链表"></a>创建链表</h3><p>创建链表并插入10个元素（尾插）来模拟HashMap数组中某一个节点的链表。</p>
-<blockquote>
-<p>JDK1.8中，链表长度超过 <strong>变树阈值</strong> 时会将链表变化成红黑树<br>这个变化需要满足两个条件：1 链表长度超过变树阈值 2 HashMap的size大于64</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Node tab = <span class="keyword">new</span> Node(<span class="number">0</span>,<span class="number">0</span>,<span class="keyword">null</span>); <span class="comment">// node链表</span></span><br><span class="line">Node p = tab;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++) &#123;</span><br><span class="line">    Node tail = <span class="keyword">new</span> Node(i, i, <span class="keyword">null</span>); <span class="comment">// 最后一个节点</span></span><br><span class="line">    <span class="keyword">if</span> (p.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        p.next = tail;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123; <span class="comment">// 尾插</span></span><br><span class="line">        Node e;</span><br><span class="line">        <span class="keyword">while</span> ((e = p.next) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (e.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">                e.next = tail;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            p = e;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="仿写resize核心代码"><a href="#仿写resize核心代码" class="headerlink" title="仿写resize核心代码"></a>仿写resize核心代码</h3><p>在HashMap扩容时有一个很巧妙的操作，就是数组长度扩容至原先两倍时，重新计算链表节点的插入角标会将原链表随机分布到新数组的两个位置：1 原来角标的位置 2 原角标+原数组长度的位置</p>
-<p>而这个操作在JDK1.7和JDK1.8中的思想是相同的，不过实现方式略有不同：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">假设：</span><br><span class="line">现在有两个链表节点</span><br><span class="line">他们的hash值低8位分别是 0110 1011 、1001 1011</span><br><span class="line">扩容前数组长度为16，扩容长度变为32</span><br><span class="line">扩容前他们都在数组角标11的位置</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; JDK1.7 e.hash &amp; (length-1)</span><br><span class="line">&#x2F;&#x2F; 第一个节点</span><br><span class="line">	0110 1011</span><br><span class="line">	0001 1111</span><br><span class="line">&amp; 0000 1011 角标11</span><br><span class="line">&#x2F;&#x2F; 第二个节点</span><br><span class="line">	1001 1011</span><br><span class="line">	0001 1111</span><br><span class="line">&amp; 0001 1011 角标27</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; JDK1.8 (e.hash &amp; oldCap) &#x3D;&#x3D; 0</span><br><span class="line">&#x2F;&#x2F; 第一个节点</span><br><span class="line">	0110 1011</span><br><span class="line">	0001 0000</span><br><span class="line">&amp; 0000 0000 结果0，在原数组位置</span><br><span class="line">&#x2F;&#x2F; 第二个节点</span><br><span class="line">	1001 1011</span><br><span class="line">	0001 0000</span><br><span class="line">&amp; 0001 0000 结果1，在新数组位置</span><br></pre></td></tr></table></figure>
-
-<p>JDK1.7中，直接通过hash值与新数组长度-1 按位与 得到新角标</p>
-<p>JDK1.8中，通过计算hash值对应的原数组位置是否为0，如果为0则插入tab[j]，否则插入tab[j+oldCap]</p>
-<hr>
-<p>我模拟的Demo中没有设计这么多复杂的数据，所以简化为节点value值的奇偶判断</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Node loHead = <span class="keyword">null</span>, loTail = <span class="keyword">null</span>;</span><br><span class="line">Node hiHead = <span class="keyword">null</span>, hiTail = <span class="keyword">null</span>;</span><br><span class="line">Node next;</span><br><span class="line">Node e = tab;</span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    next = e.next;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">int</span>)e.value % <span class="number">2</span> == <span class="number">0</span>) &#123; <span class="comment">// 进入次判断的节点为 0,2,4,6,8</span></span><br><span class="line">        <span class="keyword">if</span> (loTail == <span class="keyword">null</span>)</span><br><span class="line">            loHead = e;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            loTail.next = e;</span><br><span class="line">        loTail = e;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">int</span>)e.value % <span class="number">2</span> == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hiTail == <span class="keyword">null</span>)</span><br><span class="line">            hiHead = e;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            hiTail.next = e;</span><br><span class="line">        hiTail = e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">while</span> ((e = next) != <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
-
-<p>以取模结果等于0为例：</p>
-<p>第一次进入，loHead = 0, loTail = 0。loTail和loHead指向相同的内存地址</p>
-<p>第二次进入，loTail.next = 2会移动loHead.next指向 2。随后loTail = 2，即loHead.next和loTail指向相同的内存地址</p>
-<p>第三次进入，loTail.next = 4也就是loHead.next.next指向4。随后loTail = 4，即loHead.next.next和loTail指向相同的内存地址</p>
-<p>以此类推，如下图：</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/hashmap%20resize%20%281%29.jpg"></p>
-<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>上面就是我对 <code>loTail.next = e; loTail = e;</code> 这两行代码的理解。</p>
-<p>进一步思考，为什么HashMap在 JDK1.7 的时候会选择头插法插入元素？</p>
-<p>不考虑JDK1.7中resize时的循环引用问题，我认为头插法无论是从理解的角度，还是从代码实现的角度都更胜一筹。甚至还可能能稍微优化一些查询的速率。</p>
-<p>就拿上面Demo中的尾插生成测试链表为例，我的写法是仿照JDK1.8的，中间要声明很多局部变量，所以你会看到 JDK1.8 的源码中有很多判断中赋值的操作。如果不这么写的话，估计JDK1.8的源码会再多几百行（本身实现了一套红黑树，代码量相较1.7膨胀了几乎一倍）</p>
+    <title>0926</title>
+    <url>/2020/09/26/0926/</url>
+    <content><![CDATA[<p>周五，我和妈妈各自都有些不太舒服，我嗓子疼有点感冒的症状，妈妈说头晕。<br>晚饭后，我坚持让妈妈跟我一起喝点小柴胡，妈妈原本有点拒绝，最后我冲好端到房间去，妈妈还是喝了。</p>
+<p>星期六，昨晚吃过药之后好像身体都有了好转。按往常一样周六的中午全家一起出去吃了饭。<br>饭后到家，我喊了一句：再吃一顿小柴胡吧，巩固一下。妈妈说好，就回房间去了。</p>
+<p>我拿了药，去厨房烧水、冲药。<br>以前我说身体不舒服的时候，都是妈妈来帮我冲药，给我送到房间来叮嘱我喝，我即便说不要紧她也非逼着我喝。</p>
+<p>这时候我才意识到，原来不是我长大了，而是妈妈真的老了。</p>
 ]]></content>
       <categories>
-        <category>java</category>
+        <category>something</category>
       </categories>
       <tags>
-        <tag>java</tag>
-        <tag>HashMap</tag>
-        <tag>resize</tag>
+        <tag>dairy</tag>
       </tags>
   </entry>
   <entry>
-    <title>LeeCode reverse-words</title>
-    <url>/2020/11/03/reverse-words/</url>
-    <content><![CDATA[<p>LeeCode p151 逐个翻转字符串中的每个单词</p>
-<p>相关代码可以在 <a href="https://github.com/YorickYu/JPP"><strong><em>JPP</em></strong></a>/ReverseWords类中查看。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 给定一个字符串，逐个翻转字符串中的每个单词。 </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 说明： </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 无空格字符构成一个 单词 。 </span><br><span class="line">&#x2F;&#x2F; 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。 </span><br><span class="line">&#x2F;&#x2F; 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 1： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;the sky is blue&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;blue is sky the&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 示例 2： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;  hello world!  &quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;world! hello&quot;</span><br><span class="line">&#x2F;&#x2F;解释：输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 3： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;a good   example&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;example good a&quot;</span><br><span class="line">&#x2F;&#x2F;解释：如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 4： </span><br><span class="line">&#x2F;&#x2F; 输入：s &#x3D; &quot;  Bob    Loves  Alice   &quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;Alice Loves Bob&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 5： </span><br><span class="line">&#x2F;&#x2F; 输入：s &#x3D; &quot;Alice does not even like bob&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;bob like even not does Alice&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 提示： </span><br><span class="line">&#x2F;&#x2F; 1 &lt;&#x3D; s.length &lt;&#x3D; 104 </span><br><span class="line">&#x2F;&#x2F; s 包含英文大小写字母、数字和空格 &#39; &#39; </span><br><span class="line">&#x2F;&#x2F; s 中 至少存在一个 单词 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 进阶：  </span><br><span class="line">&#x2F;&#x2F; 请尝试使用 O(1) 额外空间复杂度的原地解法。 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; Related Topics 字符串 </span><br><span class="line">&#x2F;&#x2F; 👍 240 👎 0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import java.util.HashMap;</span><br><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">    public String reverseWords(String s) &#123;</span><br><span class="line">        StringBuffer sb &#x3D; new StringBuffer();</span><br><span class="line">        String[] strings &#x3D; s.split(&quot;\\s+&quot;);</span><br><span class="line">        HashMap m &#x3D; new HashMap();</span><br><span class="line">        int modCount &#x3D; 0;</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 0; i &lt; strings.length; i++) &#123;</span><br><span class="line">            String innerstring &#x3D; strings[i];</span><br><span class="line">            if (!innerstring.equals(&quot;&quot;)) &#123;</span><br><span class="line">                m.put(modCount++, innerstring);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (;modCount&gt;0;) &#123;</span><br><span class="line">            sb.append(m.get(--modCount));</span><br><span class="line">            if (modCount !&#x3D; 0)</span><br><span class="line">                sb.append(&quot; &quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    <title>CPU 乱序执行反证</title>
+    <url>/2020/10/19/CPU-Out-of-Order/</url>
+    <content><![CDATA[<h3 id="循序运行"><a href="#循序运行" class="headerlink" title="循序运行"></a>循序运行</h3><p>主条目：指令周期<br>在早期的处理器中，指令的执行一般在以下的步骤中完成：</p>
+<p>1 指令获取。<br>2 如果输入的运算对象是可以获取的（比如已经存在于寄存器中），这条指令会被发送到合适的功能单元。如果一个或者更多的运算对象在当前的时钟周期中是不可获取的（通常需要从主存获取），处理器会开始等待直到它们是可以获取的。<br>3 指令在合适的功能单元中被执行。<br>4 功能单元将运算结果写回寄存器。</p>
+<h3 id="乱序执行"><a href="#乱序执行" class="headerlink" title="乱序执行"></a>乱序执行</h3><p>这种范式通过以下步骤挑选可执行的指令先运行：</p>
+<p>1 指令获取。<br>2 指令被发送到一个指令序列中（也称执行缓冲区或者保留站）。<br>3 指令将在序列中等待直到它的数据运算对象是可以获取的。然后指令被允许在先进入的、旧的指令之前离开序列缓冲区。<br>4 指令被分配给一个合适的功能单元并由之执行。<br>5 结果被放到一个序列中。<br>6 仅当所有在该指令之前的指令都将他们的结果写入寄存器后，这条指令的结果才会被写入寄存器中。这个过程被称为毕业或者退休周期。</p>
+<p>乱序执行的重要概念是实现了<strong>避免计算机在用于运算的对象不可获取时的大量等待。</strong>在上述文字的要点中，乱序执行处理器避免了在顺序执行处理器处理过程第二步中当指令由于运算数据未到位所造成的等待。</p>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">b &#x3D; a * 5</span><br><span class="line">v &#x3D; b++</span><br><span class="line">c &#x3D; a + 3</span><br></pre></td></tr></table></figure>
+<p>由于1与3可并发运行，而2之b无法随即获得，因此可以先计算乘法1与加法3，再运行2。</p>
+<a id="more"></a>
 
-<p>解题思路就是用Java现有的API配合正则去拆分传入的字符串s，得到一个字符串数组</p>
-<p>然后利用HashMap查找O(1)的特性，将value值按序存入key，并记录key值</p>
-<p>最后倒序key值，取出value即可。</p>
-<blockquote>
-<p>这里其实一次for循环逆序遍历也可以得出答案，时间复杂度不会有太大差别，因为本身字符串数组长度不会很大。<br>我只是单纯的像仿照HashMap源码中modCount的想法记录一下编辑次数，所以for了两次。</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public String reverseWords(String s) &#123;</span><br><span class="line">    String[] words &#x3D; s.trim().split(&quot;\\s+&quot;);</span><br><span class="line">    int len &#x3D; words.length;</span><br><span class="line">    StringBuilder ans &#x3D; new StringBuilder();</span><br><span class="line">    ans.append(words[len - 1]);</span><br><span class="line">    for (int i &#x3D; len - 2; i &gt;&#x3D; 0; i --) &#123;</span><br><span class="line">        if (words[i].equals(&quot;&quot;))</span><br><span class="line">            continue;</span><br><span class="line">        ans.append(&quot; &quot; + words[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    return ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="证明CPU乱序执行存在"><a href="#证明CPU乱序执行存在" class="headerlink" title="证明CPU乱序执行存在"></a>证明CPU乱序执行存在</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class OutOfOrder &#123;</span><br><span class="line">    private static int x &#x3D; 0, y &#x3D; 0;</span><br><span class="line">    private static int a &#x3D; 0, b &#x3D; 0;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line">        int i &#x3D; 0; &#x2F;&#x2F; 记录次数</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            x &#x3D; 0; y &#x3D; 0;</span><br><span class="line">            a &#x3D; 0; b &#x3D; 0;</span><br><span class="line">            Thread one &#x3D; new Thread(new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    a &#x3D; 1;</span><br><span class="line">                    x &#x3D; b;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            Thread two &#x3D; new Thread(new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    b &#x3D; 1;</span><br><span class="line">                    y &#x3D; a;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            one.start();two.start();</span><br><span class="line">            one.join();two.join();</span><br><span class="line">            if (x &#x3D;&#x3D; 0 &amp;&amp; y &#x3D;&#x3D;0) &#123;</span><br><span class="line">                System.out.println(&quot;第&quot;+i+&quot;次，出现(&quot;+x+&quot;,&quot;+y+&quot;)&quot;);</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>最后，学了一下网上一些时间复杂度很低的解法，耗时的步骤都来源于数组的 <code>split</code> 方法。</p>
-<p>想要突破的可以自定义一个数组拆分的方法。</p>
-<p>还有，基本可以确定的是，使用 <code>StringBuilder</code> 的API拼接数组比直接使用 String 速度要快。</p>
-<p>先后提交了2次，结果如下：</p>
-<p>11 分钟前    通过    10 ms    38.9 MB    Java<br>20 分钟前    通过    12 ms    39.3 MB    Java</p>
+<p>正常执行期待的结果不会出现x和y同时为0的情况<br>demo中测试的是语句级乱序的现象，语句级乱序的发生说明必定存在指令级乱序<br>如果出现则说明CPU存在乱序执行</p>
+<p>结果：<br><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/outoforder.png"></p>
+]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
+      <tags>
+        <tag>algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Tri-colour marking</title>
+    <url>/2020/10/21/Tri-colour-marking/</url>
+    <content><![CDATA[<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/gc-1.gif"></p>
 ]]></content>
       <categories>
         <category>algorithm</category>
@@ -144,6 +92,112 @@
         <tag>java</tag>
         <tag>ConcurrentHashMap</tag>
         <tag>put</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>git command</title>
+    <url>/2020/10/10/git/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>虽然现在常用sourcetree或者直接在IDE中通过图形界面操作，但是开发中难免遇到一些棘手的问题需要使用git命令去管理项目</p>
+<p>这里列出一些常用的命令，方便查询</p>
+<a id="more"></a>
+
+<h2 id="本地操作"><a href="#本地操作" class="headerlink" title="本地操作"></a>本地操作</h2><p>1 初始化一个仓库: </p>
+<pre><code>git init</code></pre>
+<p>2 添加文件到Git仓库，分两步：</p>
+<pre><code>2.1 git add &lt;fileName&gt; 可以反复多次添加，也可以一次添加多个文件(git add . / git add file1 file2)
+
+2.2 git commit -m “message” 提交</code></pre>
+<p>3 git status 随时掌握工作区的状态 git status -s 简短信息查看</p>
+<p>4 git diff <fileName> 查看修改的内容 git diff –cached 查看已缓存 git diff HEAD 查看所有 git diff –stat 只显示摘要</p>
+<p>5 在本地版本间穿梭: </p>
+<pre><code>git reset --hard commit_id (回到上一版本：git reset —hard HEAD^)</code></pre>
+<blockquote>
+<p>ps：在Git中，用HEAD表示当前版本，上一版本就是HEAD^，同理上上版本HEAD^^，如果往上100个版本，可以写成HEAD~100</p>
+</blockquote>
+<p>6 git log 可以查看历史提交记录，以便确定要退回版本的commit_id (简化信息：</p>
+<pre><code>git log --pretty=oneline)</code></pre>
+<p>7 查看命令历史:</p>
+<pre><code>git reflog </code></pre>
+<p>8 丢弃工作区的修改：</p>
+<pre><code>git checkout -- &lt;fileName&gt; (这里的 -- 很重要，如果没有--，就编程切换分支的命令)</code></pre>
+<p>9 丢弃暂存区的修改：</p>
+<pre><code>第一步，git reset HEAD &lt;fileName&gt;(HEAD表示当前最新版本)
+
+第二步，git checkout --&lt;fileName&gt;</code></pre>
+<p>10 丢弃版本库的修改：和第5条同理，其实就是切换回先前的分支:</p>
+<pre><code>git reset --hard commit_id</code></pre>
+<p>11 删除文件：</p>
+<pre><code>11.1 方法一：先删除本地rm &lt;file&gt;，然后再git add/rm &lt;file&gt;，git commit -m “message”
+
+11.2 方法二：直接git rm &lt;file&gt;，git commit -m “message”
+ps: 如果是rm &lt;file&gt;，可以直接通过git checkout -- &lt;file&gt;修改回来</code></pre>
+<h2 id="关联远程库"><a href="#关联远程库" class="headerlink" title="关联远程库"></a>关联远程库</h2><p>1 在GitHub上创建完远程仓库后，在本地的仓库下运行命令，关联远程库：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote add origin git@server-name:path&#x2F;repo-name.git</span><br></pre></td></tr></table></figure>
+
+<p>2 下一步，使用命令：，将本地库的所有内容推送到远程库上</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ps：第一次推送master分支时，加上了-u参数，git不但会把本地的master分支内容推送到远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送命令即可省略，直接用git push origin master</p>
+</blockquote>
+<h2 id="创建、合并分支"><a href="#创建、合并分支" class="headerlink" title="创建、合并分支"></a>创建、合并分支</h2><p>1 查看分支：git branch</p>
+<p>2 创建分支：git branch <name></p>
+<p>3 切换分支：git checkout <name></p>
+<p>4 创建+切换分支：git checkout -b <name></p>
+<p>5 合并某分支到当前分支：git merge <name></p>
+<blockquote>
+<p>ps：合并分支时加入–no-ff参数，表示禁用Fast forward：git merge –no-ff -m “merge with no-ff” <name>这种操作合并后的历史有分支，能看出曾经做过合并，而Fast forward合并就看不出来</p>
+</blockquote>
+<p>6 删除分支：git branch -d <name></p>
+<p>7 查看合并分支图：git log –graph</p>
+<h2 id="临时分支"><a href="#临时分支" class="headerlink" title="临时分支"></a>临时分支</h2><p>情景：在develop分支开发时，突然报出紧急bug：</p>
+<p>1 在develop分支把工作现场“贮藏”起来：</p>
+<pre><code>git stash</code></pre>
+<p>2 然后确定要在哪个分支上处理bug，假如在master上修复，就从master创建临时分支：</p>
+<pre><code>git checkout master 
+git checkout -b bug001</code></pre>
+<p>3 在bug001分支上处理bug，修复完成后切回master进行合并：</p>
+<pre><code>git merge --no-ff -m “merge with no-ff” bug001</code></pre>
+<p>4 现在bug处理完了，回到develop查看刚刚”贮藏”的代码：</p>
+<pre><code>git stash list</code></pre>
+<p>5 把”贮藏”的代码拿到develop上，继续开发：</p>
+<pre><code>git stash pop(git stash apply + git stash drop)</code></pre>
+<blockquote>
+<p>ps：apply恢复，但stash的内容并不删除，需要再用drop删除；pop恢复的同时也删除了</p>
+</blockquote>
+<h2 id="新特性分支"><a href="#新特性分支" class="headerlink" title="新特性分支"></a>新特性分支</h2><p>情景：开发一个新feature，但是突然说这个功能不做了（在新分支上已经执行add,commit操作）</p>
+<p>丢弃一个没有被合并过的分支，强行删除该分支：</p>
+<pre><code>git branch -D &lt;name&gt;</code></pre>
+<h2 id="多人协作"><a href="#多人协作" class="headerlink" title="多人协作"></a>多人协作</h2><p>1 推送本地分支到远端，如果推送失败，先git pull抓去远程的新提交</p>
+<pre><code>git push origin &lt;name&gt;</code></pre>
+<p>2 拉取远端分支到本地：</p>
+<pre><code>git checkout -b &lt;name&gt; origin/&lt;name&gt;</code></pre>
+<blockquote>
+<p>ps：查看权限：git remote -v</p>
+</blockquote>
+<p>3 建立本地分支和远程分支的关联：</p>
+<pre><code>git branch --set-upstream &lt;name&gt; origin/&lt;name&gt;</code></pre>
+<blockquote>
+<p>ps：如果git pull提示no tracking information，则说明没有创建关联</p>
+</blockquote>
+<h2 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h2><p>git rebase操作可以把本地未push的分叉提交历史整理成直线</p>
+<h2 id="标签tag"><a href="#标签tag" class="headerlink" title="标签tag"></a>标签tag</h2><p>1 创建新标签 git tag <tagname> 默认添加在HEAD上，如果要特定添加在某条记录上可以 </p>
+<pre><code>git tag &lt;tagname&gt; &lt;commit id&gt;
+
+例: git tag v1.0 fa=52c662</code></pre>
+<p>2 git tag -a <tagname> -m ‘ababababllal’</p>
+<p>3 git tag 查看所有标签</p>
+<p>4 git tag -d <tagname> 删除标签</p>
+<p>5 推送标签到远程</p>
+<pre><code>git push origin &lt;tagname&gt; </code></pre>
+<p>6 推送所有标签到远程 </p>
+<pre><code>git push origin --tags </code></pre>
+<p>7 删除远程标签，分两步：</p>
+<pre><code>第一步，先删除本地标签 git tag -d v1.0
+
+第二部，删除远程，命令也是push，git push origin :refs/tags/v1.0</code></pre>
+]]></content>
+      <tags>
+        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -240,44 +294,88 @@
       </tags>
   </entry>
   <entry>
-    <title>IHAVEAQUESTION - JDK1.7 HashMap 链表头插疑问？</title>
-    <url>/2020/10/31/question-of-hashmap-put/</url>
-    <content><![CDATA[<h2 id="IHAVEAQUESTION"><a href="#IHAVEAQUESTION" class="headerlink" title="IHAVEAQUESTION"></a>IHAVEAQUESTION</h2><p>为什么JDK1.7中HashMap链表插入时要在 <strong>遍历完一遍链表</strong> 后，再采用头插法？</p>
-<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>HashMap在JDK1.7中采用 数组+链表 的存储结构。</p>
-<p>数组的角标是在key值hashCode()的基础上进行多次高位移动的扰动后尽量保持散列，代码片段如下：</p>
-<p>1 hash</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">final int hash(Object k) &#123;</span><br><span class="line">    int h &#x3D; hashSeed;</span><br><span class="line">    if (0 !&#x3D; h &amp;&amp; k instanceof String) &#123;</span><br><span class="line">        return sun.misc.Hashing.stringHash32((String) k);</span><br><span class="line">    &#125;</span><br><span class="line">    h ^&#x3D; k.hashCode();</span><br><span class="line">    &#x2F;&#x2F; 多次让高位参与运算，扰动函数</span><br><span class="line">    h ^&#x3D; (h &gt;&gt;&gt; 20) ^ (h &gt;&gt;&gt; 12);</span><br><span class="line">    return h ^ (h &gt;&gt;&gt; 7) ^ (h &gt;&gt;&gt; 4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>2 % -&gt; &amp;</p>
-<p>采用更搞笑的 &amp;运算。这里length为数组的长度，源码中巧妙的设计数组的长度必须保持2的整数幂。这样设计才能保证length-1计算后得到 <strong>全1</strong> 的的二进制序列。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static int indexFor(int h, int length) &#123;</span><br><span class="line">    return h &amp; (length-1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <title>HashMap resize loTail.next=e loTail=e</title>
+    <url>/2020/11/06/hashmap-resize-lotail/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>HashMap扩容的过程包含了很多巧妙的思考，思想简单易懂，但是代码的实现真的让人折服！</p>
+<p>今天快速浏览resize方法时，被两行代码绕住了：</p>
+<img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/loTail.next%20%3D%20e.png" style="zoom:50%;" />
 
-<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>数组的index确认后，就可以将键值对插入相应位置的链表了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public V put(K key, V value) &#123;</span><br><span class="line">    ... </span><br><span class="line">    int hash &#x3D; hash(key); &#x2F;&#x2F; hash</span><br><span class="line">    int i &#x3D; indexFor(hash, table.length); &#x2F;&#x2F; %</span><br><span class="line">    &#x2F;&#x2F; 判断hashmap中有没有存在相同的key，如果有的话将这个key原来的value覆盖，并返回</span><br><span class="line">    for (Entry&lt;K,V&gt; e &#x3D; table[i]; e !&#x3D; null; e &#x3D; e.next) &#123;</span><br><span class="line">        Object k;</span><br><span class="line">        if (e.hash &#x3D;&#x3D; hash &amp;&amp; ((k &#x3D; e.key) &#x3D;&#x3D; key || key.equals(k))) &#123;</span><br><span class="line">            V oldValue &#x3D; e.value;</span><br><span class="line">            e.value &#x3D; value;</span><br><span class="line">            e.recordAccess(this);</span><br><span class="line">            return oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    &#x2F;&#x2F; 扩容，头插</span><br><span class="line">    addEntry(hash, key, value, i);</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可能是对于引用类型的理解不够深刻吧，这两行代码真的看了我一天！网上也很少有人分析这两行代码（可能因为太容易了吧）</p>
+<p>最后我自己写了个Demo，算是把这个操作搞清楚了。因为是引用类型的指针指向问题，所以画图也不太好理解，只能自己写个Demo，一点点Debug分析过程。</p>
+<p>相关代码在：<a href="https://github.com/YorickYu/JPP">Jpp</a> /TailInsert类中</p>
+<a id="more"></a>
+
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="准备一个简单的链表对象"><a href="#准备一个简单的链表对象" class="headerlink" title="准备一个简单的链表对象"></a>准备一个简单的链表对象</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    K key;</span><br><span class="line">    V value;</span><br><span class="line">    Node&lt;K, V&gt; next;</span><br><span class="line"></span><br><span class="line">    Node(K key, V value, Node&lt;K, V&gt; next) &#123;</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
+
+<h2 id="简化过程"><a href="#简化过程" class="headerlink" title="简化过程"></a>简化过程</h2><p>先看下面的代码，理解这个过程：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Node a &#x3D; null;</span><br><span class="line">Node b &#x3D; null;</span><br><span class="line">Node c &#x3D; new Node(&#39;c&#39;, &#39;c&#39;, null);</span><br><span class="line">b &#x3D; c;</span><br><span class="line">a &#x3D; c;</span><br><span class="line">c &#x3D; new Node(8,8, null);</span><br><span class="line">a.next &#x3D; c;</span><br><span class="line">a &#x3D; c;</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码1-5行"><a href="#代码1-5行" class="headerlink" title="代码1-5行"></a>代码1-5行</h3><p>声明了a，b两个Node类型的引用，声明c指向一个Node@478对象</p>
+<p>然后把a和b都指向了Node@478对象。如下图所示：</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep1.jpg" alt="p1"></p>
+<h3 id="代码-6行"><a href="#代码-6行" class="headerlink" title="代码 6行"></a>代码 6行</h3><p>创建了一个新的Node@479对象，将c引用指向这个对象。如下图所示：</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep2.jpg" alt="p1"></p>
+<h3 id="代码-7行"><a href="#代码-7行" class="headerlink" title="代码 7行"></a>代码 7行</h3><p>在Node@478中有一个next属性，a.next = c;表示将Node@478的next指向c引用指向的地址(即Node@479)</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep3.jpg" alt="p1"></p>
+<h3 id="代码-8行"><a href="#代码-8行" class="headerlink" title="代码 8行"></a>代码 8行</h3><p>a = c; 就是将a的引用重新指向c引用指向的地址(即Node@479)</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/nodep4.jpg" alt="p1"></p>
+<p>所以最终的结果就是：</p>
+<p>a，c引用指向相同的Node@479对象</p>
+<p>b指向Node@478对象，其中Node@478的next引用指向Node@479对象</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/pend.png"></p>
+<p>理解了上面的过程，下面就非常容易了 ^ ^</p>
+<h3 id="创建链表"><a href="#创建链表" class="headerlink" title="创建链表"></a>创建链表</h3><p>创建链表并插入10个元素（尾插）来模拟HashMap数组中某一个节点的链表。</p>
 <blockquote>
-<p>上面的源码部分只保留了关键部分</p>
+<p>JDK1.8中，链表长度超过 <strong>变树阈值</strong> 时会将链表变化成红黑树<br>这个变化需要满足两个条件：1 链表长度超过变树阈值 2 HashMap的size大于64</p>
 </blockquote>
-<p>我们都知道JDK1.7中链表的插入方式是头插。头插与尾插相比是节省了一次链表全遍历的时间。直接采用下面代码即可完成：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 链表头插</span><br><span class="line">table[bucketIndex] &#x3D; new Entry&lt;&gt;(hash, key, value, table[bucketIndex]);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Node tab = <span class="keyword">new</span> Node(<span class="number">0</span>,<span class="number">0</span>,<span class="keyword">null</span>); <span class="comment">// node链表</span></span><br><span class="line">Node p = tab;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++) &#123;</span><br><span class="line">    Node tail = <span class="keyword">new</span> Node(i, i, <span class="keyword">null</span>); <span class="comment">// 最后一个节点</span></span><br><span class="line">    <span class="keyword">if</span> (p.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        p.next = tail;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123; <span class="comment">// 尾插</span></span><br><span class="line">        Node e;</span><br><span class="line">        <span class="keyword">while</span> ((e = p.next) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (e.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">                e.next = tail;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            p = e;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这部分代码在put方法的addEntry()中，addEntry()方法在链表头插之前做了扩容操作。</p>
-<p>但是奇怪的是，在上面put方法中有一段循环遍历链表的代码，这段代码的目的只是检查要插入的Key值是否已经存在在HashMap中，如果存在就修改，同时将原来的值返回。</p>
-<p><strong><em>这我就很疑惑了，为什么这里明明已经遍历过一遍链表了，为什么不多写一个else，如果没有找到存在的Key值，直接将目标键值对插入在链表尾部呢？都已经遍历完了，插个值咋了？</em></strong></p>
-<p>可能的原因只能是扩容时机不好把握？</p>
-<p>HashMap的扩容机制是键值对size超过阈值后，数组长度扩充至之前的两倍，然后将原本下标的全部链表迁移（这个迁移的过程会倒序链表，也可能分散链表中的数据，以缩短链表的长度）</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void transfer(Entry[] newTable, boolean rehash) &#123;</span><br><span class="line">    int newCapacity &#x3D; newTable.length;</span><br><span class="line">    for (Entry&lt;K,V&gt; e : table) &#123;</span><br><span class="line">        while(null !&#x3D; e) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; next &#x3D; e.next;</span><br><span class="line">            ...</span><br><span class="line">            &#x2F;&#x2F; 同一个元素转移后的下标有两种情况。</span><br><span class="line">            &#x2F;&#x2F; 1 与原来相同 2 在原来下标基础上加原数组长度</span><br><span class="line">            int i &#x3D; indexFor(e.hash, newCapacity);</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F; 这样遍历头插后，链表的顺序与之前相反</span><br><span class="line">            e.next &#x3D; newTable[i];</span><br><span class="line">            newTable[i] &#x3D; e;</span><br><span class="line">            e &#x3D; next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="仿写resize核心代码"><a href="#仿写resize核心代码" class="headerlink" title="仿写resize核心代码"></a>仿写resize核心代码</h3><p>在HashMap扩容时有一个很巧妙的操作，就是数组长度扩容至原先两倍时，重新计算链表节点的插入角标会将原链表随机分布到新数组的两个位置：1 原来角标的位置 2 原角标+原数组长度的位置</p>
+<p>而这个操作在JDK1.7和JDK1.8中的思想是相同的，不过实现方式略有不同：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">假设：</span><br><span class="line">现在有两个链表节点</span><br><span class="line">他们的hash值低8位分别是 0110 1011 、1001 1011</span><br><span class="line">扩容前数组长度为16，扩容长度变为32</span><br><span class="line">扩容前他们都在数组角标11的位置</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; JDK1.7 e.hash &amp; (length-1)</span><br><span class="line">&#x2F;&#x2F; 第一个节点</span><br><span class="line">	0110 1011</span><br><span class="line">	0001 1111</span><br><span class="line">&amp; 0000 1011 角标11</span><br><span class="line">&#x2F;&#x2F; 第二个节点</span><br><span class="line">	1001 1011</span><br><span class="line">	0001 1111</span><br><span class="line">&amp; 0001 1011 角标27</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; JDK1.8 (e.hash &amp; oldCap) &#x3D;&#x3D; 0</span><br><span class="line">&#x2F;&#x2F; 第一个节点</span><br><span class="line">	0110 1011</span><br><span class="line">	0001 0000</span><br><span class="line">&amp; 0000 0000 结果0，在原数组位置</span><br><span class="line">&#x2F;&#x2F; 第二个节点</span><br><span class="line">	1001 1011</span><br><span class="line">	0001 0000</span><br><span class="line">&amp; 0001 0000 结果1，在新数组位置</span><br></pre></td></tr></table></figure>
 
-<p>了解HashMap源码的朋友可能都知道，这个扩容和迁移的代码在高并发时并不是线程安全的。可能出现循环链表，以至于get时陷入死循环。</p>
-<p>也许正因如此，需要将链表插入和扩容的代码从之前的循环中独立出来。并采用头插的方式，尽量再循环一次链表。</p>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>以上都是我在阅读HashMap源码后产生疑问，独立思考，自我解答的过程。</p>
-<p>可能是很少有人产生跟我相似的疑问，所以我在网上也没能查找到准确的资料和答案。</p>
-<p>所以以上全是自己的推断和猜测。毕竟HashMap源码不论是在数据结构还是算法思想层面都是非常优雅的。别人这么设计肯定是有原因的。哈哈</p>
+<p>JDK1.7中，直接通过hash值与新数组长度-1 按位与 得到新角标</p>
+<p>JDK1.8中，通过计算hash值对应的原数组位置是否为0，如果为0则插入tab[j]，否则插入tab[j+oldCap]</p>
+<hr>
+<p>我模拟的Demo中没有设计这么多复杂的数据，所以简化为节点value值的奇偶判断</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Node loHead = <span class="keyword">null</span>, loTail = <span class="keyword">null</span>;</span><br><span class="line">Node hiHead = <span class="keyword">null</span>, hiTail = <span class="keyword">null</span>;</span><br><span class="line">Node next;</span><br><span class="line">Node e = tab;</span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    next = e.next;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">int</span>)e.value % <span class="number">2</span> == <span class="number">0</span>) &#123; <span class="comment">// 进入次判断的节点为 0,2,4,6,8</span></span><br><span class="line">        <span class="keyword">if</span> (loTail == <span class="keyword">null</span>)</span><br><span class="line">            loHead = e;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            loTail.next = e;</span><br><span class="line">        loTail = e;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">int</span>)e.value % <span class="number">2</span> == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hiTail == <span class="keyword">null</span>)</span><br><span class="line">            hiHead = e;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            hiTail.next = e;</span><br><span class="line">        hiTail = e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">while</span> ((e = next) != <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+
+<p>以取模结果等于0为例：</p>
+<p>第一次进入，loHead = 0, loTail = 0。loTail和loHead指向相同的内存地址</p>
+<p>第二次进入，loTail.next = 2会移动loHead.next指向 2。随后loTail = 2，即loHead.next和loTail指向相同的内存地址</p>
+<p>第三次进入，loTail.next = 4也就是loHead.next.next指向4。随后loTail = 4，即loHead.next.next和loTail指向相同的内存地址</p>
+<p>以此类推，如下图：</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/hashmap%20resize%20%281%29.jpg"></p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>上面就是我对 <code>loTail.next = e; loTail = e;</code> 这两行代码的理解。</p>
+<p>进一步思考，为什么HashMap在 JDK1.7 的时候会选择头插法插入元素？</p>
+<p>不考虑JDK1.7中resize时的循环引用问题，我认为头插法无论是从理解的角度，还是从代码实现的角度都更胜一筹。甚至还可能能稍微优化一些查询的速率。</p>
+<p>就拿上面Demo中的尾插生成测试链表为例，我的写法是仿照JDK1.8的，中间要声明很多局部变量，所以你会看到 JDK1.8 的源码中有很多判断中赋值的操作。如果不这么写的话，估计JDK1.8的源码会再多几百行（本身实现了一套红黑树，代码量相较1.7膨胀了几乎一倍）</p>
 ]]></content>
       <categories>
         <category>java</category>
       </categories>
       <tags>
         <tag>java</tag>
-        <tag>0/1</tag>
+        <tag>HashMap</tag>
+        <tag>resize</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/10/12/hello-world/</url>
+    <content><![CDATA[<p>Hello ~ Here is a personal blog <a href="http://www.yloopdaed.icu/">www.yloopdaed.icu</a>.<br>yloopdaed which is my network aka is the reverse spelling of deadpooly.<br>This blog is serve to my Github project - <a href="https://github.com/YorickYu/JPP">JPP</a>(Java promotion process).<br>you can also check out my jianshu channel - <a href="https://www.jianshu.com/u/9901b7042663">YYYYYY25</a> where stores many iOS articles i wrote before.</p>
+<hr>
+<p>建站的目的是为 <a href="https://github.com/YorickYu/JPP">JPP</a> 开源项目提供文章支持<br>本身自己也有记录和分享的习惯，之前的技术分享集中在简书<a href="https://www.jianshu.com/u/9901b7042663">YYYYYY25</a><br>技术类的分享可能会在本站和简书同步更新，之前的技术类文章分享会选择性的移至本站</p>
+<p>✨ Love &amp; Peace ❤️</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>悟到</title>
+    <url>/2020/09/24/know-something/</url>
+    <content><![CDATA[<p>I always need to anticipate problems instead of just reacting to them.</p>
+]]></content>
+      <tags>
+        <tag>diary</tag>
       </tags>
   </entry>
   <entry>
@@ -386,34 +484,66 @@
       </tags>
   </entry>
   <entry>
-    <title>Tri-colour marking</title>
-    <url>/2020/10/21/Tri-colour-marking/</url>
-    <content><![CDATA[<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/gc-1.gif"></p>
+    <title>IHAVEAQUESTION - JDK1.7 HashMap 链表头插疑问？</title>
+    <url>/2020/10/31/question-of-hashmap-put/</url>
+    <content><![CDATA[<h2 id="IHAVEAQUESTION"><a href="#IHAVEAQUESTION" class="headerlink" title="IHAVEAQUESTION"></a>IHAVEAQUESTION</h2><p>为什么JDK1.7中HashMap链表插入时要在 <strong>遍历完一遍链表</strong> 后，再采用头插法？</p>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>HashMap在JDK1.7中采用 数组+链表 的存储结构。</p>
+<p>数组的角标是在key值hashCode()的基础上进行多次高位移动的扰动后尽量保持散列，代码片段如下：</p>
+<p>1 hash</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">final int hash(Object k) &#123;</span><br><span class="line">    int h &#x3D; hashSeed;</span><br><span class="line">    if (0 !&#x3D; h &amp;&amp; k instanceof String) &#123;</span><br><span class="line">        return sun.misc.Hashing.stringHash32((String) k);</span><br><span class="line">    &#125;</span><br><span class="line">    h ^&#x3D; k.hashCode();</span><br><span class="line">    &#x2F;&#x2F; 多次让高位参与运算，扰动函数</span><br><span class="line">    h ^&#x3D; (h &gt;&gt;&gt; 20) ^ (h &gt;&gt;&gt; 12);</span><br><span class="line">    return h ^ (h &gt;&gt;&gt; 7) ^ (h &gt;&gt;&gt; 4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2 % -&gt; &amp;</p>
+<p>采用更搞笑的 &amp;运算。这里length为数组的长度，源码中巧妙的设计数组的长度必须保持2的整数幂。这样设计才能保证length-1计算后得到 <strong>全1</strong> 的的二进制序列。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static int indexFor(int h, int length) &#123;</span><br><span class="line">    return h &amp; (length-1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>数组的index确认后，就可以将键值对插入相应位置的链表了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public V put(K key, V value) &#123;</span><br><span class="line">    ... </span><br><span class="line">    int hash &#x3D; hash(key); &#x2F;&#x2F; hash</span><br><span class="line">    int i &#x3D; indexFor(hash, table.length); &#x2F;&#x2F; %</span><br><span class="line">    &#x2F;&#x2F; 判断hashmap中有没有存在相同的key，如果有的话将这个key原来的value覆盖，并返回</span><br><span class="line">    for (Entry&lt;K,V&gt; e &#x3D; table[i]; e !&#x3D; null; e &#x3D; e.next) &#123;</span><br><span class="line">        Object k;</span><br><span class="line">        if (e.hash &#x3D;&#x3D; hash &amp;&amp; ((k &#x3D; e.key) &#x3D;&#x3D; key || key.equals(k))) &#123;</span><br><span class="line">            V oldValue &#x3D; e.value;</span><br><span class="line">            e.value &#x3D; value;</span><br><span class="line">            e.recordAccess(this);</span><br><span class="line">            return oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    &#x2F;&#x2F; 扩容，头插</span><br><span class="line">    addEntry(hash, key, value, i);</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>上面的源码部分只保留了关键部分</p>
+</blockquote>
+<p>我们都知道JDK1.7中链表的插入方式是头插。头插与尾插相比是节省了一次链表全遍历的时间。直接采用下面代码即可完成：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 链表头插</span><br><span class="line">table[bucketIndex] &#x3D; new Entry&lt;&gt;(hash, key, value, table[bucketIndex]);</span><br></pre></td></tr></table></figure>
+
+<p>这部分代码在put方法的addEntry()中，addEntry()方法在链表头插之前做了扩容操作。</p>
+<p>但是奇怪的是，在上面put方法中有一段循环遍历链表的代码，这段代码的目的只是检查要插入的Key值是否已经存在在HashMap中，如果存在就修改，同时将原来的值返回。</p>
+<p><strong><em>这我就很疑惑了，为什么这里明明已经遍历过一遍链表了，为什么不多写一个else，如果没有找到存在的Key值，直接将目标键值对插入在链表尾部呢？都已经遍历完了，插个值咋了？</em></strong></p>
+<p>可能的原因只能是扩容时机不好把握？</p>
+<p>HashMap的扩容机制是键值对size超过阈值后，数组长度扩充至之前的两倍，然后将原本下标的全部链表迁移（这个迁移的过程会倒序链表，也可能分散链表中的数据，以缩短链表的长度）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void transfer(Entry[] newTable, boolean rehash) &#123;</span><br><span class="line">    int newCapacity &#x3D; newTable.length;</span><br><span class="line">    for (Entry&lt;K,V&gt; e : table) &#123;</span><br><span class="line">        while(null !&#x3D; e) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; next &#x3D; e.next;</span><br><span class="line">            ...</span><br><span class="line">            &#x2F;&#x2F; 同一个元素转移后的下标有两种情况。</span><br><span class="line">            &#x2F;&#x2F; 1 与原来相同 2 在原来下标基础上加原数组长度</span><br><span class="line">            int i &#x3D; indexFor(e.hash, newCapacity);</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F; 这样遍历头插后，链表的顺序与之前相反</span><br><span class="line">            e.next &#x3D; newTable[i];</span><br><span class="line">            newTable[i] &#x3D; e;</span><br><span class="line">            e &#x3D; next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>了解HashMap源码的朋友可能都知道，这个扩容和迁移的代码在高并发时并不是线程安全的。可能出现循环链表，以至于get时陷入死循环。</p>
+<p>也许正因如此，需要将链表插入和扩容的代码从之前的循环中独立出来。并采用头插的方式，尽量再循环一次链表。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>以上都是我在阅读HashMap源码后产生疑问，独立思考，自我解答的过程。</p>
+<p>可能是很少有人产生跟我相似的疑问，所以我在网上也没能查找到准确的资料和答案。</p>
+<p>所以以上全是自己的推断和猜测。毕竟HashMap源码不论是在数据结构还是算法思想层面都是非常优雅的。别人这么设计肯定是有原因的。哈哈</p>
 ]]></content>
       <categories>
-        <category>algorithm</category>
+        <category>java</category>
       </categories>
       <tags>
-        <tag>algorithm</tag>
+        <tag>java</tag>
+        <tag>0/1</tag>
       </tags>
   </entry>
   <entry>
-    <title>CPU 乱序执行反证</title>
-    <url>/2020/10/19/CPU-Out-of-Order/</url>
-    <content><![CDATA[<h3 id="循序运行"><a href="#循序运行" class="headerlink" title="循序运行"></a>循序运行</h3><p>主条目：指令周期<br>在早期的处理器中，指令的执行一般在以下的步骤中完成：</p>
-<p>1 指令获取。<br>2 如果输入的运算对象是可以获取的（比如已经存在于寄存器中），这条指令会被发送到合适的功能单元。如果一个或者更多的运算对象在当前的时钟周期中是不可获取的（通常需要从主存获取），处理器会开始等待直到它们是可以获取的。<br>3 指令在合适的功能单元中被执行。<br>4 功能单元将运算结果写回寄存器。</p>
-<h3 id="乱序执行"><a href="#乱序执行" class="headerlink" title="乱序执行"></a>乱序执行</h3><p>这种范式通过以下步骤挑选可执行的指令先运行：</p>
-<p>1 指令获取。<br>2 指令被发送到一个指令序列中（也称执行缓冲区或者保留站）。<br>3 指令将在序列中等待直到它的数据运算对象是可以获取的。然后指令被允许在先进入的、旧的指令之前离开序列缓冲区。<br>4 指令被分配给一个合适的功能单元并由之执行。<br>5 结果被放到一个序列中。<br>6 仅当所有在该指令之前的指令都将他们的结果写入寄存器后，这条指令的结果才会被写入寄存器中。这个过程被称为毕业或者退休周期。</p>
-<p>乱序执行的重要概念是实现了<strong>避免计算机在用于运算的对象不可获取时的大量等待。</strong>在上述文字的要点中，乱序执行处理器避免了在顺序执行处理器处理过程第二步中当指令由于运算数据未到位所造成的等待。</p>
-<p>例如：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">b &#x3D; a * 5</span><br><span class="line">v &#x3D; b++</span><br><span class="line">c &#x3D; a + 3</span><br></pre></td></tr></table></figure>
-<p>由于1与3可并发运行，而2之b无法随即获得，因此可以先计算乘法1与加法3，再运行2。</p>
-<a id="more"></a>
+    <title>LeeCode reverse-words</title>
+    <url>/2020/11/03/reverse-words/</url>
+    <content><![CDATA[<p>LeeCode p151 逐个翻转字符串中的每个单词</p>
+<p>相关代码可以在 <a href="https://github.com/YorickYu/JPP"><strong><em>JPP</em></strong></a>/ReverseWords类中查看。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 给定一个字符串，逐个翻转字符串中的每个单词。 </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 说明： </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 无空格字符构成一个 单词 。 </span><br><span class="line">&#x2F;&#x2F; 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。 </span><br><span class="line">&#x2F;&#x2F; 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 1： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;the sky is blue&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;blue is sky the&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 示例 2： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;  hello world!  &quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;world! hello&quot;</span><br><span class="line">&#x2F;&#x2F;解释：输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 3： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;a good   example&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;example good a&quot;</span><br><span class="line">&#x2F;&#x2F;解释：如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 4： </span><br><span class="line">&#x2F;&#x2F; 输入：s &#x3D; &quot;  Bob    Loves  Alice   &quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;Alice Loves Bob&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 5： </span><br><span class="line">&#x2F;&#x2F; 输入：s &#x3D; &quot;Alice does not even like bob&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;bob like even not does Alice&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 提示： </span><br><span class="line">&#x2F;&#x2F; 1 &lt;&#x3D; s.length &lt;&#x3D; 104 </span><br><span class="line">&#x2F;&#x2F; s 包含英文大小写字母、数字和空格 &#39; &#39; </span><br><span class="line">&#x2F;&#x2F; s 中 至少存在一个 单词 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 进阶：  </span><br><span class="line">&#x2F;&#x2F; 请尝试使用 O(1) 额外空间复杂度的原地解法。 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; Related Topics 字符串 </span><br><span class="line">&#x2F;&#x2F; 👍 240 👎 0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import java.util.HashMap;</span><br><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">    public String reverseWords(String s) &#123;</span><br><span class="line">        StringBuffer sb &#x3D; new StringBuffer();</span><br><span class="line">        String[] strings &#x3D; s.split(&quot;\\s+&quot;);</span><br><span class="line">        HashMap m &#x3D; new HashMap();</span><br><span class="line">        int modCount &#x3D; 0;</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 0; i &lt; strings.length; i++) &#123;</span><br><span class="line">            String innerstring &#x3D; strings[i];</span><br><span class="line">            if (!innerstring.equals(&quot;&quot;)) &#123;</span><br><span class="line">                m.put(modCount++, innerstring);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (;modCount&gt;0;) &#123;</span><br><span class="line">            sb.append(m.get(--modCount));</span><br><span class="line">            if (modCount !&#x3D; 0)</span><br><span class="line">                sb.append(&quot; &quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h3 id="证明CPU乱序执行存在"><a href="#证明CPU乱序执行存在" class="headerlink" title="证明CPU乱序执行存在"></a>证明CPU乱序执行存在</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class OutOfOrder &#123;</span><br><span class="line">    private static int x &#x3D; 0, y &#x3D; 0;</span><br><span class="line">    private static int a &#x3D; 0, b &#x3D; 0;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line">        int i &#x3D; 0; &#x2F;&#x2F; 记录次数</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            x &#x3D; 0; y &#x3D; 0;</span><br><span class="line">            a &#x3D; 0; b &#x3D; 0;</span><br><span class="line">            Thread one &#x3D; new Thread(new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    a &#x3D; 1;</span><br><span class="line">                    x &#x3D; b;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            Thread two &#x3D; new Thread(new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    b &#x3D; 1;</span><br><span class="line">                    y &#x3D; a;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            one.start();two.start();</span><br><span class="line">            one.join();two.join();</span><br><span class="line">            if (x &#x3D;&#x3D; 0 &amp;&amp; y &#x3D;&#x3D;0) &#123;</span><br><span class="line">                System.out.println(&quot;第&quot;+i+&quot;次，出现(&quot;+x+&quot;,&quot;+y+&quot;)&quot;);</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解题思路就是用Java现有的API配合正则去拆分传入的字符串s，得到一个字符串数组</p>
+<p>然后利用HashMap查找O(1)的特性，将value值按序存入key，并记录key值</p>
+<p>最后倒序key值，取出value即可。</p>
+<blockquote>
+<p>这里其实一次for循环逆序遍历也可以得出答案，时间复杂度不会有太大差别，因为本身字符串数组长度不会很大。<br>我只是单纯的像仿照HashMap源码中modCount的想法记录一下编辑次数，所以for了两次。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public String reverseWords(String s) &#123;</span><br><span class="line">    String[] words &#x3D; s.trim().split(&quot;\\s+&quot;);</span><br><span class="line">    int len &#x3D; words.length;</span><br><span class="line">    StringBuilder ans &#x3D; new StringBuilder();</span><br><span class="line">    ans.append(words[len - 1]);</span><br><span class="line">    for (int i &#x3D; len - 2; i &gt;&#x3D; 0; i --) &#123;</span><br><span class="line">        if (words[i].equals(&quot;&quot;))</span><br><span class="line">            continue;</span><br><span class="line">        ans.append(&quot; &quot; + words[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    return ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>正常执行期待的结果不会出现x和y同时为0的情况<br>demo中测试的是语句级乱序的现象，语句级乱序的发生说明必定存在指令级乱序<br>如果出现则说明CPU存在乱序执行</p>
-<p>结果：<br><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/outoforder.png"></p>
+<p>最后，学了一下网上一些时间复杂度很低的解法，耗时的步骤都来源于数组的 <code>split</code> 方法。</p>
+<p>想要突破的可以自定义一个数组拆分的方法。</p>
+<p>还有，基本可以确定的是，使用 <code>StringBuilder</code> 的API拼接数组比直接使用 String 速度要快。</p>
+<p>先后提交了2次，结果如下：</p>
+<p>11 分钟前    通过    10 ms    38.9 MB    Java<br>20 分钟前    通过    12 ms    39.3 MB    Java</p>
 ]]></content>
       <categories>
         <category>algorithm</category>
@@ -471,112 +601,6 @@
       <tags>
         <tag>algorithm</tag>
         <tag>LeeCode</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>git command</title>
-    <url>/2020/10/10/git/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>虽然现在常用sourcetree或者直接在IDE中通过图形界面操作，但是开发中难免遇到一些棘手的问题需要使用git命令去管理项目</p>
-<p>这里列出一些常用的命令，方便查询</p>
-<a id="more"></a>
-
-<h2 id="本地操作"><a href="#本地操作" class="headerlink" title="本地操作"></a>本地操作</h2><p>1 初始化一个仓库: </p>
-<pre><code>git init</code></pre>
-<p>2 添加文件到Git仓库，分两步：</p>
-<pre><code>2.1 git add &lt;fileName&gt; 可以反复多次添加，也可以一次添加多个文件(git add . / git add file1 file2)
-
-2.2 git commit -m “message” 提交</code></pre>
-<p>3 git status 随时掌握工作区的状态 git status -s 简短信息查看</p>
-<p>4 git diff <fileName> 查看修改的内容 git diff –cached 查看已缓存 git diff HEAD 查看所有 git diff –stat 只显示摘要</p>
-<p>5 在本地版本间穿梭: </p>
-<pre><code>git reset --hard commit_id (回到上一版本：git reset —hard HEAD^)</code></pre>
-<blockquote>
-<p>ps：在Git中，用HEAD表示当前版本，上一版本就是HEAD^，同理上上版本HEAD^^，如果往上100个版本，可以写成HEAD~100</p>
-</blockquote>
-<p>6 git log 可以查看历史提交记录，以便确定要退回版本的commit_id (简化信息：</p>
-<pre><code>git log --pretty=oneline)</code></pre>
-<p>7 查看命令历史:</p>
-<pre><code>git reflog </code></pre>
-<p>8 丢弃工作区的修改：</p>
-<pre><code>git checkout -- &lt;fileName&gt; (这里的 -- 很重要，如果没有--，就编程切换分支的命令)</code></pre>
-<p>9 丢弃暂存区的修改：</p>
-<pre><code>第一步，git reset HEAD &lt;fileName&gt;(HEAD表示当前最新版本)
-
-第二步，git checkout --&lt;fileName&gt;</code></pre>
-<p>10 丢弃版本库的修改：和第5条同理，其实就是切换回先前的分支:</p>
-<pre><code>git reset --hard commit_id</code></pre>
-<p>11 删除文件：</p>
-<pre><code>11.1 方法一：先删除本地rm &lt;file&gt;，然后再git add/rm &lt;file&gt;，git commit -m “message”
-
-11.2 方法二：直接git rm &lt;file&gt;，git commit -m “message”
-ps: 如果是rm &lt;file&gt;，可以直接通过git checkout -- &lt;file&gt;修改回来</code></pre>
-<h2 id="关联远程库"><a href="#关联远程库" class="headerlink" title="关联远程库"></a>关联远程库</h2><p>1 在GitHub上创建完远程仓库后，在本地的仓库下运行命令，关联远程库：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote add origin git@server-name:path&#x2F;repo-name.git</span><br></pre></td></tr></table></figure>
-
-<p>2 下一步，使用命令：，将本地库的所有内容推送到远程库上</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>ps：第一次推送master分支时，加上了-u参数，git不但会把本地的master分支内容推送到远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送命令即可省略，直接用git push origin master</p>
-</blockquote>
-<h2 id="创建、合并分支"><a href="#创建、合并分支" class="headerlink" title="创建、合并分支"></a>创建、合并分支</h2><p>1 查看分支：git branch</p>
-<p>2 创建分支：git branch <name></p>
-<p>3 切换分支：git checkout <name></p>
-<p>4 创建+切换分支：git checkout -b <name></p>
-<p>5 合并某分支到当前分支：git merge <name></p>
-<blockquote>
-<p>ps：合并分支时加入–no-ff参数，表示禁用Fast forward：git merge –no-ff -m “merge with no-ff” <name>这种操作合并后的历史有分支，能看出曾经做过合并，而Fast forward合并就看不出来</p>
-</blockquote>
-<p>6 删除分支：git branch -d <name></p>
-<p>7 查看合并分支图：git log –graph</p>
-<h2 id="临时分支"><a href="#临时分支" class="headerlink" title="临时分支"></a>临时分支</h2><p>情景：在develop分支开发时，突然报出紧急bug：</p>
-<p>1 在develop分支把工作现场“贮藏”起来：</p>
-<pre><code>git stash</code></pre>
-<p>2 然后确定要在哪个分支上处理bug，假如在master上修复，就从master创建临时分支：</p>
-<pre><code>git checkout master 
-git checkout -b bug001</code></pre>
-<p>3 在bug001分支上处理bug，修复完成后切回master进行合并：</p>
-<pre><code>git merge --no-ff -m “merge with no-ff” bug001</code></pre>
-<p>4 现在bug处理完了，回到develop查看刚刚”贮藏”的代码：</p>
-<pre><code>git stash list</code></pre>
-<p>5 把”贮藏”的代码拿到develop上，继续开发：</p>
-<pre><code>git stash pop(git stash apply + git stash drop)</code></pre>
-<blockquote>
-<p>ps：apply恢复，但stash的内容并不删除，需要再用drop删除；pop恢复的同时也删除了</p>
-</blockquote>
-<h2 id="新特性分支"><a href="#新特性分支" class="headerlink" title="新特性分支"></a>新特性分支</h2><p>情景：开发一个新feature，但是突然说这个功能不做了（在新分支上已经执行add,commit操作）</p>
-<p>丢弃一个没有被合并过的分支，强行删除该分支：</p>
-<pre><code>git branch -D &lt;name&gt;</code></pre>
-<h2 id="多人协作"><a href="#多人协作" class="headerlink" title="多人协作"></a>多人协作</h2><p>1 推送本地分支到远端，如果推送失败，先git pull抓去远程的新提交</p>
-<pre><code>git push origin &lt;name&gt;</code></pre>
-<p>2 拉取远端分支到本地：</p>
-<pre><code>git checkout -b &lt;name&gt; origin/&lt;name&gt;</code></pre>
-<blockquote>
-<p>ps：查看权限：git remote -v</p>
-</blockquote>
-<p>3 建立本地分支和远程分支的关联：</p>
-<pre><code>git branch --set-upstream &lt;name&gt; origin/&lt;name&gt;</code></pre>
-<blockquote>
-<p>ps：如果git pull提示no tracking information，则说明没有创建关联</p>
-</blockquote>
-<h2 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h2><p>git rebase操作可以把本地未push的分叉提交历史整理成直线</p>
-<h2 id="标签tag"><a href="#标签tag" class="headerlink" title="标签tag"></a>标签tag</h2><p>1 创建新标签 git tag <tagname> 默认添加在HEAD上，如果要特定添加在某条记录上可以 </p>
-<pre><code>git tag &lt;tagname&gt; &lt;commit id&gt;
-
-例: git tag v1.0 fa=52c662</code></pre>
-<p>2 git tag -a <tagname> -m ‘ababababllal’</p>
-<p>3 git tag 查看所有标签</p>
-<p>4 git tag -d <tagname> 删除标签</p>
-<p>5 推送标签到远程</p>
-<pre><code>git push origin &lt;tagname&gt; </code></pre>
-<p>6 推送所有标签到远程 </p>
-<pre><code>git push origin --tags </code></pre>
-<p>7 删除远程标签，分两步：</p>
-<pre><code>第一步，先删除本地标签 git tag -d v1.0
-
-第二部，删除远程，命令也是push，git push origin :refs/tags/v1.0</code></pre>
-]]></content>
-      <tags>
-        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -1043,30 +1067,6 @@ git checkout -b bug001</code></pre>
       <tags>
         <tag>dairy</tag>
         <tag>self management</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>0926</title>
-    <url>/2020/09/26/0926/</url>
-    <content><![CDATA[<p>周五，我和妈妈各自都有些不太舒服，我嗓子疼有点感冒的症状，妈妈说头晕。<br>晚饭后，我坚持让妈妈跟我一起喝点小柴胡，妈妈原本有点拒绝，最后我冲好端到房间去，妈妈还是喝了。</p>
-<p>星期六，昨晚吃过药之后好像身体都有了好转。按往常一样周六的中午全家一起出去吃了饭。<br>饭后到家，我喊了一句：再吃一顿小柴胡吧，巩固一下。妈妈说好，就回房间去了。</p>
-<p>我拿了药，去厨房烧水、冲药。<br>以前我说身体不舒服的时候，都是妈妈来帮我冲药，给我送到房间来叮嘱我喝，我即便说不要紧她也非逼着我喝。</p>
-<p>这时候我才意识到，原来不是我长大了，而是妈妈真的老了。</p>
-]]></content>
-      <categories>
-        <category>something</category>
-      </categories>
-      <tags>
-        <tag>dairy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>悟到</title>
-    <url>/2020/09/24/know-something/</url>
-    <content><![CDATA[<p>I always need to anticipate problems instead of just reacting to them.</p>
-]]></content>
-      <tags>
-        <tag>diary</tag>
       </tags>
   </entry>
 </search>
