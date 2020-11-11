@@ -368,7 +368,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/11/11/about-IO/" class="post-title-link" itemprop="url">about IO</a>
+            <a href="/2020/11/11/about-IO/" class="post-title-link" itemprop="url">BIO/NIO/多路复用 原理与区别</a>
         </h2>
 
         <div class="post-meta-container">
@@ -381,7 +381,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-11-11 21:00:51 / 修改时间：21:12:44" itemprop="dateCreated datePublished" datetime="2020-11-11T21:00:51+08:00">2020-11-11</time>
+      <time title="创建时间：2020-11-11 21:00:51 / 修改时间：21:24:34" itemprop="dateCreated datePublished" datetime="2020-11-11T21:00:51+08:00">2020-11-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -404,7 +404,7 @@
     
     <div class="post-body" itemprop="articleBody">
           <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>网络通信中BIO、NIO、多路复用相关的知识点非常多，网络上也有很多相关的技术文章。但是每个人的角度和切入点不同，知识涵盖的内容太多了，很难整理出一条清晰的思路。</p>
-<p>我这两天尝试着脱离代码（因为加入代码Demo之后，篇幅太长，很多API也不是很熟悉，增加阅读的难度），单纯从网络通信的流程去梳理BIO、NIO，再到多路复用的优缺点。最终达到了解这些技术的联系和网络通信的发展进程。</p>
+<p>我这两天尝试着脱离代码（因为加入代码Demo之后，篇幅增长，很多API也不是很熟悉，增加阅读的难度），单纯从网络通信的流程去梳理BIO、NIO，再到多路复用的优缺点。最终达到了解这些技术的联系和发展的目的。</p>
 <h3 id="BIO"><a href="#BIO" class="headerlink" title="BIO"></a>BIO</h3><p><img src="https://upload-images.jianshu.io/upload_images/1260967-d36d4bd188d34492.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="BIO"> </p>
 <p>主线程：</p>
 <p>1 服务端等待客户端连接，阻塞进程</p>
@@ -421,54 +421,14 @@
 <p>3 线程的切换成本是很高的</p>
 <p>4 容易造成锯齿状的系统负载</p>
 <h3 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h3><p><img src="https://upload-images.jianshu.io/upload_images/1260967-9519e363273f2371.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="NIO"> </p>
-<p>1 服务端请求客户端连接，非阻塞。如果没有直接返回0并向下执行</p>
-<p>2 如果有客户端连接，请求消息响应，非阻塞。如果没有响应直接返回0并继续遍历客户端</p>
-<p>3 遍历完所有客户端后，会重新开始循环，跳回第1步</p>
-<p>优势：</p>
-<p>1 规避多线程的问题</p>
-<p>2 单线程解决多任务</p>
-<p>问题：</p>
-<p>客户端循环遍历时，不断进行用户态和内核态的切换，系统调用开销非常大</p>
-<h3 id="多路复用"><a href="#多路复用" class="headerlink" title="多路复用"></a>多路复用</h3><p><img src="https://upload-images.jianshu.io/upload_images/1260967-13ca4e00b10d279f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="多路复用"> </p>
-<p>在NIO的基础上，通过一次系统调用将连接客户端的FDS移动到内核处理，而不是反复进行用户态和内核态的切换。</p>
-<blockquote>
-<p>这里我的理解是将客户端建立连接的事件非阻塞的暴露出来，selcet去处理客户端响应。</p>
-<p>当然也可以将建立连接也归并到同一个循环中</p>
-</blockquote>
-<p>例如：<a target="_blank" rel="noopener" href="https://tech.meituan.com/2016/11/04/nio.html">美团 Java NIO浅析</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">interface ChannelHandler&#123;</span><br><span class="line">	void channelReadable(Channel channel);</span><br><span class="line">	void channelWritable(Channel channel);</span><br><span class="line">&#125;</span><br><span class="line">class Channel&#123;</span><br><span class="line">	Socket socket;</span><br><span class="line">	Event event;&#x2F;&#x2F;读，写或者连接</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;IO线程主循环:</span><br><span class="line">class IoThread extends Thread&#123;</span><br><span class="line">	public void run()&#123;</span><br><span class="line">		Channel channel;</span><br><span class="line">		while(channel&#x3D;Selector.select())&#123;&#x2F;&#x2F;选择就绪的事件和对应的连接</span><br><span class="line">	  		if(channel.event&#x3D;&#x3D;accept)&#123;</span><br><span class="line">	     		registerNewChannelHandler(channel);&#x2F;&#x2F;如果是新连接，则注册一个新的读写处理器</span><br><span class="line">	  		&#125;</span><br><span class="line">			if(channel.event&#x3D;&#x3D;write)&#123;</span><br><span class="line">	     		getChannelHandler(channel).channelWritable(channel);&#x2F;&#x2F;如果可以写，则执行写事件</span><br><span class="line">			&#125;</span><br><span class="line">			if(channel.event&#x3D;&#x3D;read)&#123;</span><br><span class="line">				getChannelHandler(channel).channelReadable(channel);&#x2F;&#x2F;如果可以读，则执行读事件</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	Map&lt;Channel，ChannelHandler&gt; handlerMap;&#x2F;&#x2F;所有channel的对应事件处理器</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>select函数会执行系统内核的调用：Linux 2.6之前是select、poll，2.6之后是epoll</p>
-<h4 id="select"><a href="#select" class="headerlink" title="select"></a>select</h4><p>流程：</p>
-<p>1 客户端建立连接后返回fd</p>
-<p>2 用二进制位表bitmap标记fds对应的位置，并将这个bitmap从用户态拷贝到内核态</p>
-<p>3 收到客户端响应，将对应的bitmap位标记为1</p>
-<p>4 程序处理消息，重新创建bitmap，循环下一次</p>
-<p>缺点：</p>
-<p>1 bitmap默认最大限制1024位</p>
-<p>2 bitmap不可重用，每次循环重新创建</p>
-<p>3 用户态和内核态切换开销</p>
-<p>4 轮询所有的客户端处理消息 O(n)</p>
-<h4 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h4><p>流程：</p>
-<p>与select相似，select中用bitmap标记fds，在poll中自己声明了结构体</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> fd;</span><br><span class="line">	<span class="keyword">short</span> events;</span><br><span class="line">	<span class="keyword">short</span> revents</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>传输pollfd数组，解决了select中fds限制1024位的问题</p>
-<p>其次，内核将响应客户端对应的pollfd结构体中的revnets标记为1，说明这个客户端有消息响应</p>
-<p>处理消息时将这个pollfd的revnets重置即可，不用在重新创建数组，所以select中每次循环重新创建bitmap的问题也被解决了</p>
-<p>遗留问题：</p>
-<p>1 由于fds文件描述符存储在用户空间，拷贝到内存空间处理一定会涉及到用户态和内核态的切换。这个系统调用有一定开销</p>
-<p>2 每次内核态返回的信息是全量信息，要轮询处理，时间复杂度是 O(n)，如果连接数过多，也会有很多无意义的开销</p>
-<p><strong><em>这两个问题留给 epoll</em></strong></p>
-<h4 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h4><p>流程：</p>
-<p>1 建立epoll对象时在内核分配资源，其数据结构是红黑树。添加和检索的时间复杂度 O(lgn)</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create</span><span class="params">(<span class="keyword">int</span> size)</span></span>; </span><br></pre></td></tr></table></figure>
-
-<p>2 建立连接时，在红黑树中存储 epoll_event结构体，其中包含fd和events等信息</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">int</span> op, <span class="keyword">int</span> fd, struct epoll_event *event)</span></span>;  </span><br></pre></td></tr></table></figure>
-
-<p>3 调用epoll_wait收集响应的连接，放入一个双向链表</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="keyword">int</span> epfd, struct epoll_event *events,<span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout)</span></span>;  </span><br></pre></td></tr></table></figure>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/11/11/about-IO/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
