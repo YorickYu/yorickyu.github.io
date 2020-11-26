@@ -25,16 +25,16 @@
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Pisces","version":"8.0.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="simple_log_project需求最大化满足需求的同时尽可能避免代码侵入 思路通过AOP去切入你自定义的注解，不断维护你的注解类和切面类，最后将这个工具打包成jar包发布到maven仓库。 因为没有一款三方的插件可以完美覆盖你所有的需求，所以最好的方式就是按这个流程不断维护自己的工具。 介绍1 导入文件： 12Log.javaLogAspect.java  前者定义注解 后者AOP切入注解，">
+  <meta name="description" content="simple_log_project最大化满足你需求的日志系统">
 <meta property="og:type" content="article">
 <meta property="og:title" content="最大化满足你需求的日志系统">
 <meta property="og:url" content="http://yloopdaed.icu/2020/11/26/simple-log-project/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="simple_log_project需求最大化满足需求的同时尽可能避免代码侵入 思路通过AOP去切入你自定义的注解，不断维护你的注解类和切面类，最后将这个工具打包成jar包发布到maven仓库。 因为没有一款三方的插件可以完美覆盖你所有的需求，所以最好的方式就是按这个流程不断维护自己的工具。 介绍1 导入文件： 12Log.javaLogAspect.java  前者定义注解 后者AOP切入注解，">
+<meta property="og:description" content="simple_log_project最大化满足你需求的日志系统">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1260967-96d5ae227bf41496.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="article:published_time" content="2020-11-26T12:51:20.000Z">
-<meta property="article:modified_time" content="2020-11-26T12:53:26.979Z">
+<meta property="article:modified_time" content="2020-11-26T12:54:36.891Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="Annotation">
@@ -317,7 +317,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-11-26 20:51:20 / 修改时间：20:53:26" itemprop="dateCreated datePublished" datetime="2020-11-26T20:51:20+08:00">2020-11-26</time>
+      <time title="创建时间：2020-11-26 20:51:20 / 修改时间：20:54:36" itemprop="dateCreated datePublished" datetime="2020-11-26T20:51:20+08:00">2020-11-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -339,7 +339,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="simple-log-project"><a href="#simple-log-project" class="headerlink" title="simple_log_project"></a>simple_log_project</h1><h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>最大化满足需求的同时尽可能避免代码侵入</p>
+        <h1 id="simple-log-project"><a href="#simple-log-project" class="headerlink" title="simple_log_project"></a>simple_log_project</h1><p>最大化满足你需求的日志系统</p>
+<a id="more"></a>
+
+<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>最大化满足需求的同时尽可能避免代码侵入</p>
 <h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>通过AOP去切入你自定义的注解，不断维护你的注解类和切面类，最后将这个工具打包成jar包发布到maven仓库。</p>
 <p><strong><em>因为没有一款三方的插件可以完美覆盖你所有的需求，所以最好的方式就是按这个流程不断维护自己的工具。</em></strong></p>
 <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>1 导入文件：</p>
