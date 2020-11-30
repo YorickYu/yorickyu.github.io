@@ -199,7 +199,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -210,7 +210,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -361,7 +361,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/29/AQS/">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/30/AQS-countdownlatch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -375,7 +375,91 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/11/29/AQS/" class="post-title-link" itemprop="url">尝试阅读AQS源码（ReentrantLock 加锁）</a>
+            <a href="/2020/11/30/AQS-countdownlatch/" class="post-title-link" itemprop="url">尝试阅读AQS源码（countdownlatch await）</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-11-30 23:43:29 / 修改时间：23:52:38" itemprop="dateCreated datePublished" datetime="2020-11-30T23:43:29+08:00">2020-11-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>CountDownLatch 也是 JUL 包中提供的。<br>它的作用是可以让线程等待（不占用CPU）资源。</p>
+<p>本篇记录一下 CountDownLatch 的源码阅读过程，记录一下，方便以后复习</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/11/30/AQS-countdownlatch/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/29/AQS-reentrantlock/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/29/AQS-reentrantlock/" class="post-title-link" itemprop="url">尝试阅读AQS源码（ReentrantLock 加锁）</a>
         </h2>
 
         <div class="post-meta-container">
@@ -394,7 +478,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-11-30 01:00:15" itemprop="dateModified" datetime="2020-11-30T01:00:15+08:00">2020-11-30</time>
+        <time title="修改时间：2020-11-30 23:44:00" itemprop="dateModified" datetime="2020-11-30T23:44:00+08:00">2020-11-30</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -423,7 +507,7 @@
 <p>况且我个人对于源码的理解也没有非常深入。只是通过阅读和调试的过程把大概的思路整理一下，分享出来</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/11/29/AQS/#more" rel="contents">
+              <a class="btn" href="/2020/11/29/AQS-reentrantlock/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1047,95 +1131,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/11/11/about-IO/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/06/hashmap-resize-lotail/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/06/hashmap-resize-lotail/" class="post-title-link" itemprop="url">HashMap resize loTail.next=e loTail=e</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2020-11-06 21:49:18 / 修改时间：21:51:24" itemprop="dateCreated datePublished" datetime="2020-11-06T21:49:18+08:00">2020-11-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>HashMap扩容的过程包含了很多巧妙的思考，思想简单易懂，但是代码的实现真的让人折服！</p>
-<p>今天快速浏览resize方法时，被两行代码绕住了：</p>
-<img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/loTail.next%20%3D%20e.png" style="zoom:50%;" />
-
-<p>可能是对于引用类型的理解不够深刻吧，这两行代码真的看了我一天！网上也很少有人分析这两行代码（可能因为太容易了吧）</p>
-<p>最后我自己写了个Demo，算是把这个操作搞清楚了。因为是引用类型的指针指向问题，所以画图也不太好理解，只能自己写个Demo，一点点Debug分析过程。</p>
-<p>相关代码在：<a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">Jpp</a> /TailInsert类中</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/11/06/hashmap-resize-lotail/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
