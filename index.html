@@ -199,7 +199,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -210,7 +210,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -338,6 +338,97 @@
 <hr>
 <p>建站的目的是为 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">JPP</a> 开源项目提供文章支持<br>本身自己也有记录和分享的习惯，之前的技术分享集中在简书 <a target="_blank" rel="noopener" href="https://www.jianshu.com/u/9901b7042663">YYYYYY25</a><br>技术类的分享可能会在本站和简书同步更新，之前的技术类文章分享会选择性的移至本站</p>
 <p>✨ Love &amp; Peace ❤️</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/12/07/whatis-happensbefore/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/07/whatis-happensbefore/" class="post-title-link" itemprop="url">说说我对happens-before原则和as-if-serial语义的理解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-12-07 21:06:21 / 修改时间：21:07:36" itemprop="dateCreated datePublished" datetime="2020-12-07T21:06:21+08:00">2020-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>对于 happens-before原则 和 as-if-serial语义 到底是什么意思？为什么会出现？解决什么问题？简短的说下我自己的理解</p>
+<h4 id="as-if-serial语义"><a href="#as-if-serial语义" class="headerlink" title="as-if-serial语义"></a>as-if-serial语义</h4><p>如果单一线程中操作之间不存在数据依赖关系，这些操作就可能被编译器和处理器重排序</p>
+<p>这个重排序的过程并不会影响程序运行的结果，对程序员来说是无感的。所以叫做 as-if-serial “看上去像是连续的”</p>
+<blockquote>
+<p>证明重排序的存在：<a href="https://yloopdaed.icu/2020/10/19/CPU-Out-of-Order/">CPU 乱序执行反证</a></p>
+</blockquote>
+<h4 id="happens-before原则"><a href="#happens-before原则" class="headerlink" title="happens-before原则"></a>happens-before原则</h4><p>JMM中定义的 跨线程内存可见性的规则：对于两个操作A和B，这两个操作可以在不同的线程中执行。如果 A happens-before B，那么可以保证，当A操作执行完后，A操作的执行结果对B操作是可见的</p>
+<blockquote>
+<p>JMM：Java内存模型(Java Memory Model)<br>屏蔽掉不同硬件和操作系统的内存模型差异，以实现让Java程序在各种平台下都能达到一致的内存访问结果。所以对于Java程序员，无需了解底层硬件和操作系统内存模型的知识，只要关注Java自己的内存模型，就能够解决Java语言中的内存可见性问题了</p>
+</blockquote>
+<h4 id="为什么会出现？"><a href="#为什么会出现？" class="headerlink" title="为什么会出现？"></a>为什么会出现？</h4><p>因为 CPU缓存和重排序 可能会在多线程并发时导致程序执行结果与程序员代码的执行语义不符</p>
+<p><strong>所以JMM定义了一套规则，CPU重排序时需要遵守这些规则</strong></p>
+<p><strong>这些规则可以指导程序员写出正确的代码，让程序正确执行</strong></p>
+<h4 id="具体规则"><a href="#具体规则" class="headerlink" title="具体规则"></a>具体规则</h4><p>共有8项：<br>1 程序顺序规则：一个线程中的每个操作，happens-before于该线程中的任意后续操作。<br>2 监视器锁规则：对一个锁的解锁，happens-before于随后对这个锁的加锁。<br>3 volatile变量规则：对一个volatile域的写，happens-before于任意后续对这个volatile域的读。<br>4 传递性：如果A happens-before B，且B happens-before C，那么A happens-before C。<br>5 start()规则：如果线程A执行操作ThreadB.start()（启动线程B），那么A线程的ThreadB.start()操作happens-before于线程B中的任意操作。<br>6 join()规则：如果线程A执行操作ThreadB.join()并成功返回，那么线程B中的任意操作happens-before于线程A从ThreadB.join()操作成功返回。<br>7 程序中断规则：对线程interrupted()方法的调用先行于被中断线程的代码检测到中断时间的发生。<br>8 对象finalize规则：一个对象的初始化完成（构造函数执行结束）先行于发生它的finalize()方法的开始。</p>
+<h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>可以理解为：<br>1 as-if-serial，单线程程序是按程序的顺序来执行的（可能发生指令重排序，但是程序员无感知）<br>2 happens-before，**<em>正确同步**</em>的多线程程序是按执行顺序执行的（正确同步的操作需要程序员完成）<br>3 as-if-serial语义和happens-before原则，都是为了在不改变程序执行结果的前提下，尽可能地提高程序的执行效率</p>
+<p>参考：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/ThinkWon/article/details/102074107?utm_medium=distribute.pc_relevant_download.none-task-blog-searchFromBaidu-1.nonecase&depth_1-utm_source=distribute.pc_relevant_download.none-task-blog-searchFromBaidu-1.nonecas">as-if-serial规则和happens-before规则的区别</a><br><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000011458941">从Java多线程可见性谈Happens-Before原则</a></p>
 
       
     </div>
@@ -1054,92 +1145,6 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">	public static int[] intersect(int[] nums1, int[] nums2) &#123;</span><br><span class="line">        Arrays.sort(nums1);</span><br><span class="line">        Arrays.sort(nums2);</span><br><span class="line">        int f1 &#x3D; 0,f2&#x3D;0;</span><br><span class="line">        ArrayList&lt;Integer&gt; arrl &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        while(f1&lt;nums1.length &amp;&amp; f2&lt;nums2.length)&#123;</span><br><span class="line">            if(nums1[f1]&lt;nums2[f2])&#123;</span><br><span class="line">                f1++;</span><br><span class="line">            &#125;else if(nums1[f1]&gt;nums2[f2])&#123;</span><br><span class="line">                f2++;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                arrl.add(nums1[f1]);</span><br><span class="line">                f1++;</span><br><span class="line">                f2++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        int[] jiao &#x3D; new int[arrl.size()];</span><br><span class="line">        for(int i&#x3D;0; i&lt;arrl.size(); i++)</span><br><span class="line">        &#123;</span><br><span class="line">            jiao[i] &#x3D; arrl.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">        return jiao;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>两种方式结果如下：<br>6 小时前    通过    2 ms    38.7 MB<br>6 小时前    通过    5 ms    38.4 MB    </p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/11/centos-attack/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/11/centos-attack/" class="post-title-link" itemprop="url">和挖矿程序拼到底！</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2020-11-11 23:06:00 / 修改时间：23:43:24" itemprop="dateCreated datePublished" datetime="2020-11-11T23:06:00+08:00">2020-11-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>服务器被挖矿了，CPU占用一直是100%。</p>
-<p>没有过多深入研究，照着网上几个处理方式执行了一些命令。无果</p>
-<p>同事给出的建议就是重装系统，但是我偏不</p>
-<p>我要和他拼到底！</p>
-<p>由于是在太影响使用了，我先写个Shell脚本，每2小时清一次。以后有时间再收拾你！</p>
-<h3 id="Shell思路"><a href="#Shell思路" class="headerlink" title="Shell思路"></a>Shell思路</h3><p>由于太久没写过Shell了，所以很简陋，以后再优化。</p>
-<p>大概思路如下：</p>
-<p>1 获取 [用户名] 的进程号</p>
-<p>2 遍历进程号，获取其对应的CPU信息</p>
-<p>3 判断CPU使用量是否大于85，如果大于，则杀死该进程</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">向上取整</span></span><br><span class="line">function ceil()&#123;</span><br><span class="line">  floor=`echo &quot;scale=0;$1/1&quot;|bc -l ` # 向下取整</span><br><span class="line">  add=`awk -v num1=$floor -v num2=$1 &#x27;BEGIN&#123;print(num1&lt;num2)?&quot;1&quot;:&quot;0&quot;&#125;&#x27;`</span><br><span class="line">  echo `expr $floor  + $add`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">定时清理git用户开辟的进程</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">用户名</span></span><br><span class="line">USERNAME=&quot;root&quot;</span><br><span class="line">THRESHOLD=&quot;85&quot;</span><br><span class="line">TIME=$(date &quot;+%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">获取git用户的所有进程号</span></span><br><span class="line">PIDS=`ps -ef | grep $USERNAME | grep -v grep | awk &#x27;&#123;print $2&#125;&#x27;`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">循环PID</span></span><br><span class="line">for PID in $PIDS; do</span><br><span class="line"><span class="meta">	#</span><span class="bash">statements</span></span><br><span class="line">	CPU_DATA=`pgrep java | xargs ps -u --pid $PID | awk &#x27;&#123;print $3&#125;&#x27;`</span><br><span class="line">	for C in $CPU_DATA; do</span><br><span class="line"><span class="meta">		#</span><span class="bash">如果CPU占用大于80%，杀死进程</span></span><br><span class="line">		if [[ $C != &#x27;%CPU&#x27; ]]; then</span><br><span class="line">			CEIL_C=`ceil $C`</span><br><span class="line">			if [[ CEIL_C -gt $THRESHOLD ]]; then</span><br><span class="line">                echo $TIME &gt;&gt; mining.log</span><br><span class="line">				echo &quot;git 用户的 $PID 已占用CPU $C&quot; &gt;&gt; touch mining.log</span><br><span class="line">				kill -9 $PID</span><br><span class="line">				echo &quot;已将 $PID 进程 killed&quot; &gt;&gt; touch mining.log</span><br><span class="line">			fi</span><br><span class="line">		fi</span><br><span class="line">	done</span><br><span class="line">done</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
       
     </div>
