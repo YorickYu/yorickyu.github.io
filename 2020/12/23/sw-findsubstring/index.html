@@ -25,19 +25,22 @@
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Pisces","version":"8.0.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="可能是个非典型程序员吧 ^ ^">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yloopdaed">
-<meta property="og:url" content="http://yloopdaed.icu/tags/git/index.html">
+  <meta name="description" content="题目：存在一个较长的字符串a，检查a中是否包含一个较短字符串b的所有连续字符。顺序无所谓。如果包含，返回字符串a中的起始下标。如果不包含返回-1。 eg：输入：s1 &#x3D; “abcsadefgzxcvb”   s2 &#x3D; “cas”输出: 2解释: s1字符串中存在子串 “csa” 思路：滑动窗口1 先记录b字符串字符出现次数，在count数组中2 在长字符串中建立并保持一个窗口（长度与b字符串长度相">
+<meta property="og:type" content="article">
+<meta property="og:title" content="抖音面试题：是否存在无序子串">
+<meta property="og:url" content="http://yloopdaed.icu/2020/12/23/sw-findsubstring/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="可能是个非典型程序员吧 ^ ^">
+<meta property="og:description" content="题目：存在一个较长的字符串a，检查a中是否包含一个较短字符串b的所有连续字符。顺序无所谓。如果包含，返回字符串a中的起始下标。如果不包含返回-1。 eg：输入：s1 &#x3D; “abcsadefgzxcvb”   s2 &#x3D; “cas”输出: 2解释: s1字符串中存在子串 “csa” 思路：滑动窗口1 先记录b字符串字符出现次数，在count数组中2 在长字符串中建立并保持一个窗口（长度与b字符串长度相">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-23T07:51:56.000Z">
+<meta property="article:modified_time" content="2020-12-23T09:22:08.629Z">
 <meta property="article:author" content="yloopdaed">
-<meta property="article:tag" content="iOS JAVA">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="滑动窗口">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://yloopdaed.icu/tags/git/">
+<link rel="canonical" href="http://yloopdaed.icu/2020/12/23/sw-findsubstring/">
 
 
 <script class="page-configurations">
@@ -45,12 +48,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: git | yloopdaed</title>
+  <title>抖音面试题：是否存在无序子串 | yloopdaed</title>
   
 
 
@@ -274,54 +277,100 @@
 </noscript>
 
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
       
 
       
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h2 class="collection-header">git
-          <small>标签</small>
-        </h2>
-      </div>
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/12/23/sw-findsubstring/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          抖音面试题：是否存在无序子串
+        </h1>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+
+      <time title="创建时间：2020-12-23 15:51:56 / 修改时间：17:22:08" itemprop="dateCreated datePublished" datetime="2020-12-23T15:51:56+08:00">2020-12-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>题目：<br>存在一个较长的字符串a，检查a中是否包含一个较短字符串b的所有连续字符。顺序无所谓。<br>如果包含，返回字符串a中的起始下标。如果不包含返回-1。</p>
+<p>eg：<br>输入：s1 = “abcsadefgzxcvb”   s2 = “cas”<br>输出: 2<br>解释: s1字符串中存在子串 “csa”</p>
+<p>思路：滑动窗口<br>1 先记录b字符串字符出现次数，在count数组中<br>2 在长字符串中建立并保持一个窗口（长度与b字符串长度相等）<br>3 每当元素进入窗口时，查看count数组中有没有该元素，如果有，数量减1，如果没有，数量减1的同时，记录一个标志位。因为此时已经不满足题目的需求；元素移出窗口时，count数组中该元素的数量加1。如果数量本身小于0，那么标志位加1。<br>4 滑动过程中，如果出现标志位为0。即说明出现了满足条件的子串。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(String s, String a)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s==<span class="keyword">null</span> || a==<span class="keyword">null</span> || s.length()&lt;a.length()) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">char</span>[] aim = a.toCharArray();</span><br><span class="line">    <span class="keyword">int</span>[] count = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">256</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; aim.length; i++) &#123; <span class="comment">// 记录 sub 字符串中的字符个数</span></span><br><span class="line">        count[aim[i]]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> M = aim.length;</span><br><span class="line">    <span class="keyword">char</span>[] str = s.toCharArray();</span><br><span class="line">    <span class="keyword">int</span> inValidTimes = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> R = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (; R &lt; M; R++) &#123; <span class="comment">// 建立窗口</span></span><br><span class="line">        <span class="keyword">if</span> (count[str[R]]-- &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            inValidTimes++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (; R &lt; str.length; R++) &#123; <span class="comment">// 滑动</span></span><br><span class="line">        <span class="keyword">if</span> (inValidTimes == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> R - M;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (count[str[R]]-- &lt;= <span class="number">0</span>) &#123; <span class="comment">// 窗口扩容</span></span><br><span class="line">            inValidTimes++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (count[str[R-M]]++ &lt; <span class="number">0</span>) &#123; <span class="comment">// 窗口收缩</span></span><br><span class="line">            inValidTimes--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> inValidTimes == <span class="number">0</span> ? R - M : -<span class="number">1</span>; <span class="comment">// 判断最后一个窗口</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2020-10-10T17:23:40+08:00"
-              content="2020-10-10">
-          10-10
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/10/10/git/" itemprop="url">
-            <span itemprop="name">git command</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+              <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag"># 滑动窗口</a>
+          </div>
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/21/dynamic-programming/" rel="prev" title="dynamic programming 动态规划">
+                  <i class="fa fa-chevron-left"></i> dynamic programming 动态规划
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-    </div>
-  </div>
-  
-  
-  
 
-  
+
 
 
 
