@@ -22,10 +22,9 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Pisces","version":"8.0.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-
-  <meta name="description" content="可能是个非典型程序员吧 ^ ^">
+<meta name="description" content="可能是个非典型程序员吧 ^ ^">
 <meta property="og:type" content="website">
 <meta property="og:title" content="yloopdaed">
 <meta property="og:url" content="http://yloopdaed.icu/page/3/index.html">
@@ -49,12 +48,8 @@
     lang   : 'zh-CN'
   };
 </script>
-
-  <title>yloopdaed</title>
+<title>yloopdaed</title>
   
-
-
-
 
 
 
@@ -102,7 +97,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
+    <div class="toggle" aria-label="切换导航栏" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -129,31 +124,11 @@
 
 <nav class="site-nav">
   <ul class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-xmind">
-
-    <a href="/xmind/" rel="section"><i class="fa fa-tags fa-fw"></i>导图</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-xmind"><a href="/xmind/" rel="section"><i class="fa fa-tags fa-fw"></i>导图</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
   </ul>
 </nav>
 
@@ -163,7 +138,7 @@
 </div>
         
   
-  <div class="toggle sidebar-toggle">
+  <div class="toggle sidebar-toggle" role="button">
     <span class="toggle-line"></span>
     <span class="toggle-line"></span>
     <span class="toggle-line"></span>
@@ -183,11 +158,11 @@
 
       <div class="sidebar-panel-container">
         <!--noindex-->
-        <section class="post-toc-wrap sidebar-panel">
-        </section>
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
         <!--/noindex-->
 
-        <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview-wrap sidebar-panel">
           <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="yloopdaed"
       src="/images/avatar.jpg">
@@ -254,7 +229,7 @@
     </ul>
   </div>
 
-        </section>
+        </div>
       </div>
     </div>
   </aside>
@@ -264,7 +239,7 @@
     </header>
 
     
-  <div class="back-to-top">
+  <div class="back-to-top" role="button">
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
@@ -275,9 +250,7 @@
 
 
     <div class="main-inner index posts-expand">
-      
 
-      
     
 
 
@@ -299,8 +272,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/03/reverse-words/" class="post-title-link" itemprop="url">LeetCode reverse-words</a>
+          <a href="/2020/11/03/reverse-words/" class="post-title-link" itemprop="url">LeetCode reverse-words</a>
         </h2>
 
         <div class="post-meta-container">
@@ -404,8 +376,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/03/concurrenthashmap-two-array-index/" class="post-title-link" itemprop="url">JDK1.7 ConcurrentHashMap 两次数组下标计算问题</a>
+          <a href="/2020/11/03/concurrenthashmap-two-array-index/" class="post-title-link" itemprop="url">JDK1.7 ConcurrentHashMap 两次数组下标计算问题</a>
         </h2>
 
         <div class="post-meta-container">
@@ -497,8 +468,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/01/hashmap-modCount/" class="post-title-link" itemprop="url">HashMap modCount fast-fail X原子性</a>
+          <a href="/2020/11/01/hashmap-modCount/" class="post-title-link" itemprop="url">HashMap modCount fast-fail X原子性</a>
         </h2>
 
         <div class="post-meta-container">
@@ -661,8 +631,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/31/question-of-hashmap-put/" class="post-title-link" itemprop="url">IHAVEAQUESTION - JDK1.7 HashMap 链表头插疑问？</a>
+          <a href="/2020/10/31/question-of-hashmap-put/" class="post-title-link" itemprop="url">IHAVEAQUESTION - JDK1.7 HashMap 链表头插疑问？</a>
         </h2>
 
         <div class="post-meta-container">
@@ -771,8 +740,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/29/memory-layout-of-java-object/" class="post-title-link" itemprop="url">Java对象的内存布局</a>
+          <a href="/2020/10/29/memory-layout-of-java-object/" class="post-title-link" itemprop="url">Java对象的内存布局</a>
         </h2>
 
         <div class="post-meta-container">
@@ -862,8 +830,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/21/Tri-colour-marking/" class="post-title-link" itemprop="url">Tri-colour marking</a>
+          <a href="/2020/10/21/Tri-colour-marking/" class="post-title-link" itemprop="url">Tri-colour marking</a>
         </h2>
 
         <div class="post-meta-container">
@@ -944,8 +911,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/19/CPU-Out-of-Order/" class="post-title-link" itemprop="url">CPU 乱序执行反证</a>
+          <a href="/2020/10/19/CPU-Out-of-Order/" class="post-title-link" itemprop="url">CPU 乱序执行反证</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1040,8 +1006,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/12/slide-windows/" class="post-title-link" itemprop="url">sliding window algorithm</a>
+          <a href="/2020/10/12/slide-windows/" class="post-title-link" itemprop="url">sliding window algorithm</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1132,8 +1097,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/10/git/" class="post-title-link" itemprop="url">git command</a>
+          <a href="/2020/10/10/git/" class="post-title-link" itemprop="url">git command</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1230,8 +1194,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/07/money-management/" class="post-title-link" itemprop="url">理财营-学习笔记</a>
+          <a href="/2020/10/07/money-management/" class="post-title-link" itemprop="url">理财营-学习笔记</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1302,15 +1265,10 @@
 
 
 
-
-  
   <nav class="pagination">
     <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
-
-
-      
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -1333,18 +1291,14 @@
     });
   }
 </script>
-
-    </div>
+</div>
   </main>
 
   <footer class="footer">
     <div class="footer-inner">
-      
 
-      
 
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
@@ -1373,30 +1327,11 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   
 
 
 
 
-
-
-
-
-  
-
-  
 
 </body>
 </html>
