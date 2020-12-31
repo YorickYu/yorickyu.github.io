@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">48</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,91 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/11/centos-attack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/11/11/centos-attack/" class="post-title-link" itemprop="url">和挖矿程序拼到底！</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-11-11 23:06:00 / 修改时间：23:43:24" itemprop="dateCreated datePublished" datetime="2020-11-11T23:06:00+08:00">2020-11-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>服务器被挖矿了，CPU占用一直是100%。</p>
+<p>没有过多深入研究，照着网上几个处理方式执行了一些命令。无果</p>
+<p>同事给出的建议就是重装系统，但是我偏不</p>
+<p>我要和他拼到底！</p>
+<p>由于是在太影响使用了，我先写个Shell脚本，每2小时清一次。以后有时间再收拾你！</p>
+<h3 id="Shell思路"><a href="#Shell思路" class="headerlink" title="Shell思路"></a>Shell思路</h3><p>由于太久没写过Shell了，所以很简陋，以后再优化。</p>
+<p>大概思路如下：</p>
+<p>1 获取 [用户名] 的进程号</p>
+<p>2 遍历进程号，获取其对应的CPU信息</p>
+<p>3 判断CPU使用量是否大于85，如果大于，则杀死该进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">向上取整</span></span><br><span class="line">function ceil()&#123;</span><br><span class="line">  floor=`echo &quot;scale=0;$1/1&quot;|bc -l ` # 向下取整</span><br><span class="line">  add=`awk -v num1=$floor -v num2=$1 &#x27;BEGIN&#123;print(num1&lt;num2)?&quot;1&quot;:&quot;0&quot;&#125;&#x27;`</span><br><span class="line">  echo `expr $floor  + $add`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">定时清理git用户开辟的进程</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">用户名</span></span><br><span class="line">USERNAME=&quot;root&quot;</span><br><span class="line">THRESHOLD=&quot;85&quot;</span><br><span class="line">TIME=$(date &quot;+%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">获取git用户的所有进程号</span></span><br><span class="line">PIDS=`ps -ef | grep $USERNAME | grep -v grep | awk &#x27;&#123;print $2&#125;&#x27;`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">循环PID</span></span><br><span class="line">for PID in $PIDS; do</span><br><span class="line"><span class="meta">	#</span><span class="bash">statements</span></span><br><span class="line">	CPU_DATA=`pgrep java | xargs ps -u --pid $PID | awk &#x27;&#123;print $3&#125;&#x27;`</span><br><span class="line">	for C in $CPU_DATA; do</span><br><span class="line"><span class="meta">		#</span><span class="bash">如果CPU占用大于80%，杀死进程</span></span><br><span class="line">		if [[ $C != &#x27;%CPU&#x27; ]]; then</span><br><span class="line">			CEIL_C=`ceil $C`</span><br><span class="line">			if [[ CEIL_C -gt $THRESHOLD ]]; then</span><br><span class="line">                echo $TIME &gt;&gt; mining.log</span><br><span class="line">				echo &quot;git 用户的 $PID 已占用CPU $C&quot; &gt;&gt; touch mining.log</span><br><span class="line">				kill -9 $PID</span><br><span class="line">				echo &quot;已将 $PID 进程 killed&quot; &gt;&gt; touch mining.log</span><br><span class="line">			fi</span><br><span class="line">		fi</span><br><span class="line">	done</span><br><span class="line">done</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1169,97 +1254,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/10/19/CPU-Out-of-Order/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/10/12/slide-windows/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/10/12/slide-windows/" class="post-title-link" itemprop="url">sliding window algorithm 滑动窗口</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-10-12 11:56:08" itemprop="dateCreated datePublished" datetime="2020-10-12T11:56:08+08:00">2020-10-12</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-24 11:42:01" itemprop="dateModified" datetime="2020-12-24T11:42:01+08:00">2020-12-24</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>滑动窗口本质上来源于单调性，一般可以理解为，随着左端点位置的增加，其最优决策的右端点位置单调不减。</p>
-<p>事实上是利用决策单调性来实现复杂度优化。</p>
-<p>时间复杂度：O(n)</p>
-<p>可以解决的问题有：求最小区间、区间最大值、最小子串等</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/10/12/slide-windows/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

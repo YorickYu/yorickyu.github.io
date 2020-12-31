@@ -4,6 +4,29 @@
   
     
     <entry>
+      <title>Spring Bean加载图解</title>
+      <link href="2020/12/31/spring-bean-and-c-d/"/>
+      <url>2020/12/31/spring-bean-and-c-d/</url>
+      
+        <content type="html"><![CDATA[<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/spring%20bean.jpg" alt="图解"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Spring Bean 加载 </tag>
+            
+            <tag> Spring 循环依赖 </tag>
+            
+            <tag> Spring 三层缓存 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Java 反射快查</title>
       <link href="2020/12/30/whatis-reflection-in-java/"/>
       <url>2020/12/30/whatis-reflection-in-java/</url>
@@ -49,9 +72,9 @@
             
             <tag> algorithm </tag>
             
-            <tag> 滑动窗口 </tag>
-            
             <tag> LeeCode </tag>
+            
+            <tag> 滑动窗口 </tag>
             
         </tags>
       
