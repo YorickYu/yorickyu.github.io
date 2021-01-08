@@ -33,7 +33,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/docker%20image.png">
 <meta property="article:published_time" content="2021-01-08T02:32:52.000Z">
-<meta property="article:modified_time" content="2021-01-08T03:43:47.907Z">
+<meta property="article:modified_time" content="2021-01-08T03:54:46.411Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="容器">
@@ -319,7 +319,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-01-08 10:32:52 / 修改时间：11:43:47" itemprop="dateCreated datePublished" datetime="2021-01-08T10:32:52+08:00">2021-01-08</time>
+      <time title="创建时间：2021-01-08 10:32:52 / 修改时间：11:54:46" itemprop="dateCreated datePublished" datetime="2021-01-08T10:32:52+08:00">2021-01-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -344,6 +344,8 @@
         <h4 id="什么是-Docker？"><a href="#什么是-Docker？" class="headerlink" title="什么是 Docker？"></a>什么是 <a target="_blank" rel="noopener" href="https://www.docker.com/">Docker</a>？</h4><p>Docker是一个开源的应用容器引擎，基于Go语言，并遵循Apache2.0协议开源。</p>
 <h4 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h4><p>Docker核心概念：<br>1 docker主机（Host）：安装了Docker程序的机器（Docker直接安装在操作系统之上）<br>2 docker客户端（Client）：连接docker主机进行操作<br>3 docker仓库（Registry）：用来保存软件镜像<br>4 docker镜像（Images）：软件打包好的镜像，放在docker仓库中<br>5 docker容器（Container）：镜像启动后的实例称为一个容器，容器是独立运行的一个或一组应用</p>
 <p>理解：<br>1 镜像（Images）就是一个只读的模板，可以用来创建容器（一个镜像可以创建多个容器）<br>镜像与容器的关系，有点类似于面向对象变成中的类（镜像）与对象（容器）。<br>2 容器（Container）是一个或一组独立运行的应用，每个容器相互隔离，保证安全的平台。<br>容器可以看做是一个简易版的Linux环境和运行在其中的应用程序。<br>3 仓库是集中存放镜像文件的场所。<br>仓库（Repository）和仓库注册服务器（Registry）是有区别的。仓库注册服务器上存放着多个仓库，每个仓库有包含多个镜像，每个镜像有不同的标签（tag）</p>
+<a id="more"></a>
+
 <h4 id="安装及启动"><a href="#安装及启动" class="headerlink" title="安装及启动"></a>安装及启动</h4><h5 id="before-CentOS7"><a href="#before-CentOS7" class="headerlink" title="before CentOS7"></a>before CentOS7</h5><p>1 安装相关依赖库</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y epel-release</span><br></pre></td></tr></table></figure>
 
