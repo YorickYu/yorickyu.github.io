@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>设计模式在源码中的应用</title>
+      <link href="2021/01/22/patterns/"/>
+      <url>2021/01/22/patterns/</url>
+      
+        <content type="html"><![CDATA[<p>举例一下常用设计模式在源码中的使用，帮助学习。</p><p><strong>静态工厂方法</strong><br>Calendar.getInstance()<br>java.text.NumberFormat.getInstance()<br>java.util.ResourceBundle.getBundle()</p><p><strong>工厂方法（获取实际对象）</strong><br>java.net.URLStreamHandlerFactory<br>javax.xml.bind.JAXBContext.createMarshaller</p><p><strong>抽象工厂模式（先获取工厂、再获取实际对象）</strong><br>java.sql.Connection<br>java.sql.Driver</p><p><strong>建造者模式</strong><br>Spring源码中应用<br>org.springframework.web.servlet.mvc.method.RequestMappingInfo<br>org.springframework.beans.factory.support.BeanDefinitionBuilder</p><p><strong>原型模式（hashtable、继承Cloneable）</strong><br>java.util.Arrays<br>org.springframework.beans.factory.support.AbstractBeanDefinition</p><p><strong>享元模式（hashmap）</strong><br>String\Integer\Long..<br>com.sun.org.apache.bcel.internal.generic.InstructionContstants</p><p><strong>门面模式、外观模式</strong><br>org.apache.catalina.connector.RequestFacade</p><p><strong>观察者模式</strong><br>java.util.Observable<br>org.springframework.context.ApplicationListener</p><p><strong>适配器模式</strong><br>Arrays#adList()\Collections#list()<br>org.springframework.context.event.GenericApplicationListenerAdapter</p><p><strong>装饰者模式</strong><br>javax.servlet.http.HttpServletRequestWrapper<br>javax.servlet.http.HttpServletResponseWrapper</p><p><strong>策略模式</strong><br>java.util.Comparator<br>org.springframework.beans.factory.support.InstantiationStrategy</p><p><strong>模板方法模式</strong><br>javax.servlet.http.HttpServlet<br>org.springframework.web.servlet.mvc.AbstractController</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 设计模式 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Java 你没见过的单例写法</title>
       <link href="2021/01/20/nsingleton/"/>
       <url>2021/01/20/nsingleton/</url>
