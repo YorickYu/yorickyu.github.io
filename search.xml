@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Spring 三级缓存中 SingletonFactories 作用？</title>
+      <link href="2021/01/27/spring-cache-singletonfactories/"/>
+      <url>2021/01/27/spring-cache-singletonfactories/</url>
+      
+        <content type="html"><![CDATA[<p>Spring 为什么要设计三级缓存？<br>其中SingletonFactories工厂的作用是什么？</p><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/singletonFactories.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Spring </tag>
+            
+            <tag> 三级缓存 </tag>
+            
+            <tag> SingletonFactories </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>设计模式在源码中的应用</title>
       <link href="2021/01/22/patterns/"/>
       <url>2021/01/22/patterns/</url>
@@ -286,9 +315,9 @@
             
             <tag> algorithm </tag>
             
-            <tag> 滑动窗口 </tag>
-            
             <tag> LeeCode </tag>
+            
+            <tag> 滑动窗口 </tag>
             
         </tags>
       
