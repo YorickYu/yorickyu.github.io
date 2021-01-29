@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>feign GET 异常</title>
+      <link href="2021/01/29/feign-GET/"/>
+      <url>2021/01/29/feign-GET/</url>
+      
+        <content type="html"><![CDATA[<p>只要参数是复杂对象，即使指定了是GET方法，feign依然会以POST方法进行发送请求；</p><p>如果不加默认的注解，Feign则会对参数默认加上@RequestBody注解，而RequestBody一定是包含在请求体中的，GET方式无法包含</p><p>所以会发生 <code>method GET must not have a request body</code> 异常</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Request.<span class="function">Builder <span class="title">method</span><span class="params">(String method, <span class="meta">@Nullable</span> RequestBody body)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">&quot;method == null&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.length() == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method.length() == 0&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (body != <span class="keyword">null</span> &amp;&amp; !HttpMethod.permitsRequestBody(method)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method &quot;</span> + method + <span class="string">&quot; must not have a request body.&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (body == <span class="keyword">null</span> &amp;&amp; HttpMethod.requiresRequestBody(method)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method &quot;</span> + method + <span class="string">&quot; must have a request body.&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.method = method;</span><br><span class="line">        <span class="keyword">this</span>.body = body;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>解决：<br>GET请求传递封装好的对象时，使用 <code>@RequestParam</code> 修饰 <code>Map&lt;String, Object&gt; </code>。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Spring Clound </tag>
+            
+            <tag> feign </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Spring 三级缓存中 SingletonFactories 作用？</title>
       <link href="2021/01/27/spring-cache-singletonfactories/"/>
       <url>2021/01/27/spring-cache-singletonfactories/</url>
@@ -315,9 +342,9 @@
             
             <tag> algorithm </tag>
             
-            <tag> LeeCode </tag>
-            
             <tag> 滑动窗口 </tag>
+            
+            <tag> LeeCode </tag>
             
         </tags>
       
