@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Guava 实用篇（持续更新）</title>
+      <link href="2021/02/01/guava-usable/"/>
+      <url>2021/02/01/guava-usable/</url>
+      
+        <content type="html"><![CDATA[<h4 id="处理字符串-Splitter-Joiner"><a href="#处理字符串-Splitter-Joiner" class="headerlink" title="处理字符串 Splitter Joiner"></a>处理字符串 <code>Splitter</code> <code>Joiner</code></h4><p>最近在对接JD商城，商品详情的和分类的对应关系是一个字符串（包含3级分类，用分号分隔），Guava中提供了一个比较简单的处理方式</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将string分解成list</span></span><br><span class="line">Iterable&lt;String&gt; split = Splitter.on(<span class="string">&#x27;;&#x27;</span>)</span><br><span class="line">        .trimResults()</span><br><span class="line">        .omitEmptyStrings()</span><br><span class="line">        .split(<span class="string">&quot;170;1238 ; ;   2218&quot;</span>);</span><br><span class="line">split.forEach(item -&gt; &#123;</span><br><span class="line">    System.out.println(item);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将list连接成string</span></span><br><span class="line">String join1 = Joiner.on(<span class="string">&quot;;&quot;</span>).skipNulls().join(split);</span><br><span class="line">System.out.println(<span class="string">&quot;join1 = &quot;</span> + join1);</span><br></pre></td></tr></table></figure><h4 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h4><p>…</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Guava </tag>
+            
+            <tag> String </tag>
+            
+            <tag> Cache </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>feign GET 异常</title>
       <link href="2021/01/29/feign-GET/"/>
       <url>2021/01/29/feign-GET/</url>
