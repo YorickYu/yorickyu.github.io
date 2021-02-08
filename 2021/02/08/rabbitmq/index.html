@@ -24,31 +24,35 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
   </script>
-<meta name="description" content="可能是个非典型程序员吧 ^ ^">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yloopdaed">
-<meta property="og:url" content="http://yloopdaed.icu/index.html">
+<meta name="description" content="RabbitMQ 实战教程1.MQ引言1.1 什么是MQMQ(Message Quene) :  翻译为 消息队列,通过典型的 生产者和消费者模型,生产者不断向消息队列中生产消息，消费者不断的从队列中获取消息。因为消息的生产和消费都是异步的，而且只关心消息的发送和接收，没有业务逻辑的侵入,轻松的实现系统间解耦。别名为 消息中间件    通过利用高效可靠的消息传递机制进行平台无关的数据交流，并基于数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitmq">
+<meta property="og:url" content="http://yloopdaed.icu/2021/02/08/rabbitmq/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="可能是个非典型程序员吧 ^ ^">
+<meta property="og:description" content="RabbitMQ 实战教程1.MQ引言1.1 什么是MQMQ(Message Quene) :  翻译为 消息队列,通过典型的 生产者和消费者模型,生产者不断向消息队列中生产消息，消费者不断的从队列中获取消息。因为消息的生产和消费都是异步的，而且只关心消息的发送和接收，没有业务逻辑的侵入,轻松的实现系统间解耦。别名为 消息中间件    通过利用高效可靠的消息传递机制进行平台无关的数据交流，并基于数">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20190925215603036-9419777.png">
+<meta property="article:published_time" content="2021-02-08T04:18:40.000Z">
+<meta property="article:modified_time" content="2021-02-08T04:21:18.235Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="iOS JAVA">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20190925215603036-9419777.png">
 
 
-<link rel="canonical" href="http://yloopdaed.icu/">
+<link rel="canonical" href="http://yloopdaed.icu/2021/02/08/rabbitmq/">
 
 
 <script class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
-<title>yloopdaed</title>
+<title>rabbitmq | yloopdaed</title>
   
 
 
@@ -173,7 +177,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -186,6 +190,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RabbitMQ-%E5%AE%9E%E6%88%98%E6%95%99%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">RabbitMQ 实战教程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-MQ%E5%BC%95%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">1.MQ引言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AFMQ"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 什么是MQ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-MQ%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 MQ有哪些</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E4%B8%8D%E5%90%8CMQ%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 不同MQ特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-RabbitMQ-%E7%9A%84%E5%BC%95%E8%A8%80"><span class="nav-number">1.2.</span> <span class="nav-text">2.RabbitMQ 的引言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-RabbitMQ"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 RabbitMQ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-RabbitMQ-%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 RabbitMQ 的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">2.2.1 下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-%E4%B8%8B%E8%BD%BD%E7%9A%84%E5%AE%89%E8%A3%85%E5%8C%85-image-20190925220343521-RibbitMQ-%E5%AE%9E%E6%88%98%E6%95%99%E7%A8%8B-assets-image-20190925220343521-png"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">2.2.2 下载的安装包![image-20190925220343521](RibbitMQ 实战教程.assets&#x2F;image-20190925220343521.png)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">2.2.3 安装步骤</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-RabiitMQ-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">3. RabiitMQ 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1RabbitMQ-%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1RabbitMQ 管理命令行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-web%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 web管理界面介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-overview%E6%A6%82%E8%A7%88"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">3.2.1 overview概览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-Admin%E7%94%A8%E6%88%B7%E5%92%8C%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%E7%AE%A1%E7%90%86"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">3.2.2 Admin用户和虚拟主机管理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7"><span class="nav-number">1.3.2.2.1.</span> <span class="nav-text">1. 添加用户</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA"><span class="nav-number">1.3.2.2.2.</span> <span class="nav-text">2. 创建虚拟主机</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E7%BB%91%E5%AE%9A%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%E5%92%8C%E7%94%A8%E6%88%B7"><span class="nav-number">1.3.2.2.3.</span> <span class="nav-text">3. 绑定虚拟主机和用户</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-RabbitMQ-%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.4.</span> <span class="nav-text">4.RabbitMQ 的第一个程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-0-AMQP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%9B%9E%E9%A1%BE"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.0 AMQP协议的回顾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-RabbitMQ%E6%94%AF%E6%8C%81%E7%9A%84%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.1 RabbitMQ支持的消息模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.2 引入依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E7%AC%AC%E4%B8%80%E7%A7%8D%E6%A8%A1%E5%9E%8B-%E7%9B%B4%E8%BF%9E"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.3 第一种模型(直连)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">1.4.4.0.1.</span> <span class="nav-text">1. 开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85"><span class="nav-number">1.4.4.0.2.</span> <span class="nav-text">2. 开发消费者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%8F%82%E6%95%B0%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="nav-number">1.4.4.0.3.</span> <span class="nav-text">3. 参数的说明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E7%AC%AC%E4%BA%8C%E7%A7%8D%E6%A8%A1%E5%9E%8B-work-quene"><span class="nav-number">1.4.5.</span> <span class="nav-text">4.4 第二种模型(work quene)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85-1"><span class="nav-number">1.4.5.0.1.</span> <span class="nav-text">1. 开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-1"><span class="nav-number">1.4.5.0.2.</span> <span class="nav-text">2.开发消费者-1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-2"><span class="nav-number">1.4.5.0.3.</span> <span class="nav-text">3.开发消费者-2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="nav-number">1.4.5.0.4.</span> <span class="nav-text">4.测试结果</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E6%B6%88%E6%81%AF%E8%87%AA%E5%8A%A8%E7%A1%AE%E8%AE%A4%E6%9C%BA%E5%88%B6"><span class="nav-number">1.4.5.0.5.</span> <span class="nav-text">5.消息自动确认机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E7%AC%AC%E4%B8%89%E7%A7%8D%E6%A8%A1%E5%9E%8B-fanout"><span class="nav-number">1.4.6.</span> <span class="nav-text">4.5 第三种模型(fanout)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85-2"><span class="nav-number">1.4.6.0.1.</span> <span class="nav-text">1. 开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-1-1"><span class="nav-number">1.4.6.0.2.</span> <span class="nav-text">2. 开发消费者-1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-2-1"><span class="nav-number">1.4.6.0.3.</span> <span class="nav-text">3. 开发消费者-2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-3"><span class="nav-number">1.4.6.0.4.</span> <span class="nav-text">4.开发消费者-3</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="nav-number">1.4.6.0.5.</span> <span class="nav-text">5. 测试结果</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E7%AC%AC%E5%9B%9B%E7%A7%8D%E6%A8%A1%E5%9E%8B-Routing"><span class="nav-number">1.4.7.</span> <span class="nav-text">4.6 第四种模型(Routing)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-6-1-Routing-%E4%B9%8B%E8%AE%A2%E9%98%85%E6%A8%A1%E5%9E%8B-Direct-%E7%9B%B4%E8%BF%9E"><span class="nav-number">1.4.7.1.</span> <span class="nav-text">4.6.1 Routing 之订阅模型-Direct(直连)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85-3"><span class="nav-number">1.4.7.1.1.</span> <span class="nav-text">1. 开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-1-2"><span class="nav-number">1.4.7.1.2.</span> <span class="nav-text">2.开发消费者-1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-2-2"><span class="nav-number">1.4.7.1.3.</span> <span class="nav-text">3.开发消费者-2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E6%B5%8B%E8%AF%95%E7%94%9F%E4%BA%A7%E8%80%85%E5%8F%91%E9%80%81Route-key%E4%B8%BAerror%E7%9A%84%E6%B6%88%E6%81%AF%E6%97%B6"><span class="nav-number">1.4.7.1.4.</span> <span class="nav-text">4.测试生产者发送Route key为error的消息时</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E6%B5%8B%E8%AF%95%E7%94%9F%E4%BA%A7%E8%80%85%E5%8F%91%E9%80%81Route-key%E4%B8%BAinfo%E7%9A%84%E6%B6%88%E6%81%AF%E6%97%B6"><span class="nav-number">1.4.7.1.5.</span> <span class="nav-text">5.测试生产者发送Route key为info的消息时</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-6-2-Routing-%E4%B9%8B%E8%AE%A2%E9%98%85%E6%A8%A1%E5%9E%8B-Topic"><span class="nav-number">1.4.7.2.</span> <span class="nav-text">4.6.2 Routing 之订阅模型-Topic</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85-4"><span class="nav-number">1.4.7.2.1.</span> <span class="nav-text">1.开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-1-3"><span class="nav-number">1.4.7.2.2.</span> <span class="nav-text">2.开发消费者-1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-2-3"><span class="nav-number">1.4.7.2.3.</span> <span class="nav-text">3.开发消费者-2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C-1"><span class="nav-number">1.4.7.2.4.</span> <span class="nav-text">4.测试结果</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-SpringBoot%E4%B8%AD%E4%BD%BF%E7%94%A8RabbitMQ"><span class="nav-number">1.5.</span> <span class="nav-text">5. SpringBoot中使用RabbitMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-0-%E6%90%AD%E5%BB%BA%E5%88%9D%E5%A7%8B%E7%8E%AF%E5%A2%83"><span class="nav-number">1.5.1.</span> <span class="nav-text">5.0 搭建初始环境</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-number">1.5.1.0.1.</span> <span class="nav-text">1. 引入依赖</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E9%85%8D%E7%BD%AE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.1.0.2.</span> <span class="nav-text">2. 配置配置文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E7%AC%AC%E4%B8%80%E7%A7%8Dhello-world%E6%A8%A1%E5%9E%8B%E4%BD%BF%E7%94%A8"><span class="nav-number">1.5.2.</span> <span class="nav-text">5.1 第一种hello world模型使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">1.5.2.0.1.</span> <span class="nav-text">开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85"><span class="nav-number">1.5.2.0.2.</span> <span class="nav-text">开发消费者</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E7%AC%AC%E4%BA%8C%E7%A7%8Dwork%E6%A8%A1%E5%9E%8B%E4%BD%BF%E7%94%A8"><span class="nav-number">1.5.3.</span> <span class="nav-text">5.2 第二种work模型使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85-1"><span class="nav-number">1.5.3.0.1.</span> <span class="nav-text">开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-1"><span class="nav-number">1.5.3.0.2.</span> <span class="nav-text">开发消费者</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-Fanout-%E5%B9%BF%E6%92%AD%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.4.</span> <span class="nav-text">5.3 Fanout 广播模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85-2"><span class="nav-number">1.5.4.0.1.</span> <span class="nav-text">开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-2"><span class="nav-number">1.5.4.0.2.</span> <span class="nav-text">开发消费者</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-Route-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.5.</span> <span class="nav-text">5.4 Route 路由模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85-3"><span class="nav-number">1.5.5.0.1.</span> <span class="nav-text">开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-3"><span class="nav-number">1.5.5.0.2.</span> <span class="nav-text">开发消费者</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-5-Topic-%E8%AE%A2%E9%98%85%E6%A8%A1%E5%9E%8B-%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.6.</span> <span class="nav-text">5.5 Topic 订阅模型(动态路由模型)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%94%9F%E4%BA%A7%E8%80%85-4"><span class="nav-number">1.5.6.0.1.</span> <span class="nav-text">开发生产者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%B6%88%E8%B4%B9%E8%80%85-4"><span class="nav-number">1.5.6.0.2.</span> <span class="nav-text">开发消费者</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-MQ%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.6.</span> <span class="nav-text">6. MQ的应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">6.1 异步处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E5%BA%94%E7%94%A8%E8%A7%A3%E8%80%A6"><span class="nav-number">1.6.2.</span> <span class="nav-text">6.2 应用解耦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E6%B5%81%E9%87%8F%E5%89%8A%E5%B3%B0"><span class="nav-number">1.6.3.</span> <span class="nav-text">6.3 流量削峰</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-RabbitMQ%E7%9A%84%E9%9B%86%E7%BE%A4"><span class="nav-number">1.7.</span> <span class="nav-text">7. RabbitMQ的集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84"><span class="nav-number">1.7.1.</span> <span class="nav-text">7.1 集群架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-1-%E6%99%AE%E9%80%9A%E9%9B%86%E7%BE%A4-%E5%89%AF%E6%9C%AC%E9%9B%86%E7%BE%A4"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">7.1.1 普通集群(副本集群)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">1.7.1.1.1.</span> <span class="nav-text">架构图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA"><span class="nav-number">1.7.1.1.2.</span> <span class="nav-text">集群搭建</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-2-%E9%95%9C%E5%83%8F%E9%9B%86%E7%BE%A4"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">7.1.2 镜像集群</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">1.7.1.2.1.</span> <span class="nav-text">集群架构图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84"><span class="nav-number">1.7.1.2.2.</span> <span class="nav-text">配置集群架构</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -276,86 +281,10 @@
 </noscript>
 
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/10/12/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/10/12/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-            <font color=ea853e>∞置顶∝</font>
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-10-12 12:35:15" itemprop="dateCreated datePublished" datetime="2020-10-12T12:35:15+08:00">2020-10-12</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-04 10:08:38" itemprop="dateModified" datetime="2021-01-04T10:08:38+08:00">2021-01-04</time>
-      </span>
 
   
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Hello ~ Here is a personal blog.<br>yloopdaed, the reverse spelling of deadpooly which is my network aka.<br>This blog is serve to my Github project - <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">JPP</a> (Java promotion process).<br>you can also check out my jianshu channel - <a target="_blank" rel="noopener" href="https://www.jianshu.com/u/9901b7042663">YYYYYY25</a> where stores many iOS articles i wrote before.</p>
-<hr>
-<p>建站的目的是为 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">JPP</a> 开源项目提供文章支持<br>本身自己也有记录和分享的习惯，之前的技术分享集中在简书 <a target="_blank" rel="noopener" href="https://www.jianshu.com/u/9901b7042663">YYYYYY25</a><br>技术类的分享可能会在本站和简书同步更新，之前的技术类文章分享会选择性的移至本站</p>
-<p>✨ Love &amp; Peace ❤️</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
 
 
 <div class="post-block">
@@ -375,9 +304,9 @@
       <meta itemprop="name" content="yloopdaed">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/08/rabbitmq/" class="post-title-link" itemprop="url">rabbitmq</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          rabbitmq
+        </h1>
 
         <div class="post-meta-container">
           
@@ -402,7 +331,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="RabbitMQ-实战教程"><a href="#RabbitMQ-实战教程" class="headerlink" title="RabbitMQ 实战教程"></a>RabbitMQ 实战教程</h1><h2 id="1-MQ引言"><a href="#1-MQ引言" class="headerlink" title="1.MQ引言"></a>1.MQ引言</h2><h3 id="1-1-什么是MQ"><a href="#1-1-什么是MQ" class="headerlink" title="1.1 什么是MQ"></a>1.1 什么是MQ</h3><p><code>MQ</code>(Message Quene) :  翻译为 <code>消息队列</code>,通过典型的 <code>生产者</code>和<code>消费者</code>模型,生产者不断向消息队列中生产消息，消费者不断的从队列中获取消息。因为消息的生产和消费都是异步的，而且只关心消息的发送和接收，没有业务逻辑的侵入,轻松的实现系统间解耦。别名为 <code>消息中间件</code>    通过利用高效可靠的消息传递机制进行平台无关的数据交流，并基于数据通信来进行分布式系统的集成。</p>
+        <h1 id="RabbitMQ-实战教程"><a href="#RabbitMQ-实战教程" class="headerlink" title="RabbitMQ 实战教程"></a>RabbitMQ 实战教程</h1><h2 id="1-MQ引言"><a href="#1-MQ引言" class="headerlink" title="1.MQ引言"></a>1.MQ引言</h2><h3 id="1-1-什么是MQ"><a href="#1-1-什么是MQ" class="headerlink" title="1.1 什么是MQ"></a>1.1 什么是MQ</h3><p><code>MQ</code>(Message Quene) :  翻译为 <code>消息队列</code>,通过典型的 <code>生产者</code>和<code>消费者</code>模型,生产者不断向消息队列中生产消息，消费者不断的从队列中获取消息。因为消息的生产和消费都是异步的，而且只关心消息的发送和接收，没有业务逻辑的侵入,轻松的实现系统间解耦。别名为 <code>消息中间件</code>    通过利用高效可靠的消息传递机制进行平台无关的数据交流，并基于数据通信来进行分布式系统的集成。</p>
 <h3 id="1-2-MQ有哪些"><a href="#1-2-MQ有哪些" class="headerlink" title="1.2 MQ有哪些"></a>1.2 MQ有哪些</h3><p>当今市面上有很多主流的消息中间件，如老牌的<code>ActiveMQ</code>、<code>RabbitMQ</code>，炙手可热的<code>Kafka</code>，阿里巴巴自主开发<code>RocketMQ</code>等。</p>
 <h3 id="1-3-不同MQ特点"><a href="#1-3-不同MQ特点" class="headerlink" title="1.3 不同MQ特点"></a>1.3 不同MQ特点</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 1.ActiveMQ</span></span><br><span class="line"><span class="code">		ActiveMQ 是Apache出品，最流行的，能力强劲的开源消息总线。它是一个完全支持JMS规范的的消息中间件。丰富的API,多种集群架构模式让ActiveMQ在业界成为老牌的消息中间件,在中小型企业颇受欢迎!</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code"># 2.Kafka</span></span><br><span class="line"><span class="code">		Kafka是LinkedIn开源的分布式发布-订阅消息系统，目前归属于Apache顶级项目。Kafka主要特点是基于Pull的模式来处理消息消费，</span></span><br><span class="line"><span class="code">		追求高吞吐量，一开始的目的就是用于日志收集和传输。0.8版本开始支持复制，不支持事务，对消息的重复、丢失、错误没有严格要求，</span></span><br><span class="line"><span class="code">		适合产生大量数据的互联网服务的数据收集业务。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code"># 3.RocketMQ</span></span><br><span class="line"><span class="code">		RocketMQ是阿里开源的消息中间件，它是纯Java开发，具有高吞吐量、高可用性、适合大规模分布式系统应用的特点。RocketMQ思路起</span></span><br><span class="line"><span class="code">		源于Kafka，但并不是Kafka的一个Copy，它对消息的可靠传输及事务性做了优化，目前在阿里集团被广泛应用于交易、充值、流计算、消</span></span><br><span class="line"><span class="code">		息推送、日志流式处理、binglog分发等场景。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code"># 4.RabbitMQ</span></span><br><span class="line"><span class="code">		RabbitMQ是使用Erlang语言开发的开源消息队列系统，基于AMQP协议来实现。AMQP的主要特征是面向消息、队列、路由（包括点对点和</span></span><br><span class="line"><span class="code">		发布/订阅）、可靠性、安全。AMQP协议更多用在企业系统内对数据一致性、稳定性和可靠性要求很高的场景，对性能和吞吐量的要求还在</span></span><br><span class="line"><span class="code">		其次。</span></span><br><span class="line"><span class="code">		</span></span><br></pre></td></tr></table></figure>
 
@@ -734,7 +663,6 @@
 </li>
 </ol>
 
-      
     </div>
 
     
@@ -742,699 +670,18 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/02/04/jianshu-5years/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/04/jianshu-5years/" class="post-title-link" itemprop="url">有感</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-02-04 14:43:32 / 修改时间：14:44:41" itemprop="dateCreated datePublished" datetime="2021-02-04T14:43:32+08:00">2021-02-04</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>再牛逼的技术，也抵不过傻逼似的坚持</p>
-</blockquote>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jianshu-5years.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/02/01/guava-usable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/01/guava-usable/" class="post-title-link" itemprop="url">Guava 实用篇（持续更新）</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-02-01 19:57:01" itemprop="dateCreated datePublished" datetime="2021-02-01T19:57:01+08:00">2021-02-01</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-05 17:48:50" itemprop="dateModified" datetime="2021-02-05T17:48:50+08:00">2021-02-05</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h4 id="字符串-amp-集合处理-Splitter-Joiner"><a href="#字符串-amp-集合处理-Splitter-Joiner" class="headerlink" title="字符串&amp;集合处理 Splitter Joiner"></a>字符串&amp;集合处理 <code>Splitter</code> <code>Joiner</code></h4><p>最近在对接JD商城，商品详情的和分类的对应关系是一个字符串（包含3级分类，用分号分隔），Guava中提供了一个比较简单的处理方式</p>
-<h5 id="Splitter"><a href="#Splitter" class="headerlink" title="Splitter"></a>Splitter</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将string分解成list</span></span><br><span class="line">Iterable&lt;String&gt; split = Splitter.on(<span class="string">&#x27;;&#x27;</span>)</span><br><span class="line">        .trimResults()</span><br><span class="line">        .omitEmptyStrings()</span><br><span class="line">        .split(<span class="string">&quot;170;1238 ; ;   2218&quot;</span>);</span><br><span class="line">split.forEach(item -&gt; &#123;</span><br><span class="line">    System.out.println(item);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h5 id="Joiner"><a href="#Joiner" class="headerlink" title="Joiner"></a>Joiner</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将list连接成string</span></span><br><span class="line">String join = Joiner.on(<span class="string">&quot;;&quot;</span>).skipNulls().join(split);</span><br><span class="line">System.out.println(<span class="string">&quot;join = &quot;</span> + join);</span><br></pre></td></tr></table></figure>
-
-<p>分析一下 <code>Joiner</code> 的源码，<code>Splitter</code>类似。</p>
-<p>Joiner类中主要包含 <strong>构造方法</strong>、<strong>appendTo方法</strong>、<strong>join方法</strong>。以及一系列他们的方法重载。</p>
-<p>就以 <code>Joiner.on(&quot;;&quot;).skipNulls().join(split)</code> 这段代码为例：</p>
-<h6 id="on"><a href="#on" class="headerlink" title="on()"></a>on()</h6><p>创建Joiner对象，并记录分隔用的字符</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Joiner <span class="title">on</span><span class="params">(String separator)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Joiner(separator);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">Joiner</span><span class="params">(String separator)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.separator = checkNotNull(separator);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里要注意的就是 <code>checkNotNull()</code> 方法。这是Guava提供的 <code>null</code> 值过滤的方法。这个方法在Guava官方手册的第一章节介绍。</p>
-<h6 id="skipNulls"><a href="#skipNulls" class="headerlink" title="skipNulls()"></a>skipNulls()</h6><p>之前提到过Joiner类中主要包含的执行逻辑的方法：appendTo方法。</p>
-<p>Guava通过链式编程的思想，在skipNulls()方法中返回了一个匿名内部类，在匿名内部类中重写了处理逻辑的appendTo方法，提供了过滤集合null值的功能。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Joiner <span class="title">skipNulls</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Joiner(<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> &lt;A extends Appendable&gt; <span class="function">A <span class="title">appendTo</span><span class="params">(A appendable, Iterator&lt;?&gt; parts)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">            checkNotNull(appendable, <span class="string">&quot;appendable&quot;</span>);</span><br><span class="line">            checkNotNull(parts, <span class="string">&quot;parts&quot;</span>);</span><br><span class="line">            <span class="keyword">while</span> (parts.hasNext()) &#123;</span><br><span class="line">                Object part = parts.next();</span><br><span class="line">                <span class="keyword">if</span> (part != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    appendable.append(Joiner.<span class="keyword">this</span>.toString(part));</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> (parts.hasNext()) &#123;</span><br><span class="line">            Object part = parts.next();</span><br><span class="line">                <span class="keyword">if</span> (part != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    appendable.append(separator);</span><br><span class="line">                    appendable.append(Joiner.<span class="keyword">this</span>.toString(part));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> appendable;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Joiner <span class="title">useForNull</span><span class="params">(String nullText)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;already specified skipNulls&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> MapJoiner <span class="title">withKeyValueSeparator</span><span class="params">(String kvs)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;can&#x27;t use .skipNulls() with maps&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在匿名内部类中重写了 <code>appendTo</code> 方法，加入了两处 <code>null</code> 值的判断</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (part != <span class="keyword">null</span>) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="join"><a href="#join" class="headerlink" title="join()"></a>join()</h6><p>这个方法接收传入的集合，然后内部调用 <code>appendTo</code> 方法进行处理。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">join</span><span class="params">(Iterator&lt;?&gt; parts)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> appendTo(<span class="keyword">new</span> StringBuilder(), parts).toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>需要注意的是，这里接收的参数类型是 <code>Iterator&lt;?&gt;</code> 接口。</p>
-<p>涵盖了我们日常使用的所有集合类型：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">* @see     Set</span><br><span class="line">* @see     List</span><br><span class="line">* @see     Map</span><br><span class="line">* @see     SortedSet</span><br><span class="line">* @see     SortedMap</span><br><span class="line">* @see     HashSet</span><br><span class="line">* @see     TreeSet</span><br><span class="line">* @see     ArrayList</span><br><span class="line">* @see     LinkedList</span><br><span class="line">* @see     Vector</span><br><span class="line">* @see     Collections</span><br><span class="line">* @see     Arrays</span><br><span class="line">* @see     AbstractCollection</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/01/guava-usable/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/29/feign-GET/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/29/feign-GET/" class="post-title-link" itemprop="url">feign GET 异常</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-01-29 17:59:31" itemprop="dateCreated datePublished" datetime="2021-01-29T17:59:31+08:00">2021-01-29</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-02 13:33:15" itemprop="dateModified" datetime="2021-02-02T13:33:15+08:00">2021-02-02</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>只要参数是复杂对象，即使指定了是GET方法，feign依然会以POST方法进行发送请求；</p>
-<p>如果不加默认的注解，Feign则会对参数默认加上@RequestBody注解，而RequestBody一定是包含在请求体中的，GET方式无法包含</p>
-<p>所以会发生 <code>method GET must not have a request body</code> 异常</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Request.<span class="function">Builder <span class="title">method</span><span class="params">(String method, <span class="meta">@Nullable</span> RequestBody body)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">&quot;method == null&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.length() == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method.length() == 0&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (body != <span class="keyword">null</span> &amp;&amp; !HttpMethod.permitsRequestBody(method)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method &quot;</span> + method + <span class="string">&quot; must not have a request body.&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (body == <span class="keyword">null</span> &amp;&amp; HttpMethod.requiresRequestBody(method)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method &quot;</span> + method + <span class="string">&quot; must have a request body.&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.method = method;</span><br><span class="line">        <span class="keyword">this</span>.body = body;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>解决：<br>GET请求传递封装好的对象时，使用 <code>@RequestParam</code> 修饰 <code>Map&lt;String, Object&gt; </code>。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/27/spring-cache-singletonfactories/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/27/spring-cache-singletonfactories/" class="post-title-link" itemprop="url">Spring 三级缓存中 SingletonFactories 作用？</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-01-27 12:48:30 / 修改时间：12:50:54" itemprop="dateCreated datePublished" datetime="2021-01-27T12:48:30+08:00">2021-01-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Spring 为什么要设计三级缓存？<br>其中SingletonFactories工厂的作用是什么？</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/singletonFactories.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/22/patterns/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/22/patterns/" class="post-title-link" itemprop="url">设计模式在源码中的应用</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-01-22 17:43:20 / 修改时间：17:45:22" itemprop="dateCreated datePublished" datetime="2021-01-22T17:43:20+08:00">2021-01-22</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>举例一下常用设计模式在源码中的使用，帮助学习。</p>
-<p><strong>静态工厂方法</strong><br>Calendar.getInstance()<br>java.text.NumberFormat.getInstance()<br>java.util.ResourceBundle.getBundle()</p>
-<p><strong>工厂方法（获取实际对象）</strong><br>java.net.URLStreamHandlerFactory<br>javax.xml.bind.JAXBContext.createMarshaller</p>
-<p><strong>抽象工厂模式（先获取工厂、再获取实际对象）</strong><br>java.sql.Connection<br>java.sql.Driver</p>
-<p><strong>建造者模式</strong><br>Spring源码中应用<br>org.springframework.web.servlet.mvc.method.RequestMappingInfo<br>org.springframework.beans.factory.support.BeanDefinitionBuilder</p>
-<p><strong>原型模式（hashtable、继承Cloneable）</strong><br>java.util.Arrays<br>org.springframework.beans.factory.support.AbstractBeanDefinition</p>
-<p><strong>享元模式（hashmap）</strong><br>String\Integer\Long..<br>com.sun.org.apache.bcel.internal.generic.InstructionContstants</p>
-<p><strong>门面模式、外观模式</strong><br>org.apache.catalina.connector.RequestFacade</p>
-<p><strong>观察者模式</strong><br>java.util.Observable<br>org.springframework.context.ApplicationListener</p>
-<p><strong>适配器模式</strong><br>Arrays#adList()\Collections#list()<br>org.springframework.context.event.GenericApplicationListenerAdapter</p>
-<p><strong>装饰者模式</strong><br>javax.servlet.http.HttpServletRequestWrapper<br>javax.servlet.http.HttpServletResponseWrapper</p>
-<p><strong>策略模式</strong><br>java.util.Comparator<br>org.springframework.beans.factory.support.InstantiationStrategy</p>
-<p><strong>模板方法模式</strong><br>javax.servlet.http.HttpServlet<br>org.springframework.web.servlet.mvc.AbstractController</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/20/nsingleton/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/20/nsingleton/" class="post-title-link" itemprop="url">Java 你没见过的单例写法</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-01-20 11:39:42 / 修改时间：11:56:30" itemprop="dateCreated datePublished" datetime="2021-01-20T11:39:42+08:00">2021-01-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><strong>分享两种新鲜的单例写法</strong></p>
-<h4 id="静态内部类"><a href="#静态内部类" class="headerlink" title="静态内部类"></a>静态内部类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 静态内部类方式</span></span><br><span class="line"><span class="comment"> * JVM保证单例、懒加载</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticInnerClassSingleton</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticInnerClassSingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Holder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> StaticInnerClassSingleton INSTANCE = <span class="keyword">new</span> StaticInnerClassSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StaticInnerClassSingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Holder.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="单元素枚举类"><a href="#单元素枚举类" class="headerlink" title="单元素枚举类"></a>单元素枚举类</h4><p>出自 <a target="_blank" rel="noopener" href="https://github.com/clxering/Effective-Java-3rd-edition-Chinese-English-bilingual">Effective-Java</a> 书籍中的 <code>Chapter 2 Item 3: Enforce the singleton property with a private constructor or an enum type</code></p>
-<p>这里给大家分享这本书的在线汉化版本，非常建议花时间学习一下。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Enum singleton - the preferred approach</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Elvis</span> </span>&#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">leaveTheBuilding</span><span class="params">()</span> </span>&#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种方式创建的单例不仅可以解决 <strong>线程同步问题</strong>，还可以 <strong>防止反序列化</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/20/new-Object/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/20/new-Object/" class="post-title-link" itemprop="url">对象存储和指针逃逸</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-01-20 10:26:46 / 修改时间：11:01:45" itemprop="dateCreated datePublished" datetime="2021-01-20T10:26:46+08:00">2021-01-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>之前在 <a href="https://yloopdaed.icu/2020/10/29/memory-layout-of-java-object/">Java对象的内存布局</a> 文章的末尾提到了对象的存储位置，现在扩展一下之前的内容。</p>
-<h3 id="对象存储在堆上还是栈上？"><a href="#对象存储在堆上还是栈上？" class="headerlink" title="对象存储在堆上还是栈上？"></a>对象存储在堆上还是栈上？</h3><p>看下面这段代码，循环创建一亿次Object对象，通常理解一个空Object对象创建会在栈中存在一个4字节的指针，指向堆中的对象16字节。<br>循环创建一亿次大概会占用1.6G的空间。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">long startTime &#x3D; System.currentTimeMillis();</span><br><span class="line">for (int i &#x3D; 0; i &lt; 100000000; i++) &#123;</span><br><span class="line">    new Object();</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(&quot;use time: &quot; + (System.currentTimeMillis() - startTime) + &quot;ms&quot;);</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>执行结果：use time: 38ms</p>
-</blockquote>
-<p><strong><em>这是为什么？</em></strong></p>
-<h3 id="对象逃逸状态"><a href="#对象逃逸状态" class="headerlink" title="对象逃逸状态"></a>对象逃逸状态</h3><p>判断对象是否在堆中进行分配有一个前提：<strong>判断逃逸状态</strong></p>
-<h4 id="全局逃逸（GlobalEscape）"><a href="#全局逃逸（GlobalEscape）" class="headerlink" title="全局逃逸（GlobalEscape）"></a>全局逃逸（GlobalEscape）</h4><p>即一个对象的作用范围逃出了当前方法或者当前线程，有以下几种场景：</p>
-<p>1 对象是一个静态变量</p>
-<p>2 对象是一个已经发生逃逸的对象</p>
-<p>3 对象作为当前方法的返回值</p>
-<h4 id="参数逃逸（ArgEscape）"><a href="#参数逃逸（ArgEscape）" class="headerlink" title="参数逃逸（ArgEscape）"></a>参数逃逸（ArgEscape）</h4><p>即一个对象被作为方法参数传递或者被参数引用，但在调用过程中不会发生全局逃逸，这个状态是通过被调方法的字节码确定的</p>
-<h4 id="没有逃逸"><a href="#没有逃逸" class="headerlink" title="没有逃逸"></a>没有逃逸</h4><p>即方法中的对象没有发生逃逸</p>
-<h3 id="逃逸分析"><a href="#逃逸分析" class="headerlink" title="逃逸分析"></a>逃逸分析</h3><p>JVM默认会开启逃逸分析 <code>-XX:+DoEscapeAnalysis</code></p>
-<p>开启逃逸分析后，如果JVM分析得到对象 <strong>没有发生逃逸</strong> 的话，那么 <code>new Object()</code> 新建的对象并没有在外部被使用，所以它被优化为在栈上分配，我们知道方法执行完成后该栈帧就会被清空，所以也就不会有GC。</p>
-<p><strong>反之：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">long startTime &#x3D; System.currentTimeMillis();</span><br><span class="line">for (int i &#x3D; 0; i &lt; 100000000; i++) &#123;</span><br><span class="line">    Object o &#x3D; new Object();</span><br><span class="line">    o.hashCode();</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(&quot;use time: &quot; + (System.currentTimeMillis() - startTime) + &quot;ms&quot;);</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>执行结果：use time: 8014ms</p>
-</blockquote>
-<p>会使对象发生逃逸的常见方式：</p>
-<p>1 对象被赋值给堆中对象的字段和类的静态变量</p>
-<p>2 对象被传进了不确定的代码中去运行</p>
-<h3 id="基于逃逸分析的优化"><a href="#基于逃逸分析的优化" class="headerlink" title="基于逃逸分析的优化"></a>基于逃逸分析的优化</h3><p>也就是基于JVM逃逸分析机制对代码进行一些优化，提升代码的性能。</p>
-<p>这部分内容可以参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/59215831">JVM之逃逸分析</a></p>
-<hr>
-<p>相关代码可以在 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP"><strong><em>JPP</em></strong></a>/NewObject类中查看。</p>
-<p>结论: JVM虚拟机逃逸分析是默认开启的，对象不会逃逸的时候优先在栈上分配，否则在堆上分配。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/19/custom-thread-pool/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/19/custom-thread-pool/" class="post-title-link" itemprop="url">一个线程池封装背后</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-01-19 15:05:21 / 修改时间：19:54:01" itemprop="dateCreated datePublished" datetime="2021-01-19T15:05:21+08:00">2021-01-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h4 id="为什么要自定义线程池"><a href="#为什么要自定义线程池" class="headerlink" title="为什么要自定义线程池"></a>为什么要自定义线程池</h4><p>Java <code>Executors</code> 为我们构建线程池提供了几种的静态工厂方法。功能强大、简单易用、工厂模式等。看上去是个不错的选择。</p>
-<p><strong>但是，这些线程池的使用可能会造成严重的后果。</strong></p>
-<p>话题要从 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32867181">一次Java线程池误用引发的血案和总结</a> 引出。头条的系统中由于使用了 <code>newFixedThreadPool</code> 造成了服务器内存溢出熔断</p>
-<p>同时，阿里在 <strong>嵩山版Java开发手册</strong> 中也【强制】不允许使用Executors去创建线程池。</p>
-<p>那么问题究竟出在哪里呢？</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/01/19/custom-thread-pool/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/04/jianshu-5years/" rel="prev" title="有感">
+                  <i class="fa fa-chevron-left"></i> 有感
+                </a>
             </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
@@ -1442,9 +689,7 @@
 
 
 
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+
 
 
 <script>
