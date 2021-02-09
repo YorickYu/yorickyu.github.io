@@ -387,10 +387,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-02-09 17:17:55 / 修改时间：17:31:04" itemprop="dateCreated datePublished" datetime="2021-02-09T17:17:55+08:00">2021-02-09</time>
+      <time title="创建时间：2021-02-09 17:17:55" itemprop="dateCreated datePublished" datetime="2021-02-09T17:17:55+08:00">2021-02-09</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-02-10 00:52:59" itemprop="dateModified" datetime="2021-02-10T00:52:59+08:00">2021-02-10</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -411,7 +417,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jvm.jpg"></p>
+          <h4 id="Class-Loader-和-双亲委派机制"><a href="#Class-Loader-和-双亲委派机制" class="headerlink" title="Class Loader 和 双亲委派机制"></a>Class Loader 和 双亲委派机制</h4><p>寻找类加载器：</p>
+<p>AppClassLoader -&gt; ExtClassLoader -&gt; BootstrapClassLoader(c++中)<br>一直找到最上层的加载器后，检查能否加载当前这个类，如果可以则使用当前加载器。否则，抛出异常向下通知子加载器加载。<br>如果没有加载器可以加载这个类，报错 <code>ClassNotFound</code></p>
+<blockquote>
+<p>注意：向上寻找加载器的过程中有一个判断这个类是否已经被加载的过程。如果加载过了就不用重复加载（保证数据安全）</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Student s = <span class="keyword">new</span> Student().getClass().getClassLoader();</span><br><span class="line">s.getClass() <span class="comment">// class com.yy.string.ClassLoaderTest</span></span><br><span class="line">s.getClass().getClassLoader() <span class="comment">// sun.misc.Launcher$AppClassLoader@18b4aac2</span></span><br><span class="line">s.getClass().getClassLoader().getParent() <span class="comment">// sun.misc.Launcher$ExtClassLoader@5ca881b5</span></span><br><span class="line">s.getClass().getClassLoader().getParent().getParent() <span class="comment">// null，在c++中，获取不到</span></span><br></pre></td></tr></table></figure>
+
+<p>双亲委派机制作用：<br>1 防止重复加载同一个class<br>2 保证源码的class文件不被覆盖篡改（例如:定义一个java.lang.String的类，实例化时依然会加载jdk中的String类）</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jvm.jpg"></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/02/09/java/#more" rel="contents">
