@@ -24,18 +24,18 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
   </script>
-<meta name="description" content="堆堆内存中可以细分为三个区域：1 新生代Young：伊甸园区Eden、幸存0区from、幸存1区to2 老年代Old3 永久代Perm：方法区（1.7）&#x2F;元数据区（1.8） 永久代有两种理解：1 把他理解成与堆是分开的独立区域2 把他理解在堆内，逻辑上存在，物理上不占用堆内空间 堆内存溢出OOM：OutOfMemoryError:Java heap space处理OOM：1 扩大堆内存2 分析内存">
+<meta name="description" content="堆堆内存中可以细分为三个区域：1 新生代Young：伊甸园区Eden、幸存0区from、幸存1区to2 老年代Old：默认一个对象经历了15次GC还没被回收，会进入老年代，可以通过-XX:MaxTenuringThreshold更改次数3 永久代Perm：方法区（1.7）&#x2F;元数据区（1.8）  永久代有两种理解：1 把他理解成与堆是分开的独立区域2 把他理解在堆内，逻辑上存在，物理上不占用堆内空间">
 <meta property="og:type" content="article">
-<meta property="og:title" content="堆 &amp; 垃圾回收">
+<meta property="og:title" content="堆 &amp; 垃圾回收机制">
 <meta property="og:url" content="http://yloopdaed.icu/2021/02/11/jvm-gc/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="堆堆内存中可以细分为三个区域：1 新生代Young：伊甸园区Eden、幸存0区from、幸存1区to2 老年代Old3 永久代Perm：方法区（1.7）&#x2F;元数据区（1.8） 永久代有两种理解：1 把他理解成与堆是分开的独立区域2 把他理解在堆内，逻辑上存在，物理上不占用堆内空间 堆内存溢出OOM：OutOfMemoryError:Java heap space处理OOM：1 扩大堆内存2 分析内存">
+<meta property="og:description" content="堆堆内存中可以细分为三个区域：1 新生代Young：伊甸园区Eden、幸存0区from、幸存1区to2 老年代Old：默认一个对象经历了15次GC还没被回收，会进入老年代，可以通过-XX:MaxTenuringThreshold更改次数3 永久代Perm：方法区（1.7）&#x2F;元数据区（1.8）  永久代有两种理解：1 把他理解成与堆是分开的独立区域2 把他理解在堆内，逻辑上存在，物理上不占用堆内空间">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/oom-error.jpg">
 <meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jprofiler-obj.jpg">
 <meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jprofiler-thread.jpg">
 <meta property="article:published_time" content="2021-02-11T06:15:58.000Z">
-<meta property="article:modified_time" content="2021-02-11T06:30:04.648Z">
+<meta property="article:modified_time" content="2021-02-11T17:20:10.521Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="JVM">
 <meta property="article:tag" content="GC">
@@ -55,7 +55,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>堆 & 垃圾回收 | yloopdaed</title>
+<title>堆 & 垃圾回收机制 | yloopdaed</title>
   
 
 
@@ -193,7 +193,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A0%86"><span class="nav-number">1.</span> <span class="nav-text">堆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">测试用例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">2.1.</span> <span class="nav-text">运行结果</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%9E%90Dump%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">分析Dump文件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">内存回收机制</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A0%86"><span class="nav-number">1.</span> <span class="nav-text">堆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">测试用例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">2.1.</span> <span class="nav-text">运行结果</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%9E%90Dump%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">分析Dump文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E8%B0%83%E4%BC%98%E5%8F%82%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">常用调优参数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">垃圾回收机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95%EF%BC%9A%E5%B0%86%E5%AD%98%E6%B4%BB%E7%9A%84%E5%AF%B9%E8%B1%A1%E8%BF%9B%E8%A1%8C%E5%A4%8D%E5%88%B6%E5%92%8C%E7%A7%BB%E5%8A%A8"><span class="nav-number">3.1.</span> <span class="nav-text">复制算法：将存活的对象进行复制和移动</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E6%B3%95%EF%BC%9A%E4%B8%A4%E6%AC%A1%E6%89%AB%E6%8F%8F"><span class="nav-number">3.2.</span> <span class="nav-text">标记清除法：两次扫描</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%87%E8%AE%B0%E5%8E%8B%E7%BC%A9%E6%B3%95%EF%BC%9A%E5%9C%A8%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E7%9A%84%E5%9F%BA%E7%A1%80%E4%B8%8A%EF%BC%8C%E9%98%B2%E6%AD%A2%E5%86%85%E5%AD%98%E7%A2%8E%E7%89%87%E3%80%82"><span class="nav-number">3.3.</span> <span class="nav-text">标记压缩法：在标记清除的基础上，防止内存碎片。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">3.4.</span> <span class="nav-text">引用计数器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#GC%E6%80%BB%E7%BB%93"><span class="nav-number">3.5.</span> <span class="nav-text">GC总结</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -308,7 +308,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          堆 & 垃圾回收
+          堆 & 垃圾回收机制
         </h1>
 
         <div class="post-meta-container">
@@ -319,10 +319,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-02-11 14:15:58 / 修改时间：14:30:04" itemprop="dateCreated datePublished" datetime="2021-02-11T14:15:58+08:00">2021-02-11</time>
+      <time title="创建时间：2021-02-11 14:15:58" itemprop="dateCreated datePublished" datetime="2021-02-11T14:15:58+08:00">2021-02-11</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-02-12 01:20:10" itemprop="dateModified" datetime="2021-02-12T01:20:10+08:00">2021-02-12</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -343,8 +349,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>堆内存中可以细分为三个区域：<br>1 新生代Young：伊甸园区Eden、幸存0区from、幸存1区to<br>2 老年代Old<br>3 永久代Perm：方法区（1.7）/元数据区（1.8）</p>
+        <h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>堆内存中可以细分为三个区域：<br>1 新生代Young：伊甸园区Eden、幸存0区from、幸存1区to<br>2 老年代Old：默认一个对象经历了15次GC还没被回收，会进入老年代，可以通过<code>-XX:MaxTenuringThreshold</code>更改次数<br>3 永久代Perm：方法区（1.7）/元数据区（1.8）</p>
+<blockquote>
 <p>永久代有两种理解：<br>1 把他理解成与堆是分开的独立区域<br>2 把他理解在堆内，逻辑上存在，物理上不占用堆内空间</p>
+</blockquote>
 <p>堆内存溢出OOM：OutOfMemoryError:Java heap space<br>处理OOM：<br>1 扩大堆内存<br>2 分析内存，找问题（JProfiler工具、Eclipse自带的MAT）</p>
 <p>MAT、Jprofiler使用：<br>1 分析Dump内存文件<br>2 查看堆中的数据信息<br>3 查看堆中的线程信息</p>
 <h4 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String s = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">catch</span> (Error e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -355,8 +363,16 @@
 <h5 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h5><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/oom-error.jpg"></p>
 <h5 id="分析Dump文件"><a href="#分析Dump文件" class="headerlink" title="分析Dump文件"></a>分析Dump文件</h5><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jprofiler-obj.jpg" alt="Object"></p>
 <p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jprofiler-thread.jpg" alt="Thread"></p>
-<h4 id="内存回收机制"><a href="#内存回收机制" class="headerlink" title="内存回收机制"></a>内存回收机制</h4><p>内存回收机制是针对新生代和老年代的</p>
-<p>… </p>
+<h5 id="常用调优参数"><a href="#常用调优参数" class="headerlink" title="常用调优参数"></a>常用调优参数</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">常见的如下：</span><br><span class="line">-Xms64m 最小堆内存 64m.</span><br><span class="line">-Xmx128m 最大堆内存 128m.</span><br><span class="line">-XX:NewSize&#x3D;30m 新生代初始化大小为30m.</span><br><span class="line">-XX:MaxNewSize&#x3D;40m 新生代最大大小为40m.</span><br><span class="line">-Xss&#x3D;256k 线程栈大小。</span><br><span class="line">-XX:+PrintGCDetails 显示堆内存信息和GC信息</span><br><span class="line">-XX:+PrintHeapAtGC 当发生 GC 时打印内存布局。</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError 发送内存溢出时 dump 内存。</span><br><span class="line"></span><br><span class="line">新生代和老年代的默认比例为 1:2，也就是说新生代占用 1&#x2F;3的堆内存，而老年代占用 2&#x2F;3 的堆内存。</span><br><span class="line">可以通过参数 -XX:NewRatio&#x3D;2 来设置老年代&#x2F;新生代的比例。</span><br></pre></td></tr></table></figure>
+
+<h4 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h4><p>内存回收机制是针对新生代和老年代的</p>
+<p>GC算法：轻GC和重GC<br>轻GC和重GC分别在什么时候发生？<br>Eden满了触发轻GC<br>幸存区满了触发full GC</p>
+<h5 id="复制算法：将存活的对象进行复制和移动"><a href="#复制算法：将存活的对象进行复制和移动" class="headerlink" title="复制算法：将存活的对象进行复制和移动"></a>复制算法：将存活的对象进行复制和移动</h5><p>每次轻GC都会清空Eden区和幸存to区：<br>1 将Eden中存活的对象复制到幸存to区。<br>2 将原本幸存from区中存活的对象复制到幸存to区，并交换幸存from和to区。所以最后幸存to区是空的。<br>优点：没有内存碎片<br>缺点：两个幸存区永远有一个是空的。浪费了一半的空间</p>
+<h5 id="标记清除法：两次扫描"><a href="#标记清除法：两次扫描" class="headerlink" title="标记清除法：两次扫描"></a>标记清除法：两次扫描</h5><p>第一次扫描全部对象，对存活的对象进行标记。<br>第二次扫描全部对象，对没有标记的对象进行清除<br>优点：不浪费额外的空间<br>缺点：两次扫描，浪费时间。会产生内存碎片</p>
+<h5 id="标记压缩法：在标记清除的基础上，防止内存碎片。"><a href="#标记压缩法：在标记清除的基础上，防止内存碎片。" class="headerlink" title="标记压缩法：在标记清除的基础上，防止内存碎片。"></a>标记压缩法：在标记清除的基础上，防止内存碎片。</h5><p>再次扫描全部对象（清除过后的对象），向一端移动存活的对象（移动对象有一定开销）<br>可以在多次标记清除算法后，再执行一次标记压缩，节省开销。</p>
+<h5 id="引用计数器"><a href="#引用计数器" class="headerlink" title="引用计数器"></a>引用计数器</h5><p>很少用，与iOS中的引用计数器原理基本相同。实例每建立一个强引用就会给对应的引用计数器加一。其实类似的思想在JUC源码中有很多体现。缺点就是要维护一个引用变量。</p>
+<h5 id="GC总结"><a href="#GC总结" class="headerlink" title="GC总结"></a>GC总结</h5><p>时间复杂度（从低到高）：复制算法 &gt; 标记清除法 &gt; 标记压缩法<br>内存整齐度：复制算法 = 标记压缩法 &gt; 标记清除法<br>内存利用率：标记压缩法 = 标记清除法 &gt; 复制算法</p>
+<p><strong><em>复制算法</em></strong>最佳使用场景：对象存活度较低的区域——新生代<br>**<em>标记清除+标记压缩**</em>最佳使用场景：对象存活率高，空间大的区域——老年代</p>
 
     </div>
 
