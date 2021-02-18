@@ -395,7 +395,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-18 23:02:24" itemprop="dateModified" datetime="2021-02-18T23:02:24+08:00">2021-02-18</time>
+        <time title="修改时间：2021-02-19 01:03:28" itemprop="dateModified" datetime="2021-02-19T01:03:28+08:00">2021-02-19</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -453,13 +453,17 @@
 <blockquote>
 <p>相关命令：<br>-XX:+UseConcMarkSweepGC 启用CMS<br>-XX:+/-UseParNewGC 指定或禁止使用ParNew收集器。<br>-XX:ParallelGCThreads 限制垃圾收集的线程数</p>
 </blockquote>
-<p><strong>四个步骤：</strong><br>1 初始标记：标记一下GC Roots能直接关联的对象，速度很快<br>2 并发标记：从上面的直连对象开始遍历整个对象图，不需要STW<br>3 重新标记：修正并发标记期间变动的对象，时间也很短<br>4 并发清除：清除被标记死亡的对象，不需移动存活对象，所以不需要STW<br>步骤1和3会STW</p>
+<p><strong>四个步骤：</strong><br>1 初始标记：标记一下GC Roots能直接关联的对象，速度很快<br>2 并发标记：从上面的直连对象开始遍历整个对象图，不需要STW<br>3 重新标记：修正并发标记期间变动的对象，时间也很短<br>4 并发清除：清除被标记死亡的对象，不需移动存活对象，所以不需要STW<br><strong>步骤1和3会STW</strong></p>
 <p>缺点：<br>1 对处理器资源非常敏感，处理器核心数不足4个时不建议使用<br>2 无法处理“浮动垃圾”— 因为CMS在并发标记和清除时无需停止用户线程，有可能出现本次收集过程中出现新的垃圾对象。<br>由于浮动垃圾的问题，CMS必须预留一些内存空间（并不是老年代满了才进行垃圾回收）。CMS开始执行是到达68%空间后执行<br>3 基于标记-清除算法会产生大量内存碎片<br>解决：在多次进行标记清除后执行一次标记整理<br>-XX:+UseCMS-CompactAtFullCollection 默认开启，JDK9废除<br>-XX:CMSFullGCsBeforeCompaction 默认0，几次标记清除后执行标记整理，JDK9废除</p>
 <p>4 Parallel Scavenge 收集器（新生代收集器）<br>与Serial和ParNew一样，都是基于标记-复制算法，也是<strong>多线程并行</strong>的<br>与其他收集器的侧重点不同：其他关注用户线程的停顿时间，而PS侧重于吞吐量=用户代码时间/总消耗时间。<br>自适应调节策略：-XX:+UseAdaptiveSizePolicy。区别于ParNew的一个重要特性</p>
 <p>5 Serial Old 收集器（老年代收集器）<br>是Serial收集器的老年代版本。一个<strong>单线程</strong>收集器，基于标记-整理</p>
 <p>6 Parallel Old 收集器（老年代收集器）<br>是Parallel Scavenge 收集器的老年代版本。支持<strong>多线程并发</strong>收集，基于标记-整理</p>
-<p>8 G1 收集器<br>JDK9，服务端模式下默认的垃圾收集器，取代PS+PO组合<br>Mixed GC，不区分新生代和老年代，而是把Java堆划分为多个大小相等的独立区域（Region）</p>
-<p>…</p>
+<p>8 G1 收集器<br>JDK9，服务端模式下默认的垃圾收集器，取代PS+PO组合<br>Mixed GC，不区分新生代和老年代，而是把Java堆划分为多个大小相等的独立区域（Region，单次回收的最小单元），看回收哪块内存的收益最大。<br>G1可以根据需要将这些Region扮演成不同的空间，新生代的Eden空间、Survivor空间或者老年代空间和<strong>Humongous空间</strong>，不同的空间采用不同的策略去处理。<br><strong>Humongous空间，专门用来存储大对象（超过一个Region的一半的对象），可以把这个空间理解成老年代的一部分</strong></p>
+<p>可预测停顿时间：<br>因为G1将Region作为单次回收的最小单元。每次回收的内存空间都是Region的整数倍。<br>后台维护了一个优先级列表（优先级，回收的空间和耗时计算得出），优先处理回收价值最大的Region</p>
+<p>问题：<br>1 跨Region引用对象如何解决？ 解决：记忆集<br>2 并发标记阶段如何保证收集线程和用户线程互不干扰？解决：SATB原始快照<br>3 如何建立起可靠的停顿预测模型？解决：衰减均值</p>
+<p>四个步骤：<br>1 初始标记：标记一下GC Roots能直接关联的对象，并修改TAMS指针的值，速度很快<br>2 并发标记：从 GC Root开始对对重的对象进行可达性分析，递归扫描整个对象图<br>3 最终标记：处理并发标记遗留的少量SATB记录<br>4 筛选回收：对各个Region进行优先级排序，<strong>根据用户期望的停顿时间来制定回收计划</strong>，复制部分Region的存活对象到空Region，最后清理Region。必须暂停用户线程。<br><strong>步骤1,3,4都会STW</strong></p>
+<p>缺点：<br>垃圾收集时产生的内存占用和运行时额外执行负载都比CMS高</p>
+<p>与CMS对比总结：<br>哪款收集器好，要针对具体的场景定量比较。小内存应用上CMS的表现会优于G1。反之G1在大内存应用上可以发挥优势。这个平衡点6-8G。<br>不过就趋势而言，随着G1的不断优化，结果必定会向G1倾斜。</p>
 
       
     </div>
