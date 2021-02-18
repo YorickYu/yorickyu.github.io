@@ -500,7 +500,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-11 14:27:02" itemprop="dateModified" datetime="2021-02-11T14:27:02+08:00">2021-02-11</time>
+        <time title="修改时间：2021-02-18 15:05:37" itemprop="dateModified" datetime="2021-02-18T15:05:37+08:00">2021-02-18</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -523,7 +523,7 @@
     
     <div class="post-body" itemprop="articleBody">
           <h4 id="Class-Loader-和-双亲委派机制"><a href="#Class-Loader-和-双亲委派机制" class="headerlink" title="Class Loader 和 双亲委派机制"></a>Class Loader 和 双亲委派机制</h4><p>寻找类加载器：</p>
-<p>AppClassLoader -&gt; ExtClassLoader -&gt; BootstrapClassLoader(c++中)<br>一直找到最上层的加载器后，检查能否加载当前这个类，如果可以则使用当前加载器。否则，抛出异常向下通知子加载器加载。<br>如果没有加载器可以加载这个类，报错 <code>ClassNotFound</code></p>
+<p>AppClassLoader -&gt; ExtClassLoader -&gt; BootstrapClassLoader(c++中)<br>一直找到最上层的加载器后，检查能否加载当前这个类，如果可以则使用当前加载器。否则，抛出异常向下通知子加载器加载。<br>如果没有加载器可以加载这个类，报异常 <code>ClassNotFoundException</code></p>
 <blockquote>
 <p>注意：向上寻找加载器的过程中有一个判断这个类是否已经被加载的过程。如果加载过了就不用重复加载（保证数据安全）</p>
 </blockquote>
