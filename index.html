@@ -395,7 +395,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-19 12:01:48" itemprop="dateModified" datetime="2021-02-19T12:01:48+08:00">2021-02-19</time>
+        <time title="修改时间：2021-02-19 12:24:08" itemprop="dateModified" datetime="2021-02-19T12:24:08+08:00">2021-02-19</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -479,6 +479,7 @@
 <p>当A节点被标记为黑色之后，又建立了对D的引用。因为黑色节点不会再被垃圾回收器处理。所以D节点会被垃圾回收器清除</p>
 <h5 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h5><p>1 CMS对增加引用环节进行处理（Increment Update）<br>当黑色节点新增引用时，把黑色节点编程灰色，这样下次回收器标及时会扫描它的fields节点（但是在多线程标记时依然会出现漏标。<br>所以，CMS的remark阶段，必须从头扫描一遍，会产生严重的STW</p>
 <p>2 G1则对删除引用环节进行处理(SATB 原始快照)</p>
+<h4 id="内存分配与回收策略："><a href="#内存分配与回收策略：" class="headerlink" title="内存分配与回收策略："></a>内存分配与回收策略：</h4><p>1 对象优先在Eden分配<br>2 大对象直接进入老年代<br>    -XX:PretenureSizeThreshold=3M 超过3M的对象直接进入老年代<br>3 长期存活的对象将进入老年代<br>    -XX:MaxTenuringThreshold=15 经历多少次Minor GC后进入老年代<br>4 动态对象年龄判定<br>    如果相同年龄的对象大小总和超过幸存区的一般，那么会将他们以及比他们年龄大的对象都移动到老年代。（不一定等到年龄是15）<br>5 空间分配担保<br>    如果在Minor GC时，老年代并没有足够的空间容纳新进的对象，那么在Minor GC后立刻进行一次Full GC。<br>    开启担保 -XX:HandlePromotionFailure=true 后会判断避免这次Full GC，通常会打开担保</p>
 
       
     </div>
