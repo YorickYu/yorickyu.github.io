@@ -389,7 +389,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-02-20 11:54:16 / 修改时间：12:17:23" itemprop="dateCreated datePublished" datetime="2021-02-20T11:54:16+08:00">2021-02-20</time>
+      <time title="创建时间：2021-02-20 11:54:16 / 修改时间：12:18:52" itemprop="dateCreated datePublished" datetime="2021-02-20T11:54:16+08:00">2021-02-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -414,7 +414,7 @@
           <p>为什么要讨论 <code>HashMap&lt;Long, Long&gt;</code> 这个数据结构的空间效率问题？</p>
 <p>因为不恰当的使用数据结构可能会导致内存占用过大，从而加剧JVM垃圾回收时的用户线程停顿时间，造成不良的用户体验。</p>
 <p><code>HashMap&lt;Long, Long&gt;</code> 有多低呢？</p>
-<p>在HashMap&lt;Long，Long&gt;结构中：<br>1 Key和Value所存放的两个长整型数据是有效数据，共16字节（2×8字节）。<br>2 这两个长整型数据包装成 <code>java.lang.Long</code> 对象之后，就分别具有8字节的Mark Word、8字节的Klass指针，再加8字节存储数据的long值。<br>3 然后这2个Long对象组成 <code>Map.Entry</code> 之后，又多了16字节的对象头，然后一个8字节的next字段和4字节的int型的hash字段，为了对齐，还必须添加4字节的空白填充<br>4 最后还有HashMap中对这个Entry的8字节的引用，这样增加两个长整型数字，实际耗费的内存为(Long(24byte)×2)+Entry(32byte)+HashMapRef(8byte)=88byte</p>
+<p>在 <code>HashMap&lt;Long，Long&gt;</code> 结构中：<br>1 Key和Value所存放的两个长整型数据是有效数据，共16字节（2×8字节）。<br>2 这两个长整型数据包装成 <code>java.lang.Long</code> 对象之后，就分别具有8字节的Mark Word、8字节的Klass指针，再加8字节存储数据的long值。<br>3 然后这2个Long对象组成 <code>Map.Entry</code> 之后，又多了16字节的对象头，然后一个8字节的next字段和4字节的int型的hash字段，为了对齐，还必须添加4字节的空白填充<br>4 最后还有HashMap中对这个Entry的8字节的引用，这样增加两个长整型数字，实际耗费的内存为(Long(24byte)×2)+Entry(32byte)+HashMapRef(8byte)=88byte</p>
 <p>空间效率为有效数据除以全部内存空间，即16字节/88字节=<strong>18%</strong></p>
 
       
