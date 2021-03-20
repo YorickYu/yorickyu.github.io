@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>redis pipelines</title>
+      <link href="2021/03/20/redis-pipelines/"/>
+      <url>2021/03/20/redis-pipelines/</url>
+      
+        <content type="html"><![CDATA[<h3 id="什么是pipelines"><a href="#什么是pipelines" class="headerlink" title="什么是pipelines"></a>什么是pipelines</h3><p>redis pipelines，管道，是redis客户端提供的一个批量处理命令。</p><p>管道操作的本质是客户端通过对管道中的指令 <code>重排序</code> 执行。这样做可以大幅节省IO时间。</p><blockquote><p>我们知道redis的工作模型是基于单线程的，我个人认为他之所以这样设计，是因为CPU的性能不是redis性能瓶颈的关键因素。而是IO。<br>redis pipelines可以通过改变命令的读写顺序，将读指令合并执行、写指令合并执行。减少IO的频率从而减少网络通信的花费。</p></blockquote><h3 id="与原生批量命令-mget-mset-的区别"><a href="#与原生批量命令-mget-mset-的区别" class="headerlink" title="与原生批量命令 mget mset 的区别"></a>与原生批量命令 mget mset 的区别</h3><p>原生批量命令是redis服务端实现的。而pipelines是redis客户端实现的。</p><p>当key的数目过多时，mget和mset的执行效率会大于pipelines</p><p><em>pipelines不会阻塞其他客户端，而mget会。</em></p><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/pipevsmget.jpg"></p><h3 id="pipelines-底层"><a href="#pipelines-底层" class="headerlink" title="pipelines 底层"></a>pipelines 底层</h3><p>依靠 <code>网络协议栈</code> 深入内核</p><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/pipelinesker.jpg"></p><p>流程简述：<br>客户端请求 -&gt; send buffer -&gt; 网卡（客户端） -&gt; 路由网关 -&gt; 网卡（服务器）-&gt;  recv buffer -&gt; 服务器处理<br>一个客户端请求被服务器处理完成后，原路返回。</p><p>总结：<br>1 写操作几乎没有耗时，写入客户端 send buffer 就直接返回<br>2 读操作需要经历完整的流程，最终从 recv buffer 中获取数据，这是真正耗时的操作</p><h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>去探索一下redis单机性能的极限在哪里？</p><p>1 如果没有管道，最大承受qps是多少？<br>2 通过管道，最大承受qps是多少？</p><p>证实一下为什么redis性能瓶颈不取决于CPU，而是IO。<br>这也能换个角度更好的理解为什么redis要使用单线程模型。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 管道 </tag>
+            
+            <tag> mget </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>蚂蚁金服初试：双写一致性延伸</title>
       <link href="2021/03/18/redis-mysql-cp/"/>
       <url>2021/03/18/redis-mysql-cp/</url>

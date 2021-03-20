@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-count">85</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -337,6 +337,87 @@
 <hr>
 <p>建站的目的是为 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">JPP</a> 开源项目提供文章支持<br>本身自己也有记录和分享的习惯，之前的技术分享集中在简书 <a target="_blank" rel="noopener" href="https://www.jianshu.com/u/9901b7042663">YYYYYY25</a><br>技术类的分享可能会在本站和简书同步更新，之前的技术类文章分享会选择性的移至本站</p>
 <p>✨ Love &amp; Peace ❤️</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/03/20/redis-pipelines/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/03/20/redis-pipelines/" class="post-title-link" itemprop="url">redis pipelines</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-03-20 22:28:09 / 修改时间：23:30:34" itemprop="dateCreated datePublished" datetime="2021-03-20T22:28:09+08:00">2021-03-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="什么是pipelines"><a href="#什么是pipelines" class="headerlink" title="什么是pipelines"></a>什么是pipelines</h3><p>redis pipelines，管道，是redis客户端提供的一个批量处理命令。</p>
+<p>管道操作的本质是客户端通过对管道中的指令 <code>重排序</code> 执行。这样做可以大幅节省IO时间。</p>
+<blockquote>
+<p>我们知道redis的工作模型是基于单线程的，我个人认为他之所以这样设计，是因为CPU的性能不是redis性能瓶颈的关键因素。而是IO。<br>redis pipelines可以通过改变命令的读写顺序，将读指令合并执行、写指令合并执行。减少IO的频率从而减少网络通信的花费。</p>
+</blockquote>
+<h3 id="与原生批量命令-mget-mset-的区别"><a href="#与原生批量命令-mget-mset-的区别" class="headerlink" title="与原生批量命令 mget mset 的区别"></a>与原生批量命令 mget mset 的区别</h3><p>原生批量命令是redis服务端实现的。而pipelines是redis客户端实现的。</p>
+<p>当key的数目过多时，mget和mset的执行效率会大于pipelines</p>
+<p><em>pipelines不会阻塞其他客户端，而mget会。</em></p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/pipevsmget.jpg"></p>
+<h3 id="pipelines-底层"><a href="#pipelines-底层" class="headerlink" title="pipelines 底层"></a>pipelines 底层</h3><p>依靠 <code>网络协议栈</code> 深入内核</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/pipelinesker.jpg"></p>
+<p>流程简述：<br>客户端请求 -&gt; send buffer -&gt; 网卡（客户端） -&gt; 路由网关 -&gt; 网卡（服务器）-&gt;  recv buffer -&gt; 服务器处理<br>一个客户端请求被服务器处理完成后，原路返回。</p>
+<p>总结：<br>1 写操作几乎没有耗时，写入客户端 send buffer 就直接返回<br>2 读操作需要经历完整的流程，最终从 recv buffer 中获取数据，这是真正耗时的操作</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>去探索一下redis单机性能的极限在哪里？</p>
+<p>1 如果没有管道，最大承受qps是多少？<br>2 通过管道，最大承受qps是多少？</p>
+<p>证实一下为什么redis性能瓶颈不取决于CPU，而是IO。<br>这也能换个角度更好的理解为什么redis要使用单线程模型。</p>
 
       
     </div>
@@ -1101,82 +1182,6 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Request.<span class="function">Builder <span class="title">method</span><span class="params">(String method, <span class="meta">@Nullable</span> RequestBody body)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">&quot;method == null&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.length() == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method.length() == 0&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (body != <span class="keyword">null</span> &amp;&amp; !HttpMethod.permitsRequestBody(method)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method &quot;</span> + method + <span class="string">&quot; must not have a request body.&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (body == <span class="keyword">null</span> &amp;&amp; HttpMethod.requiresRequestBody(method)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;method &quot;</span> + method + <span class="string">&quot; must have a request body.&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.method = method;</span><br><span class="line">        <span class="keyword">this</span>.body = body;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>解决：<br>GET请求传递封装好的对象时，使用 <code>@RequestParam</code> 修饰 <code>Map&lt;String, Object&gt; </code>。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/27/spring-cache-singletonfactories/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/27/spring-cache-singletonfactories/" class="post-title-link" itemprop="url">Spring 三级缓存中 SingletonFactories 作用？</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-01-27 12:48:30 / 修改时间：12:50:54" itemprop="dateCreated datePublished" datetime="2021-01-27T12:48:30+08:00">2021-01-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Spring 为什么要设计三级缓存？<br>其中SingletonFactories工厂的作用是什么？</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/singletonFactories.png"></p>
 
       
     </div>
