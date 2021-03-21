@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-count">87</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,93 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/04/snowflake-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/01/04/snowflake-config/" class="post-title-link" itemprop="url">snowflake 雪花算法封装</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-04 10:11:21 / 修改时间：10:58:05" itemprop="dateCreated datePublished" datetime="2021-01-04T10:11:21+08:00">2021-01-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>基于 <a target="_blank" rel="noopener" href="https://www.hutool.cn/">Hutool</a> 工具包 <code>唯一ID工具-IdUtil</code> 封装的一个雪花算法ID生成工具。</p>
+<h4 id="雪花算法"><a href="#雪花算法" class="headerlink" title="雪花算法"></a>雪花算法</h4><p>雪花算法简单介绍下：</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/Image.png"></p>
+<p>Twitter公司开源的一种生成分布式id的算法。<br>大致满足：<br>1 生产性能高，每秒生成26万个趋势自增的ID<br>2 稳定性高，不依赖其他第三方系统，分布式系统中不会产生ID碰撞<br>3 使用灵活，ID中包含时间戳、工作主机、数据中心等数据，可以自由配置</p>
+<p>缺点：<br>1 依赖机器时钟，如果机器时钟回拨，会产生重复ID<br>2 单机上递增，分布式环境每台机器时钟不可能完全同步，有时候会出现不是全局递增的情况<br>（分布式Id一般只要求趋势递增，所以这个缺点可以忽略）</p>
+<p>其他分布式ID算法：<br>1 百度 UidGenerator<br>2 美团 Leaf<br><strong>上面这两种算法没有时钟回拨问题，有兴趣可以自行了解</strong></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/01/04/snowflake-config/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1026,109 +1113,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/12/09/how-to-checkout-running-port/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/12/09/how-to-checkout-running-port/" class="post-title-link" itemprop="url">我的tomcat为什么启不起来？</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-12-09 23:39:40" itemprop="dateCreated datePublished" datetime="2020-12-09T23:39:40+08:00">2020-12-09</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-10 22:41:52" itemprop="dateModified" datetime="2020-12-10T22:41:52+08:00">2020-12-10</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在测试服务器的使用过程，由于大家的使用没有非常规范，所以经常会出现服务启动不起来的问题。这类问题的产生经常是因为你配置的服务端口号被其他程序占用了。</p>
-<p>那么如何定位一台服务器中端口的使用情况呢？这里推荐两个非常好用的命令</p>
-<h4 id="查看正在使用的端口"><a href="#查看正在使用的端口" class="headerlink" title="查看正在使用的端口"></a>查看正在使用的端口</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -tnlp   </span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>-t : 指明显示TCP端口<br>-u : 指明显示UDP端口<br>-l : 显示监听套接字<br>-p : 显示进程标识符和程序名称，每一个套接字都属于一个程序<br>-n : 不进行DNS轮询，显示IP(可以加速操作)<br>-a : 显示全部（包括ESTABLISHED）</p>
-</blockquote>
-<p>套接字就是socket，表示一对IP/PORT的组合。每个套接字对应一个PID，相当于给一个应用程序赋予了收发通讯协议的能力<br>网关，用于匹配目标IP于掩码的与运算结果，网络层完成，寻找下一跳<br>这里关于套接字和网关的信息不展开，等我完全理解以后可能会整理一篇博客</p>
-<p>这里 <code>-u</code> 不是很常用。</p>
-<p>查询结果以我自己的一台服务器为例：</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/netstat.jpg"></p>
-<blockquote>
-<p>上图中本地地址和远端地址的组合对应一个PID，其中本地地址和远端地址的组合就是一个socket。多个socket指向同一个PID，就是多路复用。</p>
-</blockquote>
-<p>上图中本地地址 <code>Local Address</code> 一栏中显示出了目前所有正在监听的端口号。</p>
-<p>以tomcat为例，从最右侧 <code>Program name</code> 为 java 的就是 tomcat。因为它是由 java 开发的一款 servlet 容器。</p>
-<p>通常可以通过 <code>jps</code> 命令查看tomcat的PID。名称为 Bootstrap 。</p>
-<blockquote>
-<p>为什么 tomcat 启动叫 Bootstrap？给大家留个问题，答案在/bin/startup.sh 和 /bin/catalina.sh 中</p>
-</blockquote>
-<p>从上面的图可以看出，我这台机器的tomcat占用了两个端口：8005和8080，前者是用来监听SHUTDOWN指令的。</p>
-<h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>这篇博客没有太多内容，就是分享一个好用的命令行工具，便于大家查看服务器中已经占用的端口号。这样在配置新服务的过程中可以避免因为端口被占用而浪费时间。</p>
-<p>文章中途有一些发散的知识和问题，都是跟网络编程相关的。等我学习完成后再输出。</p>
-
       
     </div>
 

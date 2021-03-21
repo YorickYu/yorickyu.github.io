@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>redisson 锁续期</title>
+      <link href="2021/03/21/redisson-watchdog/"/>
+      <url>2021/03/21/redisson-watchdog/</url>
+      
+        <content type="html"><![CDATA[<p>redisson 默认加锁有效期 30s</p><p>watchdog 调用频率 10s，每次调用会将锁有效期更新为 30s。</p><p>如果redis服务宕机，那么锁和watchdog都会停止服务。即，锁到期会正常过期，没有死锁。</p><p>相关源码如下：</p><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/redisson%E9%94%81%E7%BB%AD%E6%9C%9F.jpg"></p><p>参考：</p><p>简书作者，花神子 - <a href="https://www.jianshu.com/p/0d3f5395ceaf">缓存Redis 分布式锁的续期</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 分布式锁 </tag>
+            
+            <tag> redisson </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>redis pipelines</title>
       <link href="2021/03/20/redis-pipelines/"/>
       <url>2021/03/20/redis-pipelines/</url>
