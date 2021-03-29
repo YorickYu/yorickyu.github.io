@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
+  </script>
+<meta name="description" content="前言MySQL中，索引是在存储引擎实现的MySQL中，只有 Memory 引擎显式支持哈希索引（非唯一）MySQL中，默认的Innodb引擎是不支持 Hash 索引的 哈希索引哈希索引的数据结构：槽 Slot、值 Value 每个槽的编号是顺序的，但是值不是。值存储的是指向 行 的指针 优点：因为索引自身只需存储对应的哈希值，所以索引的结构十分紧凑，这也让哈希索引查找的速度非常快。 缺点：1 哈希">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL Innodb 自定义Hash索引">
+<meta property="og:url" content="http://yloopdaed.icu/2021/03/29/mysql-innodb-hash/index.html">
+<meta property="og:site_name" content="yloopdaed">
+<meta property="og:description" content="前言MySQL中，索引是在存储引擎实现的MySQL中，只有 Memory 引擎显式支持哈希索引（非唯一）MySQL中，默认的Innodb引擎是不支持 Hash 索引的 哈希索引哈希索引的数据结构：槽 Slot、值 Value 每个槽的编号是顺序的，但是值不是。值存储的是指向 行 的指针 优点：因为索引自身只需存储对应的哈希值，所以索引的结构十分紧凑，这也让哈希索引查找的速度非常快。 缺点：1 哈希">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-29T01:24:16.000Z">
+<meta property="article:modified_time" content="2021-03-29T02:55:02.333Z">
+<meta property="article:author" content="yloopdaed">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="Hash索引">
+<meta property="article:tag" content="字符串索引优化">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://yloopdaed.icu/2021/03/29/mysql-innodb-hash/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>MySQL Innodb 自定义Hash索引 | yloopdaed</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">yloopdaed</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">YYYYYY iOS to Java. DON'T BE WILD</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-xmind"><a href="/xmind/" rel="section"><i class="fa fa-tags fa-fw"></i>导图</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95"><span class="nav-number">2.</span> <span class="nav-text">哈希索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B%E7%B4%A2%E5%BC%95"><span class="nav-number">3.</span> <span class="nav-text">大字符串类型索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95"><span class="nav-number">3.1.</span> <span class="nav-text">前缀索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-Hash-%E7%B4%A2%E5%BC%95"><span class="nav-number">3.2.</span> <span class="nav-text">自定义 Hash 索引</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">3.2.1.</span> <span class="nav-text">哈希算法的选择</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%BB%B4%E6%8A%A4%E5%93%88%E5%B8%8C%E5%80%BC"><span class="nav-number">3.2.2.</span> <span class="nav-text">如何维护哈希值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sql%E6%94%B9%E5%86%99"><span class="nav-number">3.2.3.</span> <span class="nav-text">sql改写</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yloopdaed"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">yloopdaed</p>
+  <div class="site-description" itemprop="description">可能是个非典型程序员吧 ^ ^</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">90</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/YorickYu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;YorickYu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yykeepbreak@gmail.com" title="E-Mail → mailto:yykeepbreak@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.jianshu.com/u/9901b7042663" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;9901b7042663" rel="noopener" target="_blank">简书</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/14337507/yloopdaed" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;14337507&#x2F;yloopdaed" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/YorickYu/JPP" title="https:&#x2F;&#x2F;github.com&#x2F;YorickYu&#x2F;JPP" rel="noopener" target="_blank">JPP</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/YorickYu/YYTODOLIST" title="https:&#x2F;&#x2F;github.com&#x2F;YorickYu&#x2F;YYTODOLIST" rel="noopener" target="_blank">TODOLIST</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/YorickYu/IHAVEAQUESTION" title="https:&#x2F;&#x2F;github.com&#x2F;YorickYu&#x2F;IHAVEAQUESTION" rel="noopener" target="_blank">IHAVEAQUESTION</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://azh.ink/" title="http:&#x2F;&#x2F;azh.ink" rel="noopener" target="_blank">azh</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.yitian.online/" title="https:&#x2F;&#x2F;blog.yitian.online" rel="noopener" target="_blank">lan</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/03/29/mysql-innodb-hash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MySQL Innodb 自定义Hash索引
+        </h1>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-03-29 09:24:16 / 修改时间：10:55:02" itemprop="dateCreated datePublished" datetime="2021-03-29T09:24:16+08:00">2021-03-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>MySQL中，索引是在存储引擎实现的<br>MySQL中，只有 Memory 引擎显式支持哈希索引（非唯一）<br>MySQL中，默认的Innodb引擎是不支持 Hash 索引的</p>
+<h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>哈希索引的数据结构：槽 Slot、值 Value</p>
+<p>每个槽的编号是顺序的，但是值不是。<strong>值存储的是指向 行 的指针</strong></p>
+<p>优点：<br>因为索引自身只需存储对应的哈希值，所以索引的结构十分紧凑，这也让哈希索引查找的速度非常快。</p>
+<p>缺点：<br>1 哈希值是无序的，无法用于排序<br>2 哈希索引只支持等值比较，不支持任何范围查询<br>3 哈希冲突，索引维护操作代价很高<br>4 不支持部分列匹配查找。例如：对数据列（A,B）建立哈希索引，此时查询A列，无法使用该索引</p>
+<p><strong>因为这些限制，哈希索引只适用于某些特定的场合</strong>。而一旦适合哈希索引 ，则它带来性能提升将非常显著。</p>
+<h3 id="大字符串类型索引"><a href="#大字符串类型索引" class="headerlink" title="大字符串类型索引"></a>大字符串类型索引</h3><blockquote>
+<p>这里基于 Innodb 数据引擎讨论</p>
+</blockquote>
+<p>由于索引本身在 Innodb 中是以 B+Tree 的数据结构存在的。如果对于大字符串类型直接建立索引显然是不合理的。（这里不展开介绍 B+ 树在 MySQL 中的相关知识）</p>
+<p>那么，假如现在要对数据列 email 或者 url 这类数据列建立索引。应该如何保证空间和效率？</p>
+<h4 id="前缀索引"><a href="#前缀索引" class="headerlink" title="前缀索引"></a>前缀索引</h4><p>这是一种常见的思路，取大字符串类型的前缀建立索引，节省空间的同时尽可能过滤数据。</p>
+<p>难点在于需要合理定位一个前缀长度，尽可能过滤重复数据。</p>
+<p>此外需要注意的是，前缀索引会导致覆盖索引失效。这里就不详细展开了。</p>
+<h4 id="自定义-Hash-索引"><a href="#自定义-Hash-索引" class="headerlink" title="自定义 Hash 索引"></a>自定义 Hash 索引</h4><p>这个概念其实一直存在于 Innodb 引擎中。</p>
+<blockquote>
+<p>innodb内部做了很多优化：<br>1 读：可预测性预读，自动在内存中创建 <strong>自适应Hash索引</strong> 以加速读操作的<br>2 写：加入缓冲区。加速插入操作</p>
+</blockquote>
+<p>上面的内容了解即可，本文中提到的 自定义Hash索引 是在 B+树 的基础上创建一个 <strong>伪哈希索引</strong>。</p>
+<p>思路就是新增一列记录大字符串哈希算法的结（删除原来字符串的索引）。</p>
+<h5 id="哈希算法的选择"><a href="#哈希算法的选择" class="headerlink" title="哈希算法的选择"></a>哈希算法的选择</h5><p>不要使用 SHA1() 和 MD5() 作为哈希函数。因为这两个函数是强加密函数。计算出来的哈希值非常长，浪费空间，索引过程也更慢。他们得设计目的是加密。</p>
+<p>CRC32() 是一个比较好的选择，计算结果较小。但是随着数据量的增多会出现明显的哈希冲突问题。可以在此基础上优化得到适合自己项目需求的哈希算法。</p>
+<h5 id="如何维护哈希值"><a href="#如何维护哈希值" class="headerlink" title="如何维护哈希值"></a>如何维护哈希值</h5><p>由于新增了一列伪哈希数据列。所以对于行数据的更新的插入操作。都是进行相应的哈希操作。</p>
+<p>当然这一列哈希值的维护可以进行手动维护，也可以使用触发器实现。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER // </span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> pseudohash_crc_in s <span class="keyword">BEFORE</span> <span class="keyword">INSERT</span> <span class="keyword">ON</span> pseudohash <span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="keyword">ROW</span> <span class="keyword">BEGIN</span> </span><br><span class="line"><span class="keyword">SET</span> NEW.url_crc=<span class="keyword">crc32</span>(NEW.url); </span><br><span class="line"><span class="keyword">END</span>; </span><br><span class="line">// </span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> pseudohash_crc_upd <span class="keyword">BEFORE</span> <span class="keyword">UPDATE</span> <span class="keyword">ON</span> pseudohash <span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="keyword">ROW</span> <span class="keyword">BEGIN</span> </span><br><span class="line"><span class="keyword">SET</span> NEW.url_crc=<span class="keyword">crc32</span>(NEW.url); </span><br><span class="line"><span class="keyword">END</span>; </span><br><span class="line">//</span><br></pre></td></tr></table></figure>
+
+<h5 id="sql改写"><a href="#sql改写" class="headerlink" title="sql改写"></a>sql改写</h5><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT id FROM url WHERE url=&quot;http://www.mysql.com&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>改进为:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT id FROM url WHERE url=&quot;http://www.mysql.com&quot; AND url_crc=CRC32(&quot;http://www.mysql.com&quot;);</span><br></pre></td></tr></table></figure>
+<p>由于哈希冲突。所以还是需要带有原条件，在伪哈希索引之后再扫描少量的数据。</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>本篇文章只是对于大字符串索引优化提供另一种思路。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+              <a href="/tags/Hash%E7%B4%A2%E5%BC%95/" rel="tag"># Hash索引</a>
+              <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96/" rel="tag"># 字符串索引优化</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/21/redisson-watchdog/" rel="prev" title="redisson 锁续期">
+                  <i class="fa fa-chevron-left"></i> redisson 锁续期
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yloopdaed</span>
+  
+  <a target="_blank" rel="noopener" href="http://beian.miit.gov.cn/">沪ICP备2020029595号-1</a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
