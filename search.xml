@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>吹毛求疵</title>
+      <link href="2021/04/01/cavil/"/>
+      <url>2021/04/01/cavil/</url>
+      
+        <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>虽说吹毛求疵看似是个贬义词，但是技术上的吹毛求疵往往是有必要的。</p><p>这里会不定时更新一些日常编码中 <code>吹毛求疵</code> 的写法。目的也是为了养成一个良好的编码习惯。</p><h3 id="循环中的size判断"><a href="#循环中的size判断" class="headerlink" title="循环中的size判断"></a>循环中的size判断</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, <span class="keyword">int</span> length = list.size; i &lt; length; i++)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>list.size 有一定的资源消耗</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>MySQL Innodb 自定义Hash索引</title>
       <link href="2021/03/29/mysql-innodb-hash/"/>
       <url>2021/03/29/mysql-innodb-hash/</url>
