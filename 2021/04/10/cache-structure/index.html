@@ -24,19 +24,24 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
   </script>
-<meta name="description" content="可能是个非典型程序员吧 ^ ^">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yloopdaed">
-<meta property="og:url" content="http://yloopdaed.icu/tags/java/page/2/index.html">
+<meta name="description" content="前言随着业务场景复杂度的提高和数据存储量的膨胀，为了保证整体服务平稳运行，缓存系统的地位也越来越高。 今天就近期对缓存架构的理解，梳理成一篇浅显的文章 Redis缓存架构分类根据日常C端面临的实际情况，Redis 做缓存时，大体分为两种模式，分别是只读缓存和读写缓存。 只读缓存（读多写少）修改数据时先删除缓存，下次读请求再写入。例如：旁路型缓存  当我们需要缓存图片、短视频这些用户只读的数据时，就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存架构">
+<meta property="og:url" content="http://yloopdaed.icu/2021/04/10/cache-structure/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="可能是个非典型程序员吧 ^ ^">
+<meta property="og:description" content="前言随着业务场景复杂度的提高和数据存储量的膨胀，为了保证整体服务平稳运行，缓存系统的地位也越来越高。 今天就近期对缓存架构的理解，梳理成一篇浅显的文章 Redis缓存架构分类根据日常C端面临的实际情况，Redis 做缓存时，大体分为两种模式，分别是只读缓存和读写缓存。 只读缓存（读多写少）修改数据时先删除缓存，下次读请求再写入。例如：旁路型缓存  当我们需要缓存图片、短视频这些用户只读的数据时，就">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/cache1.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/cache2.png">
+<meta property="article:published_time" content="2021-04-10T14:10:41.000Z">
+<meta property="article:modified_time" content="2021-04-10T14:46:08.131Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="iOS JAVA">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/cache1.png">
 
 
-<link rel="canonical" href="http://yloopdaed.icu/tags/java/page/2/">
+<link rel="canonical" href="http://yloopdaed.icu/2021/04/10/cache-structure/">
 
 
 <script class="page-configurations">
@@ -44,11 +49,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
-<title>标签: java | yloopdaed</title>
+<title>缓存架构 | yloopdaed</title>
   
 
 
@@ -173,7 +178,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -186,6 +191,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis%E7%BC%93%E5%AD%98%E6%9E%B6%E6%9E%84%E5%88%86%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">Redis缓存架构分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AA%E8%AF%BB%E7%BC%93%E5%AD%98%EF%BC%88%E8%AF%BB%E5%A4%9A%E5%86%99%E5%B0%91%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">只读缓存（读多写少）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E7%BC%93%E5%AD%98"><span class="nav-number">2.2.</span> <span class="nav-text">读写缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9"><span class="nav-number">3.</span> <span class="nav-text">选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%95%E5%BC%80"><span class="nav-number">4.</span> <span class="nav-text">展开</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%81%E8%B7%AF%E5%9E%8B%E7%BC%93%E5%AD%98-Look-Aside-Caching"><span class="nav-number">4.1.</span> <span class="nav-text">旁路型缓存 (Look-Aside Caching)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">4.2.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BF%E9%80%8F%E5%9E%8B%E7%BC%93%E5%AD%98"><span class="nav-number">4.3.</span> <span class="nav-text">穿透型缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%80%83-1"><span class="nav-number">4.4.</span> <span class="nav-text">思考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -276,73 +282,107 @@
 </noscript>
 
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h2 class="collection-header">java
-          <small>标签</small>
-        </h2>
-      </div>
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/10/cache-structure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          缓存架构
+        </h1>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+
+      <time title="创建时间：2021-04-10 22:10:41 / 修改时间：22:46:08" itemprop="dateCreated datePublished" datetime="2021-04-10T22:10:41+08:00">2021-04-10</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着业务场景复杂度的提高和数据存储量的膨胀，为了保证整体服务平稳运行，缓存系统的地位也越来越高。</p>
+<p>今天就近期对缓存架构的理解，梳理成一篇浅显的文章</p>
+<h2 id="Redis缓存架构分类"><a href="#Redis缓存架构分类" class="headerlink" title="Redis缓存架构分类"></a>Redis缓存架构分类</h2><p>根据日常C端面临的实际情况，Redis 做缓存时，大体分为两种模式，分别是<strong>只读缓存</strong>和<strong>读写缓存</strong>。</p>
+<h3 id="只读缓存（读多写少）"><a href="#只读缓存（读多写少）" class="headerlink" title="只读缓存（读多写少）"></a>只读缓存（读多写少）</h3><p>修改数据时先删除缓存，下次读请求再写入。例如：<strong>旁路型缓存</strong></p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/cache1.png"></p>
+<p>当我们需要缓存图片、短视频这些用户只读的数据时，就可以使用只读缓存这个类型了</p>
+<h3 id="读写缓存"><a href="#读写缓存" class="headerlink" title="读写缓存"></a>读写缓存</h3><p>修改数据时不删除缓存，最新的数据是在 Redis 中，通过回写策略同步数据库。例如：<strong>穿透型缓存</strong></p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/cache2.png"></p>
+<blockquote>
+<p>回写策略<br>1 同步直写策略，写请求发给缓存的同时，也会发给后端数据库进行处理，等到缓存和数据库都写完数据，才给客户端返回。<br>同步直写会降低缓存的访问性能<br>2 异步写回策略，优先考虑了响应延迟。此时，所有写请求都先在缓存中处理。等到这些增改的数据要被从缓存中淘汰出来时，缓存将它们写回后端数据库。<br>异步写回有数据丢失的风险</p>
+</blockquote>
+<p><strong>同步直写模式侧重于保证数据可靠性，而异步写回模式则侧重于提供低延迟访问</strong></p>
+<h2 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h2><p>关于是选择只读缓存，还是读写缓存，主要看我们 <strong>对写请求是否有加速的需求</strong></p>
+<p>1 如果需要对写请求进行加速，我们选择读写缓存<br>2 如果写请求很少，或者是只需要提升读请求的响应速度的话，我们选择只读缓存</p>
+<hr>
+<p>缓存可以放到基础架构中任何存在数据传输瓶颈的地方。</p>
+<h2 id="展开"><a href="#展开" class="headerlink" title="展开"></a>展开</h2><h3 id="旁路型缓存-Look-Aside-Caching"><a href="#旁路型缓存-Look-Aside-Caching" class="headerlink" title="旁路型缓存 (Look-Aside Caching)"></a>旁路型缓存 (Look-Aside Caching)</h3><p>旁路型缓存是避免微服务从后端存储中访问数据的高性能替代方案<br>1 应用读取数据时，需要先读取 Redis；<br>2 发生缓存缺失时，需要从数据库读取数据；<br>3 发生缓存缺失时，还需要更新缓存。</p>
+<p>这些操作都要放在应用程序中来完成。所以，<br>有一个地方就需要注意了：因为需要新增程序代码来使用缓存，所以，Redis 并不适用于那些无法获得源码的应用，例如一些很早之前开发的应用程序，它们的源码已经没有再维护了，或者是第三方供应商开发的应用，没有提供源码，所以，我们就没有办法在这些应用中进行缓存操作。</p>
+<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>伴随业务膨胀，缓存的一致性维护难度上涨<br>思考：<br>数据读写方的沟通难题<br>解决方案：<br>1 AOP注解，更新缓存时通知<br>2 Mybatis 触发器<br>3 binlog 处理<br>4 MQ 最终一致性</p>
+<h3 id="穿透型缓存"><a href="#穿透型缓存" class="headerlink" title="穿透型缓存"></a>穿透型缓存</h3><p>穿透型缓存的设计原则是将缓存与后端数据库的交互细节对应用层服务隐藏<br>应用层服务所有的读写请求均请求缓存，读请求 miss 后，缓存向后端数据服务器请求数据，先更新缓存后返回<br>而写请求也是同样的，先写入缓存服务器，随后在合适的时间同步给后端服务器</p>
+<h3 id="思考-1"><a href="#思考-1" class="headerlink" title="思考"></a>思考</h3><p>实现复杂度和数据一致性的问题<br>思考：<br>选择合适的回写时间节点，和回写策略<br>合理规划缓存中的键值关系<br>解决方案：<br>1 实现复杂性无法避免，为了追求高频读写场景的缓存最大化利用<br>2 一致性问题考虑配合脚本语言，触发器等实现一个回写服务，当然还要保证缓存服务的高可用（这也不算不上解决方案）</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>其实缓存架构的思想内嵌是无处不在的。MySQL本身也有<code>buffer pool</code>的概念。redis中也有批处理指令和pipeline管道的概念。甚至于寄存器与系统内存之间的3级缓存概念。</p>
+<p>硬件的定位差距总需要通过软件去弥补，协同工作</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2020-10-31T09:45:40+08:00"
-              content="2020-10-31">
-          10-31
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/10/31/question-of-hashmap-put/" itemprop="url">
-            <span itemprop="name">IHAVEAQUESTION - JDK1.7 HashMap 链表头插疑问？</span>
-          </a>
-      </div>
+    <footer class="post-footer">
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/01/cavil/" rel="prev" title="吹毛求疵">
+                  <i class="fa fa-chevron-left"></i> 吹毛求疵
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2020-10-29T20:45:35+08:00"
-              content="2020-10-29">
-          10-29
-        </time>
-      </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/10/29/memory-layout-of-java-object/" itemprop="url">
-            <span itemprop="name">Java对象的内存布局</span>
-          </a>
-      </div>
 
-      
-    </header>
-  </article>
 
-    </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/tags/java/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/tags/java/">1</a><span class="page-number current">2</span>
-  </nav>
+
 
 
 <script>
