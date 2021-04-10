@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">59</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">90</span>
+        <span class="site-state-item-count">91</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,103 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/08/rabbitmq/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/01/08/rabbitmq/" class="post-title-link" itemprop="url">RabbitMQ 查询笔记</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-08 12:18:40" itemprop="dateCreated datePublished" datetime="2021-01-08T12:18:40+08:00">2021-01-08</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-02-23 14:54:58" itemprop="dateModified" datetime="2021-02-23T14:54:58+08:00">2021-02-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>此文档在 <a target="_blank" rel="noopener" href="https://www.baizhiedu.xin/front/index#/main">百知</a> 的RabbitMQ视频教程笔记基础上改动而来。</p>
+</blockquote>
+<h2 id="MQ引言"><a href="#MQ引言" class="headerlink" title="MQ引言"></a>MQ引言</h2><h3 id="什么是MQ"><a href="#什么是MQ" class="headerlink" title="什么是MQ"></a>什么是MQ</h3><p><code>MQ</code>(Message Quene) :  翻译为 <code>消息队列</code>,通过典型的 <code>生产者</code>和<code>消费者</code>模型,生产者不断向消息队列中生产消息，消费者不断的从队列中获取消息。因为消息的生产和消费都是异步的，而且只关心消息的发送和接收，没有业务逻辑的侵入,轻松的实现系统间解耦。别名为 <code>消息中间件</code>    通过利用高效可靠的消息传递机制进行平台无关的数据交流，并基于数据通信来进行分布式系统的集成。</p>
+<h3 id="MQ有哪些"><a href="#MQ有哪些" class="headerlink" title="MQ有哪些"></a>MQ有哪些</h3><p>当今市面上有很多主流的消息中间件，如老牌的<code>ActiveMQ</code>、<code>RabbitMQ</code>，炙手可热的<code>Kafka</code>，阿里巴巴自主开发<code>RocketMQ</code>等。</p>
+<h3 id="不同MQ特点"><a href="#不同MQ特点" class="headerlink" title="不同MQ特点"></a>不同MQ特点</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="strong">**1.ActiveMQ**</span></span><br><span class="line">ActiveMQ 是Apache出品，最流行的，能力强劲的开源消息总线。它是一个完全支持JMS规范的的消息中间件。丰富的API,多种集群架构模式让ActiveMQ在业界成为老牌的消息中间件,在中小型企业颇受欢迎!</span><br><span class="line"></span><br><span class="line"><span class="strong">**2.Kafka**</span></span><br><span class="line">Kafka是LinkedIn开源的分布式发布-订阅消息系统，目前归属于Apache顶级项目。Kafka主要特点是基于Pull的模式来处理消息消费，追求高吞吐量，一开始的目的就是用于日志收集和传输。0.8版本开始支持复制，不支持事务，对消息的重复、丢失、错误没有严格要求，适合产生大量数据的互联网服务的数据收集业务。</span><br><span class="line"></span><br><span class="line"><span class="strong">**3.RocketMQ**</span></span><br><span class="line">RocketMQ是阿里开源的消息中间件，它是纯Java开发，具有高吞吐量、高可用性、适合大规模分布式系统应用的特点。RocketMQ思路起源于Kafka，但并不是Kafka的一个Copy，它对消息的可靠传输及事务性做了优化，目前在阿里集团被广泛应用于交易、充值、流计算、消息推送、日志流式处理、binglog分发等场景。</span><br><span class="line"></span><br><span class="line"><span class="strong">**4.RabbitMQ**</span></span><br><span class="line">RabbitMQ是使用Erlang语言开发的开源消息队列系统，基于AMQP协议来实现。AMQP的主要特征是面向消息、队列、路由（包括点对点和发布/订阅）、可靠性、安全。AMQP协议更多用在企业系统内对数据一致性、稳定性和可靠性要求很高的场景，对性能和吞吐量的要求还在其次。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>RabbitMQ比Kafka可靠，Kafka更适合IO高吞吐的处理，一般应用在大数据日志处理或对实时性（少量延迟），可靠性（少量丢数据）要求稍低的场景使用，比如ELK日志收集。</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/01/08/rabbitmq/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1010,97 +1107,6 @@
     <div class="post-body" itemprop="articleBody">
           <p>输出中.</p>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/12/13/threadlocal2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/12/13/threadlocal2/" class="post-title-link" itemprop="url">尝试阅读ThreadLocal源码-Hash冲突、启动/探测式清理、扩容</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-12-13 22:20:41" itemprop="dateCreated datePublished" datetime="2020-12-13T22:20:41+08:00">2020-12-13</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-21 18:04:32" itemprop="dateModified" datetime="2020-12-21T18:04:32+08:00">2020-12-21</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h4 id="Hash冲突"><a href="#Hash冲突" class="headerlink" title="Hash冲突"></a>Hash冲突</h4><p>因为ThreadLocalMap中的数据其实是存在Entry[]数组中的，一个纯数组的结构能存储值的数量是非常有限的，几遍在Hash算法中使用了黄金分割，但是不可避免的还是会产生Hash冲突。<br>当插入Entry[]数组时发生Hash冲突时，会进入for循环</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (Entry e = tab[i]; </span><br><span class="line">    e != <span class="keyword">null</span>;</span><br><span class="line">    e = tab[i = nextIndex(i, len)]) &#123;  <span class="comment">// Hash冲突</span></span><br><span class="line">    ThreadLocal&lt;?&gt; k = e.get();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (k == key) &#123;</span><br><span class="line">        e.value = value;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (k == <span class="keyword">null</span>) &#123;</span><br><span class="line">        replaceStaleEntry(key, value, i);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">nextIndex</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((i + <span class="number">1</span> &lt; len) ? i + <span class="number">1</span> : <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>假如当前ThreadLocal计算出的下标是5，tab[5]对应的Entry不为null，则说明产生了Hash冲突。<br>进入for循环：<br>1 判断这个Entry的key是否等于传入的ThreadLocal，如果相等，替换并返回<br>2 判断这个Entry的key是否为null（说明key已经过期），开始探测式清理<br>3 循环过程中，数组下标通过 <code>nextIndex(i, len)]</code> 累加，如果发现新下标对应数组位置为空，那么会插入在新的位置</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/13/threadlocal2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 

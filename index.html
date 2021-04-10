@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">59</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">90</span>
+        <span class="site-state-item-count">91</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -346,6 +346,103 @@
 <ul>
 <li>😄 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/YYTODOLIST">YYTODOLIST</a></li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/11/high-performance-mysql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/11/high-performance-mysql/" class="post-title-link" itemprop="url">《高性能MySQL》 归纳整理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-04-11 00:09:15 / 修改时间：00:16:24" itemprop="dateCreated datePublished" datetime="2021-04-11T00:09:15+08:00">2021-04-11</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="逻辑架构"><a href="#逻辑架构" class="headerlink" title="逻辑架构"></a>逻辑架构</h2><p>1 连接/线程处理<br>2 查询缓存+解析器+优化器<br>3 存储引擎</p>
+<h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><p>每个客户端连接都是mysql服务器中的一个线程，服务端会缓存这些线程，因此每个新建的连接不需要创建或销毁线程</p>
+<h3 id="优化-amp-缓存"><a href="#优化-amp-缓存" class="headerlink" title="优化&amp;缓存"></a>优化&amp;缓存</h3><p>优化器不关心表的存储引擎<br>优化包括：重写查询，改变表的读取顺序，选择合适的索引<br>缓存：解析sql前会先检查缓存</p>
+<h2 id="并发控制"><a href="#并发控制" class="headerlink" title="并发控制"></a>并发控制</h2><p>1 读写锁：共享读锁，排他写锁。写锁比读锁有更高的优先级（所以写锁可能插队到读锁前）<br>加锁这个操作本身也需要消耗资源</p>
+<p>2 锁粒度<br>锁定的数据量，锁定的数据量越少，系统并发程度越高<br>2.1 表锁<br>开销小，会锁定整张表<br>2.2 行级锁<br>最大程度支持并发</p>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><p>一组原子性的SQL查询，要么全部执行，要么全部失败</p>
+<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><p>4种：读未提交、读已提交（大多数数据库默认）、可重复读（mysql默认）、串行化<br>mvcc多版本并发控制和间隙锁解决了幻读</p>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>多个事务在同一资源上互相占用<br>innodb可以检测到死锁的循环依赖，并返回一个错误（将持有最少行级排他锁的数据进行回滚）</p>
+<h3 id="事务日志"><a href="#事务日志" class="headerlink" title="事务日志"></a>事务日志</h3><p>帮助提高事务的效率。<br>每次修改数据，只修改其内存拷贝，再把修改行为记录到事务日志中（磁盘，追加写入）<br>所以修改数据是先写入磁盘事务日志，再慢慢将内存中的数据刷回磁盘（写2次磁盘，数据刷回磁盘时系统崩溃，重启时会根据事务日志修改数据）</p>
+<h3 id="MySQL中的事务"><a href="#MySQL中的事务" class="headerlink" title="MySQL中的事务"></a>MySQL中的事务</h3><p>mysql服务器层不管理事务，事务是由存储引擎实现的。在同一个事务中，使用多个存储引擎是不可靠的（不同的表可以绑定不同的存储引擎）<br>innodb和NDB Cluster引擎支持。myisam不支持<br>默认事务是自动提交模式</p>
+<h2 id="innodb"><a href="#innodb" class="headerlink" title="innodb"></a>innodb</h2><p>聚簇索引，对主键查询有很高的性能。（若表中索引较多，主键应该尽量小）<br>innodb内部做了很多优化：<br>1 读：可预测性预读，自动在内存中创建hash索引以加速读操作的自适应哈希<br>2 写：加入缓冲区。加速插入操作</p>
+<h3 id="选择存储引擎"><a href="#选择存储引擎" class="headerlink" title="选择存储引擎"></a>选择存储引擎</h3><p>考虑：事务、备份、崩溃恢复、特有的特性</p>
+<h3 id="改变表的存储引擎"><a href="#改变表的存储引擎" class="headerlink" title="改变表的存储引擎"></a>改变表的存储引擎</h3><p>1 alter table<br>执行时间长。原表会加读锁，复制到一张新表。外键将丢失<br>2 mysqldump工具 导出导入<br>在create table前加上drop table。可能会导致数据丢失<br>3 创建于查询 insert select<br>insert into table_innodb select *from table_myisam</p>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>mysql中，索引是在存储引擎层实现的</p>
+<p>3个原则：<br>1 单行访问是很慢的。使用索引可以创建位置引用以提升效率<br>2 按顺序访问范围数据是很快的。第一，顺序IO不需要多次磁盘寻道。第二，顺序读取数据不需要额外的排序操作。<br>3 索引覆盖查询是很快的。避免回表和大量单行访问。</p>
+<p>对查询sql的建议：<br>选择合适的索引以避免单行查找、尽可能地使用数据原生顺序从而避免额外的排序操作、尽可能使用索引覆盖查询。</p>
+<p>理解索引是如何工作的是为了创建最合适的索引。非常重要</p>
+<h2 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h2><h3 id="为什么查询会慢？"><a href="#为什么查询会慢？" class="headerlink" title="为什么查询会慢？"></a>为什么查询会慢？</h3><p>了解查询的生命周期、清楚查询的时间消耗情况<br>网络、CPU计算、生成统计信息和执行计划、锁等待（互斥等待）、上下文切换以及系统调用等<br>减少一些不必要的额外操作，消除额外的重复操作达到优化查询的目的</p>
+<h3 id="优化数据访问"><a href="#优化数据访问" class="headerlink" title="优化数据访问"></a>优化数据访问</h3><p>2.1 请求了不需要的数据：limit、只选取需要的列数据、缓存<br>2.2 扫描额外的记录：扫描行数、访问类型、返回的行数</p>
+<h3 id="重构查询方式"><a href="#重构查询方式" class="headerlink" title="重构查询方式"></a>重构查询方式</h3><p>3.1 复杂查询分解成多个简单查询：MySQL连接和断开都是很轻量级的<br>3.2 切分查询：大查询切分成小查询多次执行<br>3.3 分解关联查询：充分利用查询缓存、单个查询可以减少锁竞争、在应用层做关联，更容易对数据库进行拆分和扩展</p>
+<h3 id="执行过程"><a href="#执行过程" class="headerlink" title="执行过程"></a>执行过程</h3><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/Screenshot_20210404_230318.jpg"></p>
+<p>mysql内部优化流程<br>1 查询缓存：大小写敏感的hash查找实现<br>2 语法解析和预处理：sql语法解析，生成“解析树”<br>3 查询优化器：将语法树通过优化器转化成执行计划，优化器的作用就是找到最好的执行计划（基于成本优化）<br>    可以处理的优化类型：<br>3.1 重新定义关联表顺序<br>3.2 外连接转化成内连接<br>3.3 等价变换规则<br>3.4 优化count、min和max方法<br>3.5 扫描覆盖索引<br>3.6 子查询优化<br>3.7 提前终止查询</p>
+<h4 id="查询缓存"><a href="#查询缓存" class="headerlink" title="查询缓存"></a>查询缓存</h4><p>1 检查查询语句的哈希值是否命中（大小写敏感）<br>2 检查用户权限</p>
+<h4 id="解析器和预处理器"><a href="#解析器和预处理器" class="headerlink" title="解析器和预处理器"></a>解析器和预处理器</h4><p>1 MySQL通过关键字将SQL语句解析成一颗“解析树”<br>2 解析器进行规则验证和解析查询<br>3 预处理器检查表、数据列、别名等的合法性，还有权限验证（这个验证通常很快）</p>
+<h4 id="查询优化器"><a href="#查询优化器" class="headerlink" title="查询优化器"></a>查询优化器</h4><p>一条查询可以有多种执行方式，最后都返回相同的结果。查询优化器就是找到其中最好的执行计划<br>MySQL通常是基于成本优化，有两种优化策略：静态优化、动态优化</p>
+<blockquote>
+<p>查询成本 SHOW STATUS LIKE ‘Last_query_cost’<br>查看执行计划 EXPLAIN EXTENDED</p>
+</blockquote>
+<h2 id="关联查询"><a href="#关联查询" class="headerlink" title="关联查询"></a>关联查询</h2><p>1 UNION查询<br>先将一系列的单个查询结果放到一个临时表中，然后再重新读出临时表数据来完成UNION查询<br>2 JOIN查询<br>重新定义关联的顺序：MySQL会选择合适的关联顺序让查询执行的成本尽可能低。（可以使用关键字 STRAIGHT_JOIN 让优化器按照你认为的最优关联顺序执行）</p>
+<h2 id="排序优化"><a href="#排序优化" class="headerlink" title="排序优化"></a>排序优化</h2><p>应尽可能避免排序或者尽可能避免对大量数据排序，尽量使用索引生成的排序结果<br>MySQL排序：filesort 文件排序<br>1 数据量小在内存中进行，快速排序<br>2 数据量大需要使用磁盘，先将数据分块，每个独立块使用快速排序（每个块的快排结果存在磁盘上）<br>3 最后将各个排好序的块进行合并<br>文件排序时需要很多临时存储空间，因为每一个排序记录都会分配一个足够长的定长空间来存放。<br>例如：varchar列（UTF-8字符集）需要为每个字符预留三个字节。这样排序消耗的临时空间比次磁盘上原有表都要大很多倍</p>
+<h2 id="关联查询时排序"><a href="#关联查询时排序" class="headerlink" title="关联查询时排序"></a>关联查询时排序</h2><p>两种情况<br>1 如果 ORDER BY 中的所有列都来自关联的第一个表，那么MySQL在关联处理第一个表时进行文件排序（Extra字段 Using filesort）<br>2 其他所有，MySQL会先将关联的结果存放在一个临时表中，然后在所有关联结束后，再进行文件排序。（Extra字段 Using temporary；Using filesort）<br>注意：5.6版本之前，LIMIT也会在排序之后应用，即使只返回少量数据，临时表和需要排序的数据量仍然很大。<br>5.6版本之后，对此进行了优化。根据实际情况抛弃不满足条件的结果，然后再进行排序</p>
+<h2 id=""><a href="#" class="headerlink" title=".."></a>..</h2><p>持续更新</p>
 
       
     </div>
@@ -1026,149 +1123,6 @@
 <p><code>HashMap&lt;Long, Long&gt;</code> 有多低呢？</p>
 <p>在 <code>HashMap&lt;Long，Long&gt;</code> 结构中：<br>1 Key和Value所存放的两个长整型数据是有效数据，共16字节（2×8字节）。<br>2 这两个长整型数据包装成 <code>java.lang.Long</code> 对象之后，就分别具有8字节的Mark Word、8字节的Klass指针，再加8字节存储数据的long值。<br>3 然后这2个Long对象组成 <code>Map.Entry</code> 之后，又多了16字节的对象头，然后一个8字节的next字段和4字节的int型的hash字段，为了对齐，还必须添加4字节的空白填充<br>4 最后还有HashMap中对这个Entry的8字节的引用，这样增加两个长整型数字，实际耗费的内存为(Long(24byte)×2)+Entry(32byte)+HashMapRef(8byte)=88byte</p>
 <p>空间效率为有效数据除以全部内存空间，即16字节/88字节=<strong>18%</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/02/11/jvm-gc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/11/jvm-gc/" class="post-title-link" itemprop="url">堆 & 垃圾回收机制</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-02-11 14:15:58" itemprop="dateCreated datePublished" datetime="2021-02-11T14:15:58+08:00">2021-02-11</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-19 12:24:08" itemprop="dateModified" datetime="2021-02-19T12:24:08+08:00">2021-02-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>堆内存中可以细分为三个区域：<br>1 新生代Young：伊甸园区Eden、幸存0区from、幸存1区to<br>2 老年代Old：默认一个对象经历了15次GC还没被回收，会进入老年代，可以通过<code>-XX:MaxTenuringThreshold</code>更改次数<br>3 永久代Perm：方法区（1.7）/元数据区（1.8）</p>
-<blockquote>
-<p>永久代有两种理解：<br>1 把他理解成与堆是分开的独立区域<br>2 把他理解在堆内，逻辑上存在，物理上不占用堆内空间</p>
-</blockquote>
-<p>堆内存溢出OOM：OutOfMemoryError:Java heap space<br>处理堆OOM：<br>1 扩大堆内存<br>2 分析内存，找问题（定位简单，调优难）</p>
-<p>常用调试工具：<br>1 JProfiler工具<br>2 Eclipse自带的MAT<br>3 在Java的Jdk中 jconsole.exe 和 jvisualvm.exe<br>4 <a target="_blank" rel="noopener" href="https://github.com/alibaba/arthas">arthas</a></p>
-<p>Jprofiler使用：<br>1 分析Dump内存文件<br>2 查看堆中的数据信息<br>3 查看堆中的线程信息</p>
-<h4 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String s = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">catch</span> (Error e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>配置运行参数：<code>-Xms1m -Xmx1m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDetails</code></p>
-</blockquote>
-<h5 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h5><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/oom-error.jpg"></p>
-<h5 id="分析Dump文件"><a href="#分析Dump文件" class="headerlink" title="分析Dump文件"></a>分析Dump文件</h5><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jprofiler-obj.jpg" alt="Object"></p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jprofiler-thread.jpg" alt="Thread"></p>
-<h5 id="常用调优参数"><a href="#常用调优参数" class="headerlink" title="常用调优参数"></a>常用调优参数</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">常见的如下：</span><br><span class="line">-Xms64m 最小堆内存 64m.</span><br><span class="line">-Xmx128m 最大堆内存 128m.</span><br><span class="line">-XX:NewSize&#x3D;30m 新生代初始化大小为30m.</span><br><span class="line">-XX:MaxNewSize&#x3D;40m 新生代最大大小为40m.</span><br><span class="line">-Xss&#x3D;256k 线程栈大小。</span><br><span class="line">-XX:+PrintGCDetails 显示堆内存信息和GC信息</span><br><span class="line">-XX:+PrintHeapAtGC 当发生 GC 时打印内存布局。</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError 发送内存溢出时 dump 内存。</span><br><span class="line"></span><br><span class="line">新生代和老年代的默认比例为 1:2，也就是说新生代占用 1&#x2F;3的堆内存，而老年代占用 2&#x2F;3 的堆内存。</span><br><span class="line">可以通过参数 -XX:NewRatio&#x3D;2 来设置老年代&#x2F;新生代的比例。</span><br></pre></td></tr></table></figure>
-
-<h4 id="分代收集理论"><a href="#分代收集理论" class="headerlink" title="分代收集理论"></a>分代收集理论</h4><p>符合大多数成熟运营的实际情况的经验法则。<br>将Java堆划分成不同的区域，根据回收对象的年龄（经历的垃圾回收次数）分配到不同区域存储。</p>
-<p>三大假说：<br>1 弱分代假说：绝大多数对象都是朝生夕灭<br>2 强分代假说：熬过越多次垃圾收集过程的对象就越难以清除<br>3 跨代引用假说：跨代引用相对同代引用来说占极少数</p>
-<blockquote>
-<p>堆划分成新生代和老年代，分代收集时对象不是孤立的，对象之间存在跨代引用<br>思考：Minor GC时一个新生代中的对象回收时被老年代引用，此时是否需要额外遍历整个老年代？<br>根据第3条假说，具体做法是：在新生代上建立一个全局数据结构（记忆集 Remembered Set），这个结构把老年代划分成若干小块，标志出哪一块存在跨代引用。只遍历这一小块即可</p>
-</blockquote>
-<p>不同区域的垃圾回收类型：<br>1 Minor GC：新生代收集<br>2 Major GC ：老年代收集。CMS收集器独有<br><strong>3 Mixed GC：混合收集，新生代+部分老年代。G1收集器独有</strong><br>4 Full GC：整堆收集，收集Java堆和方法区（元数据区）</p>
-<h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><h5 id="标记-复制算法：将存活的对象进行复制和移动"><a href="#标记-复制算法：将存活的对象进行复制和移动" class="headerlink" title="标记-复制算法：将存活的对象进行复制和移动"></a>标记-复制算法：将存活的对象进行复制和移动</h5><p>每次Minor GC都会清空Eden区和幸存to区：<br>1 将Eden中存活的对象复制到幸存to区。<br>2 将原本幸存from区中存活的对象复制到幸存to区，并交换幸存from和to区。所以最后幸存to区是空的。<br>优点：没有内存碎片<br>缺点：两个幸存区永远有一个是空的。浪费了一半的空间</p>
-<h5 id="标记-清除算法：两次扫描"><a href="#标记-清除算法：两次扫描" class="headerlink" title="标记-清除算法：两次扫描"></a>标记-清除算法：两次扫描</h5><p>第一次扫描全部对象，对存活的对象进行标记。<br>第二次扫描全部对象，对没有标记的对象进行清除<br>优点：不浪费额外的空间<br>缺点：两次扫描，浪费时间。会产生内存碎片</p>
-<h5 id="标记-在整理-压缩算法：在标记清除的基础上，防止内存碎片。"><a href="#标记-在整理-压缩算法：在标记清除的基础上，防止内存碎片。" class="headerlink" title="标记-在整理/压缩算法：在标记清除的基础上，防止内存碎片。"></a>标记-在整理/压缩算法：在标记清除的基础上，防止内存碎片。</h5><p>再次扫描全部对象（清除过后的对象），向一端移动存活的对象（移动对象有一定开销）<br>可以在多次标记清除算法后，再执行一次标记压缩，节省开销。<br>缺点：移动存活对象，更新引用要全程暂停程序（STW Stop The World）。<br>其实，标记-清除算法也存在STW，只是停顿的时间很短而已<br>这是为了保证结果的准确性（不然在分析或回收过程中，对象引用关系还在不断变化）</p>
-<h5 id="引用计数器"><a href="#引用计数器" class="headerlink" title="引用计数器"></a>引用计数器</h5><p>很少用，与iOS中的引用计数器原理基本相同。实例每建立一个强引用就会给对应的引用计数器加一。其实类似的思想在JUC源码中有很多体现。缺点就是要维护一个引用变量。</p>
-<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>时间复杂度（从低到高）：复制算法 &gt; 标记清除法 &gt; 标记压缩法<br>内存整齐度：复制算法 = 标记压缩法 &gt; 标记清除法<br>内存利用率：标记压缩法 = 标记清除法 &gt; 复制算法</p>
-<p><strong><em>复制算法</em></strong> 最佳使用场景：对象存活度较低的区域——新生代</p>
-<p><strong><em>标记清除 + 标记压缩</em></strong> 最佳使用场景：对象存活率高，空间大的区域——老年代</p>
-<h4 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h4><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/gc_collector.png"></p>
-<p>没有<strong>最好的</strong>收集器，更不存在<strong>万能的</strong>收集器，值有<strong>最合适的</strong>收集器</p>
-<h5 id="Serial-收集器（新生代收集器）"><a href="#Serial-收集器（新生代收集器）" class="headerlink" title="Serial 收集器（新生代收集器）"></a>Serial 收集器（新生代收集器）</h5><p>一个<strong>单线程工作</strong>的收集器：进行垃圾收集时，必须暂停其他所有工作线程，直至收集结束。<br>特点：简单而高效，没有线程交互的开销。<br>应用：微服务应用中（虚拟机，内存小的场景）</p>
-<h5 id="ParNew-收集器（新生代收集器）"><a href="#ParNew-收集器（新生代收集器）" class="headerlink" title="ParNew 收集器（新生代收集器）"></a>ParNew 收集器（新生代收集器）</h5><p>Serial收集器的<strong>多线程并行</strong>版本<br>收集算法、对象分配规则、回收策略等都一样，代码很多共用</p>
-<h5 id="CMS-收集器（老年代收集器）"><a href="#CMS-收集器（老年代收集器）" class="headerlink" title="CMS 收集器（老年代收集器）"></a>CMS 收集器（老年代收集器）</h5><p>首次实现了让<strong>垃圾收集线程与用户线程同时工作</strong><br>但是它只能与Serial或者ParNew配合（默认）工作。</p>
-<blockquote>
-<p>相关命令：<br>-XX:+UseConcMarkSweepGC 启用CMS<br>-XX:+/-UseParNewGC 指定或禁止使用ParNew收集器。<br>-XX:ParallelGCThreads 限制垃圾收集的线程数</p>
-</blockquote>
-<p><strong>四个步骤：</strong><br>1 初始标记：标记一下GC Roots能直接关联的对象，速度很快<br>2 并发标记：从上面的直连对象开始遍历整个对象图，不需要STW<br>3 重新标记：修正并发标记期间变动的对象，时间也很短<br>4 并发清除：清除被标记死亡的对象，不需移动存活对象，所以不需要STW<br><strong>步骤1和3会STW</strong></p>
-<p>缺点：<br>1 对处理器资源非常敏感，处理器核心数不足4个时不建议使用<br>2 无法处理“浮动垃圾”— 因为CMS在并发标记和清除时无需停止用户线程，有可能出现本次收集过程中出现新的垃圾对象。<br>由于浮动垃圾的问题，CMS必须预留一些内存空间（并不是老年代满了才进行垃圾回收）。CMS开始执行是到达68%空间后执行<br>3 基于标记-清除算法会产生大量内存碎片<br>解决：在多次进行标记清除后执行一次标记整理<br>-XX:+UseCMS-CompactAtFullCollection 默认开启，JDK9废除<br>-XX:CMSFullGCsBeforeCompaction 默认0，几次标记清除后执行标记整理，JDK9废除</p>
-<h5 id="Parallel-Scavenge-收集器（新生代收集器）"><a href="#Parallel-Scavenge-收集器（新生代收集器）" class="headerlink" title="Parallel Scavenge 收集器（新生代收集器）"></a>Parallel Scavenge 收集器（新生代收集器）</h5><p>与Serial和ParNew一样，都是基于标记-复制算法，也是<strong>多线程并行</strong>的<br>与其他收集器的侧重点不同：其他关注用户线程的停顿时间，而PS侧重于吞吐量=用户代码时间/总消耗时间。<br>自适应调节策略：-XX:+UseAdaptiveSizePolicy。区别于ParNew的一个重要特性</p>
-<h5 id="Serial-Old-收集器（老年代收集器）"><a href="#Serial-Old-收集器（老年代收集器）" class="headerlink" title="Serial Old 收集器（老年代收集器）"></a>Serial Old 收集器（老年代收集器）</h5><p>是Serial收集器的老年代版本。一个<strong>单线程</strong>收集器，基于标记-整理</p>
-<h5 id="Parallel-Old-收集器（老年代收集器）"><a href="#Parallel-Old-收集器（老年代收集器）" class="headerlink" title="Parallel Old 收集器（老年代收集器）"></a>Parallel Old 收集器（老年代收集器）</h5><p>是Parallel Scavenge 收集器的老年代版本。支持<strong>多线程并发</strong>收集，基于标记-整理</p>
-<h5 id="G1-收集器（分区模型）"><a href="#G1-收集器（分区模型）" class="headerlink" title="G1 收集器（分区模型）"></a>G1 收集器（分区模型）</h5><p>JDK9，服务端模式下默认的垃圾收集器，取代PS+PO组合<br>Mixed GC，不区分新生代和老年代，而是把Java堆划分为多个大小相等的独立区域（Region，单次回收的最小单元），看回收哪块内存的收益最大。<br>G1可以根据需要将这些Region扮演成不同的空间，新生代的Eden空间、Survivor空间或者老年代空间和<strong>Humongous空间</strong>，不同的空间采用不同的策略去处理。<br><strong>Humongous空间，专门用来存储大对象（超过一个Region的一半的对象），可以把这个空间理解成老年代的一部分</strong></p>
-<p>可预测停顿时间：<br>因为G1将Region作为单次回收的最小单元。每次回收的内存空间都是Region的整数倍。<br>后台维护了一个优先级列表（优先级，回收的空间和耗时计算得出），优先处理回收价值最大的Region</p>
-<p>问题：<br>1 跨Region引用对象如何解决？ 解决：记忆集<br>2 并发标记阶段如何保证收集线程和用户线程互不干扰？解决：SATB原始快照<br>3 如何建立起可靠的停顿预测模型？解决：衰减均值</p>
-<p>四个步骤：<br>1 初始标记：标记一下GC Roots能直接关联的对象，并修改TAMS指针的值，速度很快<br>2 并发标记：从 GC Root开始对对重的对象进行可达性分析，递归扫描整个对象图<br>3 最终标记：处理并发标记遗留的少量SATB记录<br>4 筛选回收：对各个Region进行优先级排序，<strong>根据用户期望的停顿时间来制定回收计划</strong>，复制部分Region的存活对象到空Region，最后清理Region。必须暂停用户线程。<br><strong>步骤1,3,4都会STW</strong></p>
-<p>缺点：<br>垃圾收集时产生的内存占用和运行时额外执行负载都比CMS高</p>
-<p>与CMS对比总结：<br>哪款收集器好，要针对具体的场景定量比较。小内存应用上CMS的表现会优于G1。反之G1在大内存应用上可以发挥优势。这个平衡点6-8G。<br>不过就趋势而言，随着G1的不断优化，结果必定会向G1倾斜。</p>
-<h4 id="三色标记"><a href="#三色标记" class="headerlink" title="三色标记"></a>三色标记</h4><p>黑色：自己已经标记，且关联对象都标记完成，垃圾回收器不会再查询该节点<br>灰色：自己标记完成，但关联对象未标记<br>白色：没有遍历到的节点</p>
-<p>CMS和G1都是采用三色标记法来标记对象。</p>
-<p>通过之前的介绍，已知在CMS和G1收集器中，并发标记阶段时收集线程和用户线程是同时在工作的。与之对应的步骤三种的问题如下：</p>
-<h5 id="浮动垃圾"><a href="#浮动垃圾" class="headerlink" title="浮动垃圾"></a>浮动垃圾</h5><blockquote>
-<p>A -&gt; B -&gt; D</p>
-</blockquote>
-<p>并发标记过程中，标记完D节点后，B-&gt;D的引用消失了，产生浮动垃圾。下次垃圾回收器标记时再处理D垃圾</p>
-<h5 id="对象漏标"><a href="#对象漏标" class="headerlink" title="对象漏标"></a>对象漏标</h5><blockquote>
-<p>A -&gt; B<br>A -&gt; D</p>
-</blockquote>
-<p>当A节点被标记为黑色之后，又建立了对D的引用。因为黑色节点不会再被垃圾回收器处理。所以D节点会被垃圾回收器清除</p>
-<h5 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h5><p>1 CMS对增加引用环节进行处理（Increment Update）<br>当黑色节点新增引用时，把黑色节点编程灰色，这样下次回收器标及时会扫描它的fields节点（但是在多线程标记时依然会出现漏标。<br>所以，CMS的remark阶段，必须从头扫描一遍，会产生严重的STW</p>
-<p>2 G1则对删除引用环节进行处理(SATB 原始快照)</p>
-<h4 id="内存分配与回收策略："><a href="#内存分配与回收策略：" class="headerlink" title="内存分配与回收策略："></a>内存分配与回收策略：</h4><p>1 对象优先在Eden分配<br>2 大对象直接进入老年代<br>    -XX:PretenureSizeThreshold=3M 超过3M的对象直接进入老年代<br>3 长期存活的对象将进入老年代<br>    -XX:MaxTenuringThreshold=15 经历多少次Minor GC后进入老年代<br>4 动态对象年龄判定<br>    如果相同年龄的对象大小总和超过幸存区的一般，那么会将他们以及比他们年龄大的对象都移动到老年代。（不一定等到年龄是15）<br>5 空间分配担保<br>    如果在Minor GC时，老年代并没有足够的空间容纳新进的对象，那么在Minor GC后立刻进行一次Full GC。<br>    开启担保 -XX:HandlePromotionFailure=true 后会判断避免这次Full GC，通常会打开担保</p>
 
       
     </div>
