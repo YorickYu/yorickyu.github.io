@@ -4,7 +4,26 @@
   
     
     <entry>
-      <title>转行Java 2年的感受</title>
+      <title>面试官：Java8到底有什么新特性？</title>
+      <link href="2021/04/20/diff-of-java8/"/>
+      <url>2021/04/20/diff-of-java8/</url>
+      
+        <content type="html"><![CDATA[<h3 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h3><p>先罗列一下相关的关键字吧。如果面试真的遇到这个问题，有机会展现一下理解的深度。<br>每个关键字拓展开来都能延展很多，以后再补充</p><h4 id="行为参数化"><a href="#行为参数化" class="headerlink" title="行为参数化"></a>行为参数化</h4><p>就是一个方法接受多个不同的行为作为参数，并在内部使用它们，完成不<br>同行为的能力，可以让代码更适应不断变化的需求，减轻未来的工作量</p><h4 id="代码传递"><a href="#代码传递" class="headerlink" title="代码传递"></a>代码传递</h4><p>Java8之前实现起来很复杂<br><strong>演变过程：传值 -&gt; 类（接口）-&gt; 匿名类 -&gt; lamdba</strong><br>编程语言的目的就在于操作值，值作为一等公民。Java8可以将方法看成值一样传递。::语法</p><h4 id="lambda表达式"><a href="#lambda表达式" class="headerlink" title="lambda表达式"></a>lambda表达式</h4><p>对上面的传递方法进行了编写优化。使代码跟干净清晰</p><h4 id="Stream流"><a href="#Stream流" class="headerlink" title="Stream流"></a>Stream流</h4><p>内部迭代思想。几乎免费的并行 parallelStream()</p><h4 id="默认方法"><a href="#默认方法" class="headerlink" title="默认方法"></a>默认方法</h4><p>list.sort(comparator)而不是Collections.sort(list, comparator)</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> E&gt; c)</span> </span>&#123;</span><br><span class="line">    Object[] a = <span class="keyword">this</span>.toArray();</span><br><span class="line">    Arrays.sort(a, (Comparator) c);</span><br><span class="line">    ListIterator&lt;E&gt; i = <span class="keyword">this</span>.listIterator();</span><br><span class="line">    <span class="keyword">for</span> (Object e : a) &#123;</span><br><span class="line">        i.next();</span><br><span class="line">        i.set((E) e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> -JDK </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Java 2年的感受</title>
       <link href="2021/04/15/i-dont-know-java/"/>
       <url>2021/04/15/i-dont-know-java/</url>
       
