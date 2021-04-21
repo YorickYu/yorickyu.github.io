@@ -24,15 +24,15 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
   </script>
-<meta name="description" content="前言虽说吹毛求疵看似是个贬义词，但是技术上的吹毛求疵往往是有必要的。 这里会不定时更新一些日常编码中 吹毛求疵 的写法。目的也是为了养成一个良好的编码习惯。 循环中的size判断12for (int i &#x3D; 0, int length &#x3D; list.size; i &lt; length; i++)&amp;#123;&amp;#125;  list.size 有一定的资源消耗 返回空集合1234public L">
+<meta name="description" content="前言虽说吹毛求疵看似是个贬义词，但是技术上的吹毛求疵往往是有必要的。 这里会不定时更新一些日常编码中 吹毛求疵 的写法。目的也是为了养成一个良好的编码习惯。 循环中的size判断12for (int i &#x3D; 0, ~~int~~ length &#x3D; list.size; i &lt; length; i++)&amp;#123;&amp;#125; 修正： 12for (int i &#x3D; 0, length &#x3D; li">
 <meta property="og:type" content="article">
 <meta property="og:title" content="吹毛求疵">
 <meta property="og:url" content="http://yloopdaed.icu/2021/04/01/cavil/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="前言虽说吹毛求疵看似是个贬义词，但是技术上的吹毛求疵往往是有必要的。 这里会不定时更新一些日常编码中 吹毛求疵 的写法。目的也是为了养成一个良好的编码习惯。 循环中的size判断12for (int i &#x3D; 0, int length &#x3D; list.size; i &lt; length; i++)&amp;#123;&amp;#125;  list.size 有一定的资源消耗 返回空集合1234public L">
+<meta property="og:description" content="前言虽说吹毛求疵看似是个贬义词，但是技术上的吹毛求疵往往是有必要的。 这里会不定时更新一些日常编码中 吹毛求疵 的写法。目的也是为了养成一个良好的编码习惯。 循环中的size判断12for (int i &#x3D; 0, ~~int~~ length &#x3D; list.size; i &lt; length; i++)&amp;#123;&amp;#125; 修正： 12for (int i &#x3D; 0, length &#x3D; li">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-01T02:40:19.000Z">
-<meta property="article:modified_time" content="2021-04-05T13:13:03.035Z">
+<meta property="article:modified_time" content="2021-04-21T15:08:38.438Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="iOS JAVA">
 <meta name="twitter:card" content="summary">
@@ -188,7 +188,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E4%B8%AD%E7%9A%84size%E5%88%A4%E6%96%AD"><span class="nav-number">2.</span> <span class="nav-text">循环中的size判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E7%A9%BA%E9%9B%86%E5%90%88"><span class="nav-number">3.</span> <span class="nav-text">返回空集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DCL%E5%8D%95%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">DCL单例</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E4%B8%AD%E7%9A%84size%E5%88%A4%E6%96%AD"><span class="nav-number">2.</span> <span class="nav-text">循环中的size判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E7%A9%BA%E9%9B%86%E5%90%88"><span class="nav-number">3.</span> <span class="nav-text">返回空集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DCL%E5%8D%95%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">DCL单例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BC"><span class="nav-number">5.</span> <span class="nav-text">局部变量赋值</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -322,7 +322,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-04-05 21:13:03" itemprop="dateModified" datetime="2021-04-05T21:13:03+08:00">2021-04-05</time>
+        <time title="修改时间：2021-04-21 23:08:38" itemprop="dateModified" datetime="2021-04-21T23:08:38+08:00">2021-04-21</time>
       </span>
 
   
@@ -337,7 +337,9 @@
     <div class="post-body" itemprop="articleBody">
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>虽说吹毛求疵看似是个贬义词，但是技术上的吹毛求疵往往是有必要的。</p>
 <p>这里会不定时更新一些日常编码中 <code>吹毛求疵</code> 的写法。目的也是为了养成一个良好的编码习惯。</p>
-<h3 id="循环中的size判断"><a href="#循环中的size判断" class="headerlink" title="循环中的size判断"></a>循环中的size判断</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, <span class="keyword">int</span> length = list.size; i &lt; length; i++)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="循环中的size判断"><a href="#循环中的size判断" class="headerlink" title="循环中的size判断"></a>循环中的size判断</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, ~~<span class="keyword">int</span>~~ length = list.size; i &lt; length; i++)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修正：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, length = list.size; i &lt; length; i++)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>list.size 有一定的资源消耗</p>
 <h3 id="返回空集合"><a href="#返回空集合" class="headerlink" title="返回空集合"></a>返回空集合</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Result&gt; <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// TODO.</span></span><br><span class="line">    <span class="keyword">return</span> Collections.EMPTY_LIST;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -346,6 +348,9 @@
 <h3 id="DCL单例"><a href="#DCL单例" class="headerlink" title="DCL单例"></a>DCL单例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singlenton</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singlenton INSTANCE; <span class="comment">// JIT</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singlenton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="comment">// DCL</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singlenton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123; <span class="comment">// double check 1</span></span><br><span class="line">            <span class="keyword">synchronized</span> (Singlenton.class) &#123; <span class="comment">// LOCK</span></span><br><span class="line">                <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123; <span class="comment">// double check 2</span></span><br><span class="line">                    INSTANCE = <span class="keyword">new</span> Singlenton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>避免对象半初始化状态</p>
+<h3 id="局部变量赋值"><a href="#局部变量赋值" class="headerlink" title="局部变量赋值"></a>局部变量赋值</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> oldThr = threshold;</span><br><span class="line"><span class="keyword">int</span> oldCap = (oldTab == <span class="keyword">null</span>) ? <span class="number">0</span> : oldTab.length;    </span><br><span class="line"><span class="keyword">int</span> newCap, newThr = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span> ((newCap = oldCap &lt;&lt; <span class="number">1</span>) &lt; MAXIMUM_CAPACITY &amp;&amp; oldCap &gt;= DEFAULT_INITIAL_CAPACITY)</span><br><span class="line">    newThr = oldThr &lt;&lt; <span class="number">1</span>; <span class="comment">// double threshold</span></span><br></pre></td></tr></table></figure>
+
+<p>这种写法在源码中比较常见</p>
 
     </div>
 
