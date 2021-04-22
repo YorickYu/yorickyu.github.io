@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-count">62</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">92</span>
+        <span class="site-state-item-count">94</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -372,6 +372,78 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/22/Fibonacci/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/22/Fibonacci/" class="post-title-link" itemprop="url">Stream生成斐波那契数列（无限流）</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-04-22 22:16:35 / 修改时间：22:23:09" itemprop="dateCreated datePublished" datetime="2021-04-22T22:16:35+08:00">2021-04-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>斐波那契数列（Fibonacci sequence），又称黄金分割数列。</p>
+<p>在数学上，斐波那契数列以如下被以递推的方法定义：F(0)=0，F(1)=1, F(n)=F(n - 1)+F(n - 2)（n ≥ 2，n ∈ N*）</p>
+<p>即 <strong>这个数列从第3项开始，每一项都等于前两项之和</strong></p>
+<h3 id="Stream实现"><a href="#Stream实现" class="headerlink" title="Stream实现"></a>Stream实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; list = Stream.iterate(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">0</span>, <span class="number">1</span>&#125;, t -&gt; <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;t[<span class="number">1</span>], t[<span class="number">0</span>] + t[<span class="number">1</span>]&#125;)</span><br><span class="line">        .limit(<span class="number">10</span>)</span><br><span class="line">        .map(t -&gt; t[<span class="number">0</span>]).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+
+<p>仅取了数列前10个元素。</p>
+<p>用了一个小技巧，如果有兴趣的话我之后把过程再更新出来。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/20/diff-of-java8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -404,7 +476,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-04-21 23:04:07" itemprop="dateModified" datetime="2021-04-21T23:04:07+08:00">2021-04-21</time>
+        <time title="修改时间：2021-04-22 22:15:10" itemprop="dateModified" datetime="2021-04-22T22:15:10+08:00">2021-04-22</time>
       </span>
 
   
@@ -1024,110 +1096,6 @@
 <h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>去探索一下redis单机性能的极限在哪里？</p>
 <p>1 如果没有管道，最大承受qps是多少？<br>2 通过管道，最大承受qps是多少？</p>
 <p>证实一下为什么redis性能瓶颈不取决于CPU，而是IO。<br>这也能换个角度更好的理解为什么redis要使用单线程模型。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/03/18/redis-mysql-cp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/18/redis-mysql-cp/" class="post-title-link" itemprop="url">蚂蚁金服初试：双写一致性延伸</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-03-18 23:45:57" itemprop="dateCreated datePublished" datetime="2021-03-18T23:45:57+08:00">2021-03-18</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-03-19 00:30:10" itemprop="dateModified" datetime="2021-03-19T00:30:10+08:00">2021-03-19</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>今天有幸参加了蚂蚁金服的线上初试，获益良多。</p>
-<p>记录下来</p>
-<h3 id="第一个问题"><a href="#第一个问题" class="headerlink" title="第一个问题"></a>第一个问题</h3><p>挑选您项目中比较有亮点的部分介绍一下?</p>
-<blockquote>
-<p>这个问题也许大家经常遇到，也没有足够的重视。其实这个问题在我个人看来是整场面试最关键的问题。<br>因为你有机会通过这个问题介绍一个成熟的解决方案！有时候打动面试官只需要一个成熟的解决方案。<br>这不仅仅说明你在业务上横向的全局思考能力，也体现了纵向的技术理解深度。</p>
-</blockquote>
-<p><strong>所以这个问题，一定要好好利用。</strong></p>
-<h3 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h3><p>整场面试的重点是由 redis和mysql的双写一致性 引出的。</p>
-<p><strong>问题是：如果mysql完成了数据更新，但是随后更新redis时失败了。如何处理？</strong></p>
-<p>我当时没有很好的回答这个问题，思考过后与大家分享一个解决方案。</p>
-<p>首先假设一个场景是购物车系统。使用redis hash维护了一个简单的购物车，同时持久化在mysql数据库中。</p>
-<p>那么对于用户在购物车的操作需要反馈给数据库。</p>
-<blockquote>
-<p>PS：这里考虑借鉴缓冲池的思想，对用户的操作做一些预处理后再真实发生请求。尽量减少无效请求的次数。</p>
-</blockquote>
-<p>但是最终通过接口同步数据的时候发生了问题：mysql更新成功，随后redis写入失败。</p>
-<blockquote>
-<p>PS：这里先不讨论其他的双写一致性方案，比如：先删除redis数据，再更新数据库。<br>其次这里举例redis可能发生写入失败的场景：redis宕机、redis内存打满。</p>
-</blockquote>
-<p>此时，已经发生了redis和mysql数据不一致的情况。那么如何解决这个问题？</p>
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>首先要进一步优化redis集群，保证redis高可用，从根源解决问题。</p>
-<p>其次我的想法是借鉴分布式事务中 <code>最终一致性</code> 原则去解决这个问题。</p>
-<p>这个场景中，先更新mysql，再更新redis，同时向mq中发送一条变更指令。mq会在后台消费这个变更指令，达到数据的最终一致性。</p>
-<p>在此期间，如果用于有读请求发生，可以先去判断一下这个mq中是否存在未被消费的信息。如果有，这条读请求就直接打到数据库中。并更新redis（同时是否能让mq中的消息标记处理）</p>
-<p>我感觉这样处理应该是可以最终保持数据一致性的。当然mq本身也要做集群高可用处理。</p>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>整理一下正常面试的流程吧，说不定对大家有帮助。</p>
-<p>1 从项目出发，面试官会根据项目中的业务场景发问，这需要你非常熟悉自己的项目，并且有比较完善的处理。</p>
-<p>2 线上同步编码，会通过一个共享的编辑器窗口，现场完成几个简单的编程题。（算法、编程能力）</p>
-<p>3 最后会问一些底层的问题：源码、JVM等</p>
-<p>整个面试过程大约2个小时。</p>
-<p>最主要的收获：</p>
-<p>珍惜项目中遇到的每一个问题，提出解决方案，并不断的优化。</p>
-<p>长久如此，肯定会有收获。</p>
 
       
     </div>
