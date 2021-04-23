@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-count">63</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -277,6 +277,93 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/30/interrupt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/11/30/interrupt/" class="post-title-link" itemprop="url">thread.interrupt() 线程中断</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-30 23:55:41" itemprop="dateCreated datePublished" datetime="2020-11-30T23:55:41+08:00">2020-11-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-03-08 09:40:57" itemprop="dateModified" datetime="2021-03-08T09:40:57+08:00">2021-03-08</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>首先，一个线程不应该由其他线程来强制中断或停止，而是应该由线程自己自行停止。<br>所以，Thread.stop, Thread.suspend, Thread.resume 都已经被废弃了。而 Thread.interrupt 的作用其实也不是中断线程，而是「通知线程应该中断了」，具体到底中断还是继续运行，应该由被通知的线程自己处理。</p>
+<p>具体来说，当对一个线程，调用 interrupt() 时，<br>① 如果线程处于被阻塞状态（例如处于sleep, wait, join 等状态），那么线程将立即退出被阻塞状态，并抛出一个InterruptedException异常。仅此而已。<br>② 如果线程处于正常活动状态，那么会将该线程的中断标志设置为 true，仅此而已。被设置中断标志的线程将继续正常运行，不受影响。</p>
+<p>interrupt() 并不能真正的中断线程，需要被调用的线程自己进行配合才行。也就是说，一个线程如果有被中断的需求，那么就可以这样做。<br>① 在正常运行任务时，经常检查本线程的中断标志位，如果被设置了中断标志就自行停止线程。<br>② 在调用阻塞方法时正确处理InterruptedException异常。（例如，catch异常后就结束线程。）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Thread thread = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">while</span> (!Thread.interrupted()) &#123;</span><br><span class="line">        <span class="comment">// do more work.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">thread.start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一段时间以后</span></span><br><span class="line">thread.interrupt();</span><br></pre></td></tr></table></figure>
+
+<p>具体到你的问题，Thread.interrupted()清除标志位是为了下次继续检测标志位。<br>如果一个线程被设置中断标志后，选择结束线程那么自然不存在下次的问题<br>如果一个线程被设置中断标识后，进行了一些处理后选择继续进行任务<br>而且这个任务也是需要被中断的，那么当然需要清除标志位了。</p>
+<p>以上内容摘自：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/41048032/answer/89431513">Intopass在知乎的回答</a></p>
+<h4 id="thread-interrupt-thread-isInterrupted-Thread-interrupted-三者区别"><a href="#thread-interrupt-thread-isInterrupted-Thread-interrupted-三者区别" class="headerlink" title="thread.interrupt()\thread.isInterrupted()\Thread.interrupted() 三者区别"></a>thread.interrupt()\thread.isInterrupted()\Thread.interrupted() 三者区别</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123; <span class="comment">// while 循环</span></span><br><span class="line">            <span class="keyword">if</span> (Thread.interrupted()) &#123; <span class="comment">// false -&gt; true</span></span><br><span class="line">                System.err.println(<span class="string">&quot;线程中断&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">System.out.println(thread.isInterrupted()); <span class="comment">// false</span></span><br><span class="line">thread.start();</span><br><span class="line">Thread.sleep(<span class="number">100</span>);</span><br><span class="line">thread.interrupt(); <span class="comment">// 中断 thread</span></span><br><span class="line">Thread.sleep(<span class="number">100</span>);</span><br><span class="line">System.out.println(thread.isInterrupted()); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1062,94 +1149,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/11/11/about-IO/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/06/hashmap-resize-lotail/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/11/06/hashmap-resize-lotail/" class="post-title-link" itemprop="url">HashMap resize loTail.next=e loTail=e</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2020-11-06 21:49:18 / 修改时间：21:51:24" itemprop="dateCreated datePublished" datetime="2020-11-06T21:49:18+08:00">2020-11-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>HashMap扩容的过程包含了很多巧妙的思考，思想简单易懂，但是代码的实现真的让人折服！</p>
-<p>今天快速浏览resize方法时，被两行代码绕住了：</p>
-<img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/loTail.next%20%3D%20e.png" style="zoom:50%;" />
-
-<p>可能是对于引用类型的理解不够深刻吧，这两行代码真的看了我一天！网上也很少有人分析这两行代码（可能因为太容易了吧）</p>
-<p>最后我自己写了个Demo，算是把这个操作搞清楚了。因为是引用类型的指针指向问题，所以画图也不太好理解，只能自己写个Demo，一点点Debug分析过程。</p>
-<p>相关代码在：<a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">Jpp</a> /TailInsert类中</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/11/06/hashmap-resize-lotail/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

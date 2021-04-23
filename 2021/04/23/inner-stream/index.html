@@ -24,23 +24,25 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
   </script>
-<meta name="description" content="前言对于 happens-before原则 和 as-if-serial语义 到底是什么意思？为什么会出现？解决什么问题？简短的说下我自己的理解 as-if-serial语义如果单一线程中操作之间不存在数据依赖关系，这些操作就可能被编译器和处理器重排序 这个重排序的过程并不会影响程序运行的结果，对程序员来说是无感的。所以叫做 as-if-serial “看上去像是连续的”  证明重排序的存在：CP">
+<meta name="description" content="Java的演变一直致力于让并发编程更容易、出错更少。Java1：线程和锁Java5：线程池和并发集合Java7：Fork&#x2F;Join 分支合并框架Java8：Stream 流（并行） Stream并行流parallelStream，就是把内容分成多个数据块，并用不同的线程分别处理每个数据块的流 123456public static long parallelSum(long n) &amp;#123;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="说说我对happens-before原则和as-if-serial语义的理解">
-<meta property="og:url" content="http://yloopdaed.icu/2020/12/07/whatis-happensbefore/index.html">
+<meta property="og:title" content="Stream 底层实现">
+<meta property="og:url" content="http://yloopdaed.icu/2021/04/23/inner-stream/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="前言对于 happens-before原则 和 as-if-serial语义 到底是什么意思？为什么会出现？解决什么问题？简短的说下我自己的理解 as-if-serial语义如果单一线程中操作之间不存在数据依赖关系，这些操作就可能被编译器和处理器重排序 这个重排序的过程并不会影响程序运行的结果，对程序员来说是无感的。所以叫做 as-if-serial “看上去像是连续的”  证明重排序的存在：CP">
+<meta property="og:description" content="Java的演变一直致力于让并发编程更容易、出错更少。Java1：线程和锁Java5：线程池和并发集合Java7：Fork&#x2F;Join 分支合并框架Java8：Stream 流（并行） Stream并行流parallelStream，就是把内容分成多个数据块，并用不同的线程分别处理每个数据块的流 123456public static long parallelSum(long n) &amp;#123;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-07T13:06:21.000Z">
-<meta property="article:modified_time" content="2020-12-07T13:07:36.942Z">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-2.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-1.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-3.png">
+<meta property="article:published_time" content="2021-04-23T14:05:44.000Z">
+<meta property="article:modified_time" content="2021-04-23T14:36:07.217Z">
 <meta property="article:author" content="yloopdaed">
-<meta property="article:tag" content="happens-before">
-<meta property="article:tag" content="as-if-serial">
-<meta property="article:tag" content="concurrent">
+<meta property="article:tag" content="Stream">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-2.png">
 
 
-<link rel="canonical" href="http://yloopdaed.icu/2020/12/07/whatis-happensbefore/">
+<link rel="canonical" href="http://yloopdaed.icu/2021/04/23/inner-stream/">
 
 
 <script class="page-configurations">
@@ -52,7 +54,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>说说我对happens-before原则和as-if-serial语义的理解 | yloopdaed</title>
+<title>Stream 底层实现 | yloopdaed</title>
   
 
 
@@ -190,7 +192,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#as-if-serial%E8%AF%AD%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">as-if-serial语义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#happens-before%E5%8E%9F%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">happens-before原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%87%BA%E7%8E%B0%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">为什么会出现？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E8%A7%84%E5%88%99"><span class="nav-number">5.</span> <span class="nav-text">具体规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-number">6.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E7%9A%84%E6%BC%94%E5%8F%98"><span class="nav-number">1.</span> <span class="nav-text">Java的演变</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stream%E5%B9%B6%E8%A1%8C%E6%B5%81"><span class="nav-number">2.</span> <span class="nav-text">Stream并行流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%92%8C%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">性能和安全性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parallel%E5%BB%BA%E8%AE%AE"><span class="nav-number">5.</span> <span class="nav-text">parallel建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fork-join%E5%BB%BA%E8%AE%AE"><span class="nav-number">6.</span> <span class="nav-text">fork&#x2F;join建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E7%AA%83%E5%8F%96"><span class="nav-number">7.</span> <span class="nav-text">工作窃取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">8.</span> <span class="nav-text">实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RecursiveTask-%E9%80%92%E5%BD%92"><span class="nav-number">8.1.</span> <span class="nav-text">RecursiveTask 递归</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spliterator-%E5%8F%AF%E5%88%86%E8%BF%AD%E4%BB%A3%E5%99%A8"><span class="nav-number">8.2.</span> <span class="nav-text">Spliterator 可分迭代器</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -292,7 +294,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/12/07/whatis-happensbefore/">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/23/inner-stream/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -305,7 +307,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          说说我对happens-before原则和as-if-serial语义的理解
+          Stream 底层实现
         </h1>
 
         <div class="post-meta-container">
@@ -318,16 +320,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-12-07 21:06:21 / 修改时间：21:07:36" itemprop="dateCreated datePublished" datetime="2020-12-07T21:06:21+08:00">2020-12-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
+      <time title="创建时间：2021-04-23 22:05:44 / 修改时间：22:36:07" itemprop="dateCreated datePublished" datetime="2021-04-23T22:05:44+08:00">2021-04-23</time>
     </span>
 
   
@@ -340,22 +333,31 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>对于 happens-before原则 和 as-if-serial语义 到底是什么意思？为什么会出现？解决什么问题？简短的说下我自己的理解</p>
-<h4 id="as-if-serial语义"><a href="#as-if-serial语义" class="headerlink" title="as-if-serial语义"></a>as-if-serial语义</h4><p>如果单一线程中操作之间不存在数据依赖关系，这些操作就可能被编译器和处理器重排序</p>
-<p>这个重排序的过程并不会影响程序运行的结果，对程序员来说是无感的。所以叫做 as-if-serial “看上去像是连续的”</p>
+        <h3 id="Java的演变"><a href="#Java的演变" class="headerlink" title="Java的演变"></a>Java的演变</h3><p>一直致力于让并发编程更容易、出错更少。<br><strong>Java1</strong>：线程和锁<br><strong>Java5</strong>：线程池和并发集合<br><strong>Java7</strong>：Fork/Join 分支合并框架<br><strong>Java8</strong>：Stream 流（并行）</p>
+<h3 id="Stream并行流"><a href="#Stream并行流" class="headerlink" title="Stream并行流"></a>Stream并行流</h3><p>parallelStream，就是把内容分成多个数据块，并用不同的线程分别处理每个数据块的流</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">parallelSum</span><span class="params">(<span class="keyword">long</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.iterate(<span class="number">1L</span>, i -&gt; i + <span class="number">1</span>)</span><br><span class="line">            .limit(n)</span><br><span class="line">            .parallel() <span class="comment">// 在内部实际上就是设了一个boolean标志，调用后开始并行执行</span></span><br><span class="line">            .reduce(<span class="number">0L</span>, Long::sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>内部使用了默认的 <code>ForkJoinPool</code>，<strong>默认线程数量是你处理器的数量</strong></p>
 <blockquote>
-<p>证明重排序的存在：<a href="https://yloopdaed.icu/2020/10/19/CPU-Out-of-Order/">CPU 乱序执行反证</a></p>
+<p>通过 Runtime.getRuntime().availableProcessors()得到处理器数<br>通过 System.setProperty(“java.util.concurrent.ForkJoinPool.common.parallelism”,”12”); 修改系统默认线程池大小</p>
 </blockquote>
-<h4 id="happens-before原则"><a href="#happens-before原则" class="headerlink" title="happens-before原则"></a>happens-before原则</h4><p>JMM中定义的 跨线程内存可见性的规则：对于两个操作A和B，这两个操作可以在不同的线程中执行。如果 A happens-before B，那么可以保证，当A操作执行完后，A操作的执行结果对B操作是可见的</p>
+<p><strong>分支/合并框架</strong> 中通过RecursiveTask进行任务切分。</p>
+<h3 id="性能和安全性"><a href="#性能和安全性" class="headerlink" title="性能和安全性"></a>性能和安全性</h3><p>并行化并不是没有代价的。并行化过程本身需要对流做递归划分，把每个子流的归纳操作分配到不同的线程，然后把这些操作的结果合并成一个值。但在多个内核之间移动数据的代价也可能比你想的要大，所以很重要的一点是要保证在内核中并行执行工作的时间比在内核之间传输数据的时间长。</p>
+<h3 id="parallel建议"><a href="#parallel建议" class="headerlink" title="parallel建议"></a>parallel建议</h3><p>1 测量。并行流不一定比顺序流块。最重要的建议就是用适当的基准来测量性能<br>2 留意装箱。自动装箱和拆箱操作会大大降低性能。可以用原始类型流（数值流）<br>3 熟悉方法的使用场景。limit和findFirst这种依赖顺序的操作不适合在并行流使用。findAny可以在并行中使用<br>4 考虑流中的数据结构是否易于拆分。ArrayList拆分效率比LinkedList高得多</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-2.png"></p>
+<h3 id="fork-join建议"><a href="#fork-join建议" class="headerlink" title="fork/join建议"></a>fork/join建议</h3><p>1 对一个任务调用join方法会阻塞调用方，直到该任务做出结果。<br>2 不应该在RecursiveTask内部使用ForkJoinPool的invoke方法。<br>3 对子任务调用fork方法可以把它排进ForkJoinPool。</p>
+<h3 id="工作窃取"><a href="#工作窃取" class="headerlink" title="工作窃取"></a>工作窃取</h3><p>划分并行任务时，应该让每个任务都用完全相同的时间完成，让所有的CPU内核都同样繁忙</p>
+<p><strong>分支/合并框架</strong> 工程用一种称为 <strong>工作窃取（work stealing）</strong> 的技术来解决这个问题</p>
 <blockquote>
-<p>JMM：Java内存模型(Java Memory Model)<br>屏蔽掉不同硬件和操作系统的内存模型差异，以实现让Java程序在各种平台下都能达到一致的内存访问结果。所以对于Java程序员，无需了解底层硬件和操作系统内存模型的知识，只要关注Java自己的内存模型，就能够解决Java语言中的内存可见性问题了</p>
+<p>工作窃取（work stealing）<br>之前在 RabbitMq 的学习中，有一种消息模型 - Task Queues。这种模型下也可以设置一种模式叫：能者多劳。和工作窃取的原理类似。</p>
 </blockquote>
-<h4 id="为什么会出现？"><a href="#为什么会出现？" class="headerlink" title="为什么会出现？"></a>为什么会出现？</h4><p>因为 CPU缓存和重排序 可能会在多线程并发时导致程序执行结果与程序员代码的执行语义不符</p>
-<p><strong>所以JMM定义了一套规则，CPU重排序时需要遵守这些规则</strong></p>
-<p><strong>这些规则可以指导程序员写出正确的代码，让程序正确执行</strong></p>
-<h4 id="具体规则"><a href="#具体规则" class="headerlink" title="具体规则"></a>具体规则</h4><p>共有8项：<br>1 程序顺序规则：一个线程中的每个操作，happens-before于该线程中的任意后续操作。<br>2 监视器锁规则：对一个锁的解锁，happens-before于随后对这个锁的加锁。<br>3 volatile变量规则：对一个volatile域的写，happens-before于任意后续对这个volatile域的读。<br>4 传递性：如果A happens-before B，且B happens-before C，那么A happens-before C。<br>5 start()规则：如果线程A执行操作ThreadB.start()（启动线程B），那么A线程的ThreadB.start()操作happens-before于线程B中的任意操作。<br>6 join()规则：如果线程A执行操作ThreadB.join()并成功返回，那么线程B中的任意操作happens-before于线程A从ThreadB.join()操作成功返回。<br>7 程序中断规则：对线程interrupted()方法的调用先行于被中断线程的代码检测到中断时间的发生。<br>8 对象finalize规则：一个对象的初始化完成（构造函数执行结束）先行于发生它的finalize()方法的开始。</p>
-<h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>可以理解为：<br>1 as-if-serial，单线程程序是按程序的顺序来执行的（可能发生指令重排序，但是程序员无感知）<br>2 happens-before，**<em>正确同步**</em>的多线程程序是按执行顺序执行的（正确同步的操作需要程序员完成）<br>3 as-if-serial语义和happens-before原则，都是为了在不改变程序执行结果的前提下，尽可能地提高程序的执行效率</p>
-<p>参考：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/ThinkWon/article/details/102074107?utm_medium=distribute.pc_relevant_download.none-task-blog-searchFromBaidu-1.nonecase&depth_1-utm_source=distribute.pc_relevant_download.none-task-blog-searchFromBaidu-1.nonecas">as-if-serial规则和happens-before规则的区别</a><br><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000011458941">从Java多线程可见性谈Happens-Before原则</a></p>
+<h3 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h3><h4 id="RecursiveTask-递归"><a href="#RecursiveTask-递归" class="headerlink" title="RecursiveTask 递归"></a>RecursiveTask<R> 递归</h4><p>需要手动编写逻辑，相关代码 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP/tree/main/src/main/java/com/yy/forkjoin">Task</a></p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-1.png"></p>
+<h4 id="Spliterator-可分迭代器"><a href="#Spliterator-可分迭代器" class="headerlink" title="Spliterator 可分迭代器"></a>Spliterator 可分迭代器</h4><p>parallel并行流中拆分机制</p>
+<p>Java 8已经为集合框架中包含的所有数据结构提供了一个默认的Spliterator实现。集合实现了Spliterator接口，接口提供了一个spliterator方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Spliterator</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">tryAdvance</span><span class="params">(Consumer&lt;? <span class="keyword">super</span> T&gt; action)</span></span>;</span><br><span class="line">    <span class="function">Spliterator&lt;T&gt; <span class="title">trySplit</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">estimateSize</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">characteristics</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-3.png"></p>
 
     </div>
 
@@ -365,23 +367,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/happens-before/" rel="tag"># happens-before</a>
-              <a href="/tags/as-if-serial/" rel="tag"># as-if-serial</a>
-              <a href="/tags/concurrent/" rel="tag"># concurrent</a>
+              <a href="/tags/Stream/" rel="tag"># Stream</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/11/30/interrupt/" rel="prev" title="thread.interrupt() 线程中断">
-                  <i class="fa fa-chevron-left"></i> thread.interrupt() 线程中断
+                <a href="/2021/04/22/Fibonacci/" rel="prev" title="Stream生成斐波那契数列（无限流）">
+                  <i class="fa fa-chevron-left"></i> Stream生成斐波那契数列（无限流）
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/12/09/how-to-checkout-running-port/" rel="next" title="我的tomcat为什么启不起来？">
-                  我的tomcat为什么启不起来？ <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
