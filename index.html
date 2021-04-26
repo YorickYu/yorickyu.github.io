@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">64</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -346,6 +346,79 @@
 <ul>
 <li>😄 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/YYTODOLIST">YYTODOLIST</a></li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/26/array-merge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/26/array-merge/" class="post-title-link" itemprop="url">拼接数组（array_merge）</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-04-26 22:53:11 / 修改时间：22:59:28" itemprop="dateCreated datePublished" datetime="2021-04-26T22:53:11+08:00">2021-04-26</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><strong>10种方式拼接两个数组</strong></p>
+<h4 id="List-addAll-amp-Collections-addAll"><a href="#List-addAll-amp-Collections-addAll" class="headerlink" title="List.addAll() &amp; Collections.addAll()"></a>List.addAll() &amp; Collections.addAll()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Description</span> before 8</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Author</span> yloopdaed</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Date</span> 21:01 2021/4/26</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge1</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    List&lt;T&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    list.addAll(list1);</span><br><span class="line">    list.addAll(list2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge2</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    List&lt;T&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;(list1);</span><br><span class="line">    list.addAll(list2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge3</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;T&gt;() &#123;&#123;</span><br><span class="line">        addAll(list1);</span><br><span class="line">        addAll(list2);</span><br><span class="line">    &#125;&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">merge4</span><span class="params">(List&lt;String&gt; list1, List&lt;String&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    Collections.addAll(list, list1.toArray(<span class="keyword">new</span> String[<span class="number">0</span>]));</span><br><span class="line">    Collections.addAll(list, list2.toArray(<span class="keyword">new</span> String[<span class="number">0</span>]));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Java-8-Stream"><a href="#Java-8-Stream" class="headerlink" title="Java 8 Stream"></a>Java 8 Stream</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Description</span> Java 8</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Author</span> yloopdaed</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Date</span> 21:02 2021/4/26</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge5</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.of(list1, list2)</span><br><span class="line">            .flatMap(x -&gt; x.stream())</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge6</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    List&lt;T&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    Stream.of(list1, list2).forEach(list::addAll);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge7</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.concat(list1.stream(), list2.stream())</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge8</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    List&lt;T&gt; list = list1.stream().collect(Collectors.toList());</span><br><span class="line">    list.addAll(list2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Guava"><a href="#Guava" class="headerlink" title="Guava"></a>Guava</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Description</span> Guava</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Author</span> yloopdaed</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Date</span> 21:05 2021/4/26</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge9</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Lists.newArrayList(Iterables.concat(list1, list2));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Generic method to join two lists in Java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; List&lt;T&gt; <span class="title">merge10</span><span class="params">(List&lt;T&gt; list1, List&lt;T&gt; list2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    List&lt;T&gt; list = Lists.newArrayList();</span><br><span class="line"></span><br><span class="line">    Iterables.addAll(list, list1);</span><br><span class="line">    Iterables.addAll(list, list2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>引用：<a target="_blank" rel="noopener" href="https://www.techiedelight.com/join-two-lists-java/">10 ways to join two lists in Java</a></p>
 
       
     </div>
@@ -1033,78 +1106,6 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT id FROM url WHERE url=&quot;http://www.mysql.com&quot; AND url_crc=CRC32(&quot;http://www.mysql.com&quot;);</span><br></pre></td></tr></table></figure>
 <p>由于哈希冲突。所以还是需要带有原条件，在伪哈希索引之后再扫描少量的数据。</p>
 <h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>本篇文章只是对于大字符串索引优化提供另一种思路。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/03/21/redisson-watchdog/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/21/redisson-watchdog/" class="post-title-link" itemprop="url">redisson 锁续期</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-03-21 13:29:28 / 修改时间：13:33:55" itemprop="dateCreated datePublished" datetime="2021-03-21T13:29:28+08:00">2021-03-21</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>redisson 默认加锁有效期 30s</p>
-<p>watchdog 调用频率 10s，每次调用会将锁有效期更新为 30s。</p>
-<p>如果redis服务宕机，那么锁和watchdog都会停止服务。即，锁到期会正常过期，没有死锁。</p>
-<p>相关源码如下：</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/redisson%E9%94%81%E7%BB%AD%E6%9C%9F.jpg"></p>
-<p>参考：</p>
-<p>简书作者，花神子 - <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/0d3f5395ceaf">缓存Redis 分布式锁的续期</a></p>
 
       
     </div>
