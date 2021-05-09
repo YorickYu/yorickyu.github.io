@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>微服务拆分和搭建</title>
+      <link href="2021/05/09/microservices/"/>
+      <url>2021/05/09/microservices/</url>
+      
+        <content type="html"><![CDATA[<h3 id="微服务拆分维度"><a href="#微服务拆分维度" class="headerlink" title="微服务拆分维度"></a>微服务拆分维度</h3><p>1 按系统维度：例如前后台拆分<br>2 按功能维度：例如用户服务、价格服务、商品库存服务<br>3 按读写维度：例如搜索和信息流服务、注册和下单服务</p><p><strong>每个服务也可以由若干服务支持构成</strong></p><h3 id="微服务架构搭建"><a href="#微服务架构搭建" class="headerlink" title="微服务架构搭建"></a>微服务架构搭建</h3><p>一般随着公司业务体量的增长，需要考虑从单体服务拆分成微服务架构。</p><p>微服务架构需要考虑下面几个方面：没有优先级之分（不一定完整）</p><h4 id="数据异构"><a href="#数据异构" class="headerlink" title="数据异构"></a>数据异构</h4><p>1 分库分表：以id分表、以用户分表、以数据热度分表<br>2 数据聚合：请求合并，数据闭环</p><h4 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h4><p>本地缓存、缓存架构、集群、负载</p><h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><p>异步处理、流量削峰、应用解耦<br>考虑消费失败和重复消费场景，需要数据校验和补偿机制<br>最终一致性</p><h4 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h4><p>1 降级、限流、分组和故障隔离<br>降级要做开关，需要动态配置<br>2 流量治理和监控<br>监控不合法的流量来源并隔离治理。如果非法流量无法控制，保留版本回退的能力</p><h4 id="业务安全性"><a href="#业务安全性" class="headerlink" title="业务安全性"></a>业务安全性</h4><p>1 接口幂等<br>2 防重设计<br>3 状态机：正向逆向流程</p><h4 id="监控和预警"><a href="#监控和预警" class="headerlink" title="监控和预警"></a>监控和预警</h4><p>发现问题、定位问题和解决问题<br>全链路埋点：每一个操作经过网络、服务层、中间层都要监控</p><h4 id="网关"><a href="#网关" class="headerlink" title="网关"></a>网关</h4><p>1 动态负载<br>2 服务依赖和治理（优化）</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Microservices </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Collections.toMap() VS. map.merge()</title>
       <link href="2021/04/27/tomap-mergemap/"/>
       <url>2021/04/27/tomap-mergemap/</url>

@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,93 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/01/cavil/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/01/cavil/" class="post-title-link" itemprop="url">吹毛求疵</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-01 10:40:19" itemprop="dateCreated datePublished" datetime="2021-04-01T10:40:19+08:00">2021-04-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-04-21 23:08:38" itemprop="dateModified" datetime="2021-04-21T23:08:38+08:00">2021-04-21</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>虽说吹毛求疵看似是个贬义词，但是技术上的吹毛求疵往往是有必要的。</p>
+<p>这里会不定时更新一些日常编码中 <code>吹毛求疵</code> 的写法。目的也是为了养成一个良好的编码习惯。</p>
+<h3 id="循环中的size判断"><a href="#循环中的size判断" class="headerlink" title="循环中的size判断"></a>循环中的size判断</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, ~~<span class="keyword">int</span>~~ length = list.size; i &lt; length; i++)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修正：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, length = list.size; i &lt; length; i++)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>list.size 有一定的资源消耗</p>
+<h3 id="返回空集合"><a href="#返回空集合" class="headerlink" title="返回空集合"></a>返回空集合</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Result&gt; <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// TODO.</span></span><br><span class="line">    <span class="keyword">return</span> Collections.EMPTY_LIST;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果查询数据为空时，也需要返回一个空集合，而不是null。防止调用方空指针异常</p>
+<h3 id="DCL单例"><a href="#DCL单例" class="headerlink" title="DCL单例"></a>DCL单例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singlenton</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singlenton INSTANCE; <span class="comment">// JIT</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singlenton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="comment">// DCL</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singlenton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123; <span class="comment">// double check 1</span></span><br><span class="line">            <span class="keyword">synchronized</span> (Singlenton.class) &#123; <span class="comment">// LOCK</span></span><br><span class="line">                <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123; <span class="comment">// double check 2</span></span><br><span class="line">                    INSTANCE = <span class="keyword">new</span> Singlenton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>避免对象半初始化状态</p>
+<h3 id="局部变量赋值"><a href="#局部变量赋值" class="headerlink" title="局部变量赋值"></a>局部变量赋值</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> oldThr = threshold;</span><br><span class="line"><span class="keyword">int</span> oldCap = (oldTab == <span class="keyword">null</span>) ? <span class="number">0</span> : oldTab.length;    </span><br><span class="line"><span class="keyword">int</span> newCap, newThr = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span> ((newCap = oldCap &lt;&lt; <span class="number">1</span>) &lt; MAXIMUM_CAPACITY &amp;&amp; oldCap &gt;= DEFAULT_INITIAL_CAPACITY)</span><br><span class="line">    newThr = oldThr &lt;&lt; <span class="number">1</span>; <span class="comment">// double threshold</span></span><br></pre></td></tr></table></figure>
+
+<p>这种写法在源码中比较常见</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1079,116 +1166,6 @@
 </blockquote>
 <p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jianshu-5years.png"></p>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/02/01/guava-usable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/01/guava-usable/" class="post-title-link" itemprop="url">Guava 实用篇（持续更新）</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-02-01 19:57:01" itemprop="dateCreated datePublished" datetime="2021-02-01T19:57:01+08:00">2021-02-01</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-05 17:48:50" itemprop="dateModified" datetime="2021-02-05T17:48:50+08:00">2021-02-05</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h4 id="字符串-amp-集合处理-Splitter-Joiner"><a href="#字符串-amp-集合处理-Splitter-Joiner" class="headerlink" title="字符串&amp;集合处理 Splitter Joiner"></a>字符串&amp;集合处理 <code>Splitter</code> <code>Joiner</code></h4><p>最近在对接JD商城，商品详情的和分类的对应关系是一个字符串（包含3级分类，用分号分隔），Guava中提供了一个比较简单的处理方式</p>
-<h5 id="Splitter"><a href="#Splitter" class="headerlink" title="Splitter"></a>Splitter</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将string分解成list</span></span><br><span class="line">Iterable&lt;String&gt; split = Splitter.on(<span class="string">&#x27;;&#x27;</span>)</span><br><span class="line">        .trimResults()</span><br><span class="line">        .omitEmptyStrings()</span><br><span class="line">        .split(<span class="string">&quot;170;1238 ; ;   2218&quot;</span>);</span><br><span class="line">split.forEach(item -&gt; &#123;</span><br><span class="line">    System.out.println(item);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h5 id="Joiner"><a href="#Joiner" class="headerlink" title="Joiner"></a>Joiner</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将list连接成string</span></span><br><span class="line">String join = Joiner.on(<span class="string">&quot;;&quot;</span>).skipNulls().join(split);</span><br><span class="line">System.out.println(<span class="string">&quot;join = &quot;</span> + join);</span><br></pre></td></tr></table></figure>
-
-<p>分析一下 <code>Joiner</code> 的源码，<code>Splitter</code>类似。</p>
-<p>Joiner类中主要包含 <strong>构造方法</strong>、<strong>appendTo方法</strong>、<strong>join方法</strong>。以及一系列他们的方法重载。</p>
-<p>就以 <code>Joiner.on(&quot;;&quot;).skipNulls().join(split)</code> 这段代码为例：</p>
-<h6 id="on"><a href="#on" class="headerlink" title="on()"></a>on()</h6><p>创建Joiner对象，并记录分隔用的字符</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Joiner <span class="title">on</span><span class="params">(String separator)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Joiner(separator);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">Joiner</span><span class="params">(String separator)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.separator = checkNotNull(separator);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里要注意的就是 <code>checkNotNull()</code> 方法。这是Guava提供的 <code>null</code> 值过滤的方法。这个方法在Guava官方手册的第一章节介绍。</p>
-<h6 id="skipNulls"><a href="#skipNulls" class="headerlink" title="skipNulls()"></a>skipNulls()</h6><p>之前提到过Joiner类中主要包含的执行逻辑的方法：appendTo方法。</p>
-<p>Guava通过链式编程的思想，在skipNulls()方法中返回了一个匿名内部类，在匿名内部类中重写了处理逻辑的appendTo方法，提供了过滤集合null值的功能。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Joiner <span class="title">skipNulls</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Joiner(<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> &lt;A extends Appendable&gt; <span class="function">A <span class="title">appendTo</span><span class="params">(A appendable, Iterator&lt;?&gt; parts)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">            checkNotNull(appendable, <span class="string">&quot;appendable&quot;</span>);</span><br><span class="line">            checkNotNull(parts, <span class="string">&quot;parts&quot;</span>);</span><br><span class="line">            <span class="keyword">while</span> (parts.hasNext()) &#123;</span><br><span class="line">                Object part = parts.next();</span><br><span class="line">                <span class="keyword">if</span> (part != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    appendable.append(Joiner.<span class="keyword">this</span>.toString(part));</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> (parts.hasNext()) &#123;</span><br><span class="line">            Object part = parts.next();</span><br><span class="line">                <span class="keyword">if</span> (part != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    appendable.append(separator);</span><br><span class="line">                    appendable.append(Joiner.<span class="keyword">this</span>.toString(part));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> appendable;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Joiner <span class="title">useForNull</span><span class="params">(String nullText)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;already specified skipNulls&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> MapJoiner <span class="title">withKeyValueSeparator</span><span class="params">(String kvs)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;can&#x27;t use .skipNulls() with maps&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在匿名内部类中重写了 <code>appendTo</code> 方法，加入了两处 <code>null</code> 值的判断</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (part != <span class="keyword">null</span>) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="join"><a href="#join" class="headerlink" title="join()"></a>join()</h6><p>这个方法接收传入的集合，然后内部调用 <code>appendTo</code> 方法进行处理。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">join</span><span class="params">(Iterator&lt;?&gt; parts)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> appendTo(<span class="keyword">new</span> StringBuilder(), parts).toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>需要注意的是，这里接收的参数类型是 <code>Iterator&lt;?&gt;</code> 接口。</p>
-<p>涵盖了我们日常使用的所有集合类型：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">* @see     Set</span><br><span class="line">* @see     List</span><br><span class="line">* @see     Map</span><br><span class="line">* @see     SortedSet</span><br><span class="line">* @see     SortedMap</span><br><span class="line">* @see     HashSet</span><br><span class="line">* @see     TreeSet</span><br><span class="line">* @see     ArrayList</span><br><span class="line">* @see     LinkedList</span><br><span class="line">* @see     Vector</span><br><span class="line">* @see     Collections</span><br><span class="line">* @see     Arrays</span><br><span class="line">* @see     AbstractCollection</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/01/guava-usable/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 
