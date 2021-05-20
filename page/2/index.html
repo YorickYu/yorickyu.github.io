@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-count">67</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">96</span>
+        <span class="site-state-item-count">98</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,94 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/10/cache-structure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/10/cache-structure/" class="post-title-link" itemprop="url">缓存架构概念篇</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-04-10 22:10:41 / 修改时间：22:47:47" itemprop="dateCreated datePublished" datetime="2021-04-10T22:10:41+08:00">2021-04-10</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着业务场景复杂度的提高和数据存储量的膨胀，为了保证整体服务平稳运行，缓存系统的地位也越来越高。</p>
+<p>今天就近期对缓存架构的理解，梳理成一篇浅显的文章</p>
+<h2 id="Redis缓存架构分类"><a href="#Redis缓存架构分类" class="headerlink" title="Redis缓存架构分类"></a>Redis缓存架构分类</h2><p>根据日常C端面临的实际情况，Redis 做缓存时，大体分为两种模式，分别是<strong>只读缓存</strong>和<strong>读写缓存</strong>。</p>
+<h3 id="只读缓存（读多写少）"><a href="#只读缓存（读多写少）" class="headerlink" title="只读缓存（读多写少）"></a>只读缓存（读多写少）</h3><p>修改数据时先删除缓存，下次读请求再写入。例如：<strong>旁路型缓存</strong></p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/cache1.png"></p>
+<p>当我们需要缓存图片、短视频这些用户只读的数据时，就可以使用只读缓存这个类型了</p>
+<h3 id="读写缓存"><a href="#读写缓存" class="headerlink" title="读写缓存"></a>读写缓存</h3><p>修改数据时不删除缓存，最新的数据是在 Redis 中，通过回写策略同步数据库。例如：<strong>穿透型缓存</strong></p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/cache2.png"></p>
+<blockquote>
+<p>回写策略<br>1 同步直写策略，写请求发给缓存的同时，也会发给后端数据库进行处理，等到缓存和数据库都写完数据，才给客户端返回。<br>同步直写会降低缓存的访问性能<br>2 异步写回策略，优先考虑了响应延迟。此时，所有写请求都先在缓存中处理。等到这些增改的数据要被从缓存中淘汰出来时，缓存将它们写回后端数据库。<br>异步写回有数据丢失的风险</p>
+</blockquote>
+<p><strong>同步直写模式侧重于保证数据可靠性，而异步写回模式则侧重于提供低延迟访问</strong></p>
+<h2 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h2><p>关于是选择只读缓存，还是读写缓存，主要看我们 <strong>对写请求是否有加速的需求</strong></p>
+<p>1 如果需要对写请求进行加速，我们选择读写缓存<br>2 如果写请求很少，或者是只需要提升读请求的响应速度的话，我们选择只读缓存</p>
+<hr>
+<p>缓存可以放到基础架构中任何存在数据传输瓶颈的地方。</p>
+<h2 id="展开"><a href="#展开" class="headerlink" title="展开"></a>展开</h2><h3 id="旁路型缓存-Look-Aside-Caching"><a href="#旁路型缓存-Look-Aside-Caching" class="headerlink" title="旁路型缓存 (Look-Aside Caching)"></a>旁路型缓存 (Look-Aside Caching)</h3><p>旁路型缓存是避免微服务从后端存储中访问数据的高性能替代方案<br>1 应用读取数据时，需要先读取 Redis；<br>2 发生缓存缺失时，需要从数据库读取数据；<br>3 发生缓存缺失时，还需要更新缓存。</p>
+<p>这些操作都要放在应用程序中来完成。所以，<br>有一个地方就需要注意了：因为需要新增程序代码来使用缓存，所以，Redis 并不适用于那些无法获得源码的应用，例如一些很早之前开发的应用程序，它们的源码已经没有再维护了，或者是第三方供应商开发的应用，没有提供源码，所以，我们就没有办法在这些应用中进行缓存操作。</p>
+<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>伴随业务膨胀，缓存的一致性维护难度上涨<br>思考：<br>数据读写方的沟通难题<br>解决方案：<br>1 AOP注解，更新缓存时通知<br>2 Mybatis 触发器<br>3 binlog 处理<br>4 MQ 最终一致性</p>
+<h3 id="穿透型缓存"><a href="#穿透型缓存" class="headerlink" title="穿透型缓存"></a>穿透型缓存</h3><p>穿透型缓存的设计原则是将缓存与后端数据库的交互细节对应用层服务隐藏<br>应用层服务所有的读写请求均请求缓存，读请求 miss 后，缓存向后端数据服务器请求数据，先更新缓存后返回<br>而写请求也是同样的，先写入缓存服务器，随后在合适的时间同步给后端服务器</p>
+<h3 id="思考-1"><a href="#思考-1" class="headerlink" title="思考"></a>思考</h3><p>实现复杂度和数据一致性的问题<br>思考：<br>选择合适的回写时间节点，和回写策略<br>合理规划缓存中的键值关系<br>解决方案：<br>1 实现复杂性无法避免，为了追求高频读写场景的缓存最大化利用<br>2 一致性问题考虑配合脚本语言，触发器等实现一个回写服务，当然还要保证缓存服务的高可用（这也不算不上解决方案）</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>其实缓存架构的思想内嵌是无处不在的。MySQL本身也有<code>buffer pool</code>的概念。redis中也有批处理指令和pipeline管道的概念。甚至于寄存器与系统内存之间的3级缓存概念。</p>
+<p>硬件的定位差距总需要通过软件去弥补，协同工作</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1097,75 +1185,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/02/04/jianshu-5years/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/04/jianshu-5years/" class="post-title-link" itemprop="url">有感</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-02-04 14:43:32 / 修改时间：14:44:41" itemprop="dateCreated datePublished" datetime="2021-02-04T14:43:32+08:00">2021-02-04</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>再牛逼的技术，也抵不过傻逼似的坚持</p>
-</blockquote>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jianshu-5years.png"></p>
-
       
     </div>
 

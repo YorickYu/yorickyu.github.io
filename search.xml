@@ -4,6 +4,29 @@
   
     
     <entry>
+      <title>list-to-map</title>
+      <link href="2021/05/21/list-to-map/"/>
+      <url>2021/05/21/list-to-map/</url>
+      
+        <content type="html"><![CDATA[<p>根据一定的规则将 list 转成 map</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Accessors(chain = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java8之前</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListBeforeJava8</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer, Animal&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (Animal animal : list) &#123;</span><br><span class="line">        map.put(animal.getId(), animal);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java8之后</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListAfterJava8</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().collect(Collectors.toMap(Animal::getId, animal -&gt; animal));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java8之后 处理key冲突 - IllegalStateException</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListAfterJava8_conflict</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().collect(Collectors.toMap(Animal::getId, animal -&gt; animal, (ov, nv) -&gt; nv));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Guava Maps</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithGuava</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Maps.uniqueIndex(list, Animal::getId);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MapUtils</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithApacheCommons2</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer, Animal&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    MapUtils.populateMap(map, list, Animal::getId);</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MapUtils 处理key冲突 - IllegalStateException</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithApacheCommons2_conflict</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer, Animal&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    MapUtils.populateMap(map, list, Animal::getId, animal -&gt; animal);</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>代码示例：<a href="https://github.com/YorickYu/JPP/blob/main/src/main/java/com/yy/collection/ListToMap.java">ArrayMerge.java</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Guava </tag>
+            
+            <tag> Java 8 </tag>
+            
+            <tag> MapUtils </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>微服务拆分和搭建</title>
       <link href="2021/05/09/microservices/"/>
       <url>2021/05/09/microservices/</url>
@@ -767,9 +790,9 @@
             
             <tag> algorithm </tag>
             
-            <tag> LeeCode </tag>
-            
             <tag> 滑动窗口 </tag>
+            
+            <tag> LeeCode </tag>
             
         </tags>
       
