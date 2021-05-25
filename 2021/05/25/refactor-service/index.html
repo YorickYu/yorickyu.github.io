@@ -24,19 +24,23 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
   </script>
-<meta name="description" content="可能是个非典型程序员吧 ^ ^">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yloopdaed">
-<meta property="og:url" content="http://yloopdaed.icu/tags/%E5%8F%8D%E5%B0%84/index.html">
+<meta name="description" content="什么服务需要重构？当现有服务的扩展性、可维护性、易用性无法满足逐渐膨胀的业务增长时，就需要把服务重构提上日程了。 随着公司业务的增长，需求规模和用户规模也迅速地膨胀起来，这样给系统的三高(高性能、高并发、高可用)以及扩展性、可维护性都带来了考验。而旧系统因为早期设计的各种局限性（如早期参与人员的水平、架构设计的前瞻性、老板的急性子等等），逐渐满足不了现状和未来的新需求，暴露出各种问题。开发人员们像">
+<meta property="og:type" content="article">
+<meta property="og:title" content="服务重构流程">
+<meta property="og:url" content="http://yloopdaed.icu/2021/05/25/refactor-service/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="可能是个非典型程序员吧 ^ ^">
+<meta property="og:description" content="什么服务需要重构？当现有服务的扩展性、可维护性、易用性无法满足逐渐膨胀的业务增长时，就需要把服务重构提上日程了。 随着公司业务的增长，需求规模和用户规模也迅速地膨胀起来，这样给系统的三高(高性能、高并发、高可用)以及扩展性、可维护性都带来了考验。而旧系统因为早期设计的各种局限性（如早期参与人员的水平、架构设计的前瞻性、老板的急性子等等），逐渐满足不了现状和未来的新需求，暴露出各种问题。开发人员们像">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/C87CF8C6-863A-41DA-9CB2-0D00799C1989.png">
+<meta property="article:published_time" content="2021-05-25T13:33:26.000Z">
+<meta property="article:modified_time" content="2021-05-25T13:57:59.465Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="iOS JAVA">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/C87CF8C6-863A-41DA-9CB2-0D00799C1989.png">
 
 
-<link rel="canonical" href="http://yloopdaed.icu/tags/%E5%8F%8D%E5%B0%84/">
+<link rel="canonical" href="http://yloopdaed.icu/2021/05/25/refactor-service/">
 
 
 <script class="page-configurations">
@@ -44,11 +48,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
-<title>标签: 反射 | yloopdaed</title>
+<title>服务重构流程 | yloopdaed</title>
   
 
 
@@ -173,7 +177,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -186,6 +190,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%9C%8D%E5%8A%A1%E9%9C%80%E8%A6%81%E9%87%8D%E6%9E%84%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么服务需要重构？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%A2%B3%E7%90%86%E9%98%B6%E6%AE%B5"><span class="nav-number">2.</span> <span class="nav-text">服务梳理阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E4%BE%9D%E8%B5%96%E6%A2%B3%E7%90%86%E3%80%81%E8%BE%B9%E7%95%8C%E5%88%92%E5%88%86"><span class="nav-number">3.</span> <span class="nav-text">外部依赖梳理、边界划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">代码重构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%92%E7%83%9F%E6%B5%8B%E8%AF%95"><span class="nav-number">5.</span> <span class="nav-text">冒烟测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%8B%E5%85%A5"><span class="nav-number">6.</span> <span class="nav-text">测试介入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%BB%B4%E4%BB%8B%E5%85%A5"><span class="nav-number">7.</span> <span class="nav-text">运维介入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%88%87%E6%8D%A2%E5%AE%8C%E6%88%90%E9%87%8D%E6%9E%84"><span class="nav-number">8.</span> <span class="nav-text">全量切换完成重构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81%EF%BC%88%E6%B8%B8%E6%A0%87%EF%BC%89"><span class="nav-number">9.</span> <span class="nav-text">数据验证（游标）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B"><span class="nav-number">10.</span> <span class="nav-text">交叉测试流程</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -276,50 +281,99 @@
 </noscript>
 
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h2 class="collection-header">反射
-          <small>标签</small>
-        </h2>
-      </div>
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/05/25/refactor-service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          服务重构流程
+        </h1>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+
+      <time title="创建时间：2021-05-25 21:33:26 / 修改时间：21:57:59" itemprop="dateCreated datePublished" datetime="2021-05-25T21:33:26+08:00">2021-05-25</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="什么服务需要重构？"><a href="#什么服务需要重构？" class="headerlink" title="什么服务需要重构？"></a>什么服务需要重构？</h3><p>当现有服务的扩展性、可维护性、易用性无法满足逐渐膨胀的业务增长时，就需要把服务重构提上日程了。</p>
+<p>随着公司业务的增长，需求规模和用户规模也迅速地膨胀起来，这样给系统的三高(高性能、高并发、高可用)以及扩展性、可维护性都带来了考验。而旧系统因为早期设计的各种局限性（如早期参与人员的水平、架构设计的前瞻性、老板的急性子等等），逐渐满足不了现状和未来的新需求，暴露出各种问题。开发人员们像是拖着老破车上高速，苦不堪言。</p>
+<h3 id="服务梳理阶段"><a href="#服务梳理阶段" class="headerlink" title="服务梳理阶段"></a>服务梳理阶段</h3><p>1 数据库表结构梳理<br>2 redis架构方案、相关key梳理<br>3 功能梳理，前后端接口统计（流量统计）<br>4 项目中潜在的问题梳理</p>
+<p>这个阶段算是一个前期准备阶段，就是对将要重构的项目有一个初步的了解。<br>一方面，了解的越深入，后期遇到的风险就越可控。另一方面，也需要正确的预估一个迭代周期和工时。</p>
+<h3 id="外部依赖梳理、边界划分"><a href="#外部依赖梳理、边界划分" class="headerlink" title="外部依赖梳理、边界划分"></a>外部依赖梳理、边界划分</h3><p>这里需要明确重构后该项目的职责，把原本依赖的外部服务整理出来，把边界划分好。冗余的功能可以评估拆分成下层服务。可以以接口为单位进行整理，提升重构代码的效率。</p>
+<h3 id="代码重构"><a href="#代码重构" class="headerlink" title="代码重构"></a>代码重构</h3><p>代码优化、降级，限流方案优化</p>
+<p>重构的过程中尽可能把第一个阶段中整理的潜在问题解决掉。为了保证后续业务的发展，加入基础的降级、限流方案。</p>
+<h3 id="冒烟测试"><a href="#冒烟测试" class="headerlink" title="冒烟测试"></a>冒烟测试</h3><p>出入参数对齐</p>
+<p>对原有项目进行抓包，相同环境下，用抓包的请求参数访问新接口，比对返回参数是否与老接口一致</p>
+<h3 id="测试介入"><a href="#测试介入" class="headerlink" title="测试介入"></a>测试介入</h3><p>用例测试、功能测试</p>
+<h3 id="运维介入"><a href="#运维介入" class="headerlink" title="运维介入"></a>运维介入</h3><p>1 上灰度环境，灰度验证。数据验证、交叉写入测试、流量比对（goReplay流量回放）<br>2 上生产环境，监控服务接入(日志 ELK、QPS grafana、CAT)、压测、蓝绿切换（网关控制）</p>
+<h3 id="全量切换完成重构"><a href="#全量切换完成重构" class="headerlink" title="全量切换完成重构"></a>全量切换完成重构</h3><h3 id="数据验证（游标）"><a href="#数据验证（游标）" class="headerlink" title="数据验证（游标）"></a>数据验证（游标）</h3><p>统计（清洗）异常数据</p>
+<p>写一套数据校验的接口，将生产环境的数据依次读取并完成序列化操作。<br>如果是数据库，以数据表为单位。如果是redis，那么以key为单位。注意是只读</p>
+<h3 id="交叉测试流程"><a href="#交叉测试流程" class="headerlink" title="交叉测试流程"></a>交叉测试流程</h3><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/C87CF8C6-863A-41DA-9CB2-0D00799C1989.png"></p>
+<p>重构项目在生产环境写入数据前需要做必要的数据备份，以防比对不通过时进行数据回滚</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2020-12-30T17:35:48+08:00"
-              content="2020-12-30">
-          12-30
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/12/30/whatis-reflection-in-java/" itemprop="url">
-            <span itemprop="name">Java 反射快查</span>
-          </a>
-      </div>
+    <footer class="post-footer">
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/21/list-to-map/" rel="prev" title="list-to-map">
+                  <i class="fa fa-chevron-left"></i> list-to-map
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-    </div>
-  </div>
-  
-  
-  
+
+
+
+
 
 
 <script>
