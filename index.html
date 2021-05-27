@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-count">100</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -346,6 +346,81 @@
 <ul>
 <li>😄 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/YYTODOLIST">YYTODOLIST</a></li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/05/27/list-distinctBy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/05/27/list-distinctBy/" class="post-title-link" itemprop="url">数组去重</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-05-27 23:18:55 / 修改时间：23:24:46" itemprop="dateCreated datePublished" datetime="2021-05-27T23:18:55+08:00">2021-05-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><strong>数组多条件去重</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// predicate to filter the duplicates by the given key extractor.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Predicate&lt;T&gt; <span class="title">distinctByKey</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, Object&gt; keyExtractor)</span> </span>&#123;</span><br><span class="line">    Map&lt;Object, Boolean&gt; uniqueMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">return</span> t -&gt; uniqueMap.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>or</em></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// use Set interface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Predicate&lt;T&gt; <span class="title">distinctByKey</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, ?&gt; keyExtractor)</span> </span>&#123;</span><br><span class="line">    Set&lt;Object&gt; seen = ConcurrentHashMap.newKeySet();</span><br><span class="line">    <span class="keyword">return</span> t -&gt; seen.add(keyExtractor.apply(t));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>用例</em></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Animal pig = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;pig&quot;</span>).setId(<span class="number">1</span>);</span><br><span class="line">Animal dog1 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;dog&quot;</span>).setId(<span class="number">2</span>);</span><br><span class="line">Animal dog2 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;dog&quot;</span>).setId(<span class="number">4</span>);</span><br><span class="line">Animal cat1 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;cat1&quot;</span>).setId(<span class="number">3</span>);</span><br><span class="line">Animal cat2 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;cat2&quot;</span>).setId(<span class="number">3</span>);</span><br><span class="line">List&lt;Animal&gt; list = Arrays.asList(pig, dog1, dog2, cat1, cat2);</span><br><span class="line"></span><br><span class="line">List&lt;Animal&gt; res = list.stream().filter(distinctByKey(Animal::getId)).filter(distinctByKey(Animal::getName)).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>result</em></strong>: [Animal(id=1, name=pig), Animal(id=2, name=dog), Animal(id=3, name=cat1)]</p>
 
       
     </div>
@@ -978,95 +1053,6 @@
 <p>仅取了数列前10个元素。</p>
 <p>用了一个小技巧，如果有兴趣的话我之后把过程再更新出来。</p>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/20/diff-of-java8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/04/20/diff-of-java8/" class="post-title-link" itemprop="url">面试官：Java8到底有什么新特性？</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-04-20 00:12:13" itemprop="dateCreated datePublished" datetime="2021-04-20T00:12:13+08:00">2021-04-20</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-04-29 22:26:08" itemprop="dateModified" datetime="2021-04-29T22:26:08+08:00">2021-04-29</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h3><p>先罗列一下相关的关键字吧。</p>
-<p><strong>行为参数化</strong>、<strong>函数式编程</strong>、<strong>Lambda</strong>、<strong>Stream</strong>、<strong>模式匹配</strong>、<strong>Optional</strong>、<strong>默认方法（接口多继承）</strong> 等</p>
-<p>如果面试真的遇到这个问题，任选上面几点展现一下理解的深度。</p>
-<h3 id="行为参数化"><a href="#行为参数化" class="headerlink" title="行为参数化"></a>行为参数化</h3><p>就是一个方法接受多个不同的行为作为参数，并在内部使用它们，完成不同行为的能力，可以让代码更适应不断变化的需求，减轻未来的工作量</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/java8-1.png"></p>
-<h3 id="代码传递"><a href="#代码传递" class="headerlink" title="代码传递"></a>代码传递</h3><p>Java8之前实现起来很复杂</p>
-<p>编程语言的目的就在于操作值，值作为一等公民。Java8可以将方法看成值一样传递</p>
-<p><strong>演变过程：传值-&gt; 类（实现接口） -&gt; 匿名类 -&gt; Lamdba（函数式接口）-&gt; 方法引用</strong></p>
-<p>上面的函数式接口、匿名类、Lambda都属于 <strong>行为参数化</strong> 的范畴</p>
-<p>例：void sort(Comparator&lt;? super E&gt; c) 演变</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">inventory是Apple数组，Apple类中有一个weight属性</span><br><span class="line">需求是按照苹果的重量排序</span><br><span class="line"><span class="number">1</span> 类</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppleComparator</span> <span class="keyword">implements</span> <span class="title">Comparator</span>&lt;<span class="title">Apple</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Apple a1, Apple a2)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a1.getWeight().compareTo(a2.getWeight());</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line">inventory.sort(<span class="keyword">new</span> AppleComparator());</span><br><span class="line"><span class="number">2</span> 匿名类</span><br><span class="line">inventory.sort(<span class="keyword">new</span> Comparator&lt;Apple&gt;() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Apple a1, Apple a2)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a1.getWeight().compareTo(a2.getWeight());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="number">3</span> Lambda</span><br><span class="line">inventory.sort((a1, a2) -&gt; a1.getWeight().compareTo(a2.getWeight()));</span><br><span class="line">静态导入 Comparator.comparing</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.util.Comparator.comparing;</span><br><span class="line">inventory.sort(comparing((a) -&gt; a.getWeight()));</span><br><span class="line"><span class="number">4</span> 方法引用</span><br><span class="line">inventory.sort(comparing(Apple::getWeight));</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/20/diff-of-java8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 

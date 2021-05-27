@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>数组去重</title>
+      <link href="2021/05/27/list-distinctBy/"/>
+      <url>2021/05/27/list-distinctBy/</url>
+      
+        <content type="html"><![CDATA[<p><strong>数组多条件去重</strong></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// predicate to filter the duplicates by the given key extractor.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Predicate&lt;T&gt; <span class="title">distinctByKey</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, Object&gt; keyExtractor)</span> </span>&#123;</span><br><span class="line">    Map&lt;Object, Boolean&gt; uniqueMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">return</span> t -&gt; uniqueMap.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong><em>or</em></strong></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// use Set interface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Predicate&lt;T&gt; <span class="title">distinctByKey</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, ?&gt; keyExtractor)</span> </span>&#123;</span><br><span class="line">    Set&lt;Object&gt; seen = ConcurrentHashMap.newKeySet();</span><br><span class="line">    <span class="keyword">return</span> t -&gt; seen.add(keyExtractor.apply(t));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong><em>用例</em></strong></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Animal pig = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;pig&quot;</span>).setId(<span class="number">1</span>);</span><br><span class="line">Animal dog1 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;dog&quot;</span>).setId(<span class="number">2</span>);</span><br><span class="line">Animal dog2 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;dog&quot;</span>).setId(<span class="number">4</span>);</span><br><span class="line">Animal cat1 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;cat1&quot;</span>).setId(<span class="number">3</span>);</span><br><span class="line">Animal cat2 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;cat2&quot;</span>).setId(<span class="number">3</span>);</span><br><span class="line">List&lt;Animal&gt; list = Arrays.asList(pig, dog1, dog2, cat1, cat2);</span><br><span class="line"></span><br><span class="line">List&lt;Animal&gt; res = list.stream().filter(distinctByKey(Animal::getId)).filter(distinctByKey(Animal::getName)).collect(Collectors.toList());</span><br></pre></td></tr></table></figure><p><strong><em>result</em></strong>: [Animal(id=1, name=pig), Animal(id=2, name=dog), Animal(id=3, name=cat1)]</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Stream </tag>
+            
+            <tag> filter </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>serverless、FaaS/BaaS、laaS/PaaS/SaaS</title>
       <link href="2021/05/26/what-is-serverless/"/>
       <url>2021/05/26/what-is-serverless/</url>
