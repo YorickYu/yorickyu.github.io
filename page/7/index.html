@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-count">74</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">101</span>
+        <span class="site-state-item-count">105</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,289 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/11/about-IO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/11/11/about-IO/" class="post-title-link" itemprop="url">BIO/NIO/多路复用 原理与区别</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-11 21:00:51" itemprop="dateCreated datePublished" datetime="2020-11-11T21:00:51+08:00">2020-11-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-11-12 20:58:53" itemprop="dateModified" datetime="2020-11-12T20:58:53+08:00">2020-11-12</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>网络通信中BIO、NIO、多路复用相关的知识点非常多，网络上也有很多相关的技术文章。但是每个人的角度和切入点不同，知识涵盖的内容太多了，很难整理出一条清晰的思路。</p>
+<p>我这两天尝试着脱离代码（因为加入代码Demo之后，篇幅增长，很多API也不是很熟悉，增加阅读的难度），单纯从操作系统网络通信的流程去梳理BIO、NIO，再到多路复用的优缺点。最终达到了解这些技术的联系和发展的目的。</p>
+<h3 id="BIO"><a href="#BIO" class="headerlink" title="BIO"></a>BIO</h3><p>此流程基于Java示例代码，代码可以查看 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">JPP</a> /IOTest 类</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/bio.png" alt="BIO"> </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/11/11/about-IO/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/06/hashmap-resize-lotail/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/11/06/hashmap-resize-lotail/" class="post-title-link" itemprop="url">HashMap resize loTail.next=e loTail=e</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-11-06 21:49:18 / 修改时间：21:51:24" itemprop="dateCreated datePublished" datetime="2020-11-06T21:49:18+08:00">2020-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>HashMap扩容的过程包含了很多巧妙的思考，思想简单易懂，但是代码的实现真的让人折服！</p>
+<p>今天快速浏览resize方法时，被两行代码绕住了：</p>
+<img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/loTail.next%20%3D%20e.png" style="zoom:50%;" />
+
+<p>可能是对于引用类型的理解不够深刻吧，这两行代码真的看了我一天！网上也很少有人分析这两行代码（可能因为太容易了吧）</p>
+<p>最后我自己写了个Demo，算是把这个操作搞清楚了。因为是引用类型的指针指向问题，所以画图也不太好理解，只能自己写个Demo，一点点Debug分析过程。</p>
+<p>相关代码在：<a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP">Jpp</a> /TailInsert类中</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/11/06/hashmap-resize-lotail/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/03/reverse-words/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/11/03/reverse-words/" class="post-title-link" itemprop="url">LeetCode reverse-words</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-03 22:23:14" itemprop="dateCreated datePublished" datetime="2020-11-03T22:23:14+08:00">2020-11-03</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-11 23:27:04" itemprop="dateModified" datetime="2020-12-11T23:27:04+08:00">2020-12-11</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>LeetCode p151 逐个翻转字符串中的每个单词</p>
+<p>相关代码可以在 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP"><strong><em>JPP</em></strong></a>/ReverseWords类中查看。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 给定一个字符串，逐个翻转字符串中的每个单词。 </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 说明： </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 无空格字符构成一个 单词 。 </span><br><span class="line">&#x2F;&#x2F; 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。 </span><br><span class="line">&#x2F;&#x2F; 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 1： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;the sky is blue&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;blue is sky the&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 示例 2： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;  hello world!  &quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;world! hello&quot;</span><br><span class="line">&#x2F;&#x2F;解释：输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 3： </span><br><span class="line">&#x2F;&#x2F; 输入：&quot;a good   example&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;example good a&quot;</span><br><span class="line">&#x2F;&#x2F;解释：如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 4： </span><br><span class="line">&#x2F;&#x2F; 输入：s &#x3D; &quot;  Bob    Loves  Alice   &quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;Alice Loves Bob&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 示例 5： </span><br><span class="line">&#x2F;&#x2F; 输入：s &#x3D; &quot;Alice does not even like bob&quot;</span><br><span class="line">&#x2F;&#x2F;输出：&quot;bob like even not does Alice&quot;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 提示： </span><br><span class="line">&#x2F;&#x2F; 1 &lt;&#x3D; s.length &lt;&#x3D; 104 </span><br><span class="line">&#x2F;&#x2F; s 包含英文大小写字母、数字和空格 &#39; &#39; </span><br><span class="line">&#x2F;&#x2F; s 中 至少存在一个 单词 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; 进阶：  </span><br><span class="line">&#x2F;&#x2F; 请尝试使用 O(1) 额外空间复杂度的原地解法。 </span><br><span class="line">&#x2F;&#x2F; </span><br><span class="line">&#x2F;&#x2F; Related Topics 字符串 </span><br><span class="line">&#x2F;&#x2F; 👍 240 👎 0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import java.util.HashMap;</span><br><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">    public String reverseWords(String s) &#123;</span><br><span class="line">        StringBuffer sb &#x3D; new StringBuffer();</span><br><span class="line">        String[] strings &#x3D; s.split(&quot;\\s+&quot;);</span><br><span class="line">        HashMap m &#x3D; new HashMap();</span><br><span class="line">        int modCount &#x3D; 0;</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 0; i &lt; strings.length; i++) &#123;</span><br><span class="line">            String innerstring &#x3D; strings[i];</span><br><span class="line">            if (!innerstring.equals(&quot;&quot;)) &#123;</span><br><span class="line">                m.put(modCount++, innerstring);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (;modCount&gt;0;) &#123;</span><br><span class="line">            sb.append(m.get(--modCount));</span><br><span class="line">            if (modCount !&#x3D; 0)</span><br><span class="line">                sb.append(&quot; &quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>解题思路就是用Java现有的API配合正则去拆分传入的字符串s，得到一个字符串数组</p>
+<p>然后利用HashMap查找O(1)的特性，将value值按序存入key，并记录key值</p>
+<p>最后倒序key值，取出value即可。</p>
+<blockquote>
+<p>这里其实一次for循环逆序遍历也可以得出答案，时间复杂度不会有太大差别，因为本身字符串数组长度不会很大。<br>我只是单纯的像仿照HashMap源码中modCount的想法记录一下编辑次数，所以for了两次。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public String reverseWords(String s) &#123;</span><br><span class="line">    String[] words &#x3D; s.trim().split(&quot;\\s+&quot;);</span><br><span class="line">    int len &#x3D; words.length;</span><br><span class="line">    StringBuilder ans &#x3D; new StringBuilder();</span><br><span class="line">    ans.append(words[len - 1]);</span><br><span class="line">    for (int i &#x3D; len - 2; i &gt;&#x3D; 0; i --) &#123;</span><br><span class="line">        if (words[i].equals(&quot;&quot;))</span><br><span class="line">            continue;</span><br><span class="line">        ans.append(&quot; &quot; + words[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    return ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，学了一下网上一些时间复杂度很低的解法，耗时的步骤都来源于数组的 <code>split</code> 方法。</p>
+<p>想要突破的可以自定义一个数组拆分的方法。</p>
+<p>还有，基本可以确定的是，使用 <code>StringBuilder</code> 的API拼接数组比直接使用 String 速度要快。</p>
+<blockquote>
+<p>关于String拼接的性能，阿里手册中有专门收录：<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/756752?spm=a2c6h.12873639.0.0.6fee1e8brXp7fY">为什么不建议在 for 循环中使用“+”进行字符串拼接？</a></p>
+</blockquote>
+<p>for循环中5万次字符串拼接性能差别：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+ cost:5119</span><br><span class="line">StringBuilder cost:3</span><br><span class="line">StringBuffer cost:4</span><br><span class="line">concat cost:3623</span><br><span class="line">StringUtils.join cost:25726</span><br></pre></td></tr></table></figure>
+
+
+<p>先后提交了2次，结果如下：</p>
+<p>11 分钟前    通过    10 ms    38.9 MB    Java<br>20 分钟前    通过    12 ms    39.3 MB    Java</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -983,283 +1266,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/10/12/slide-windows/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/10/10/git/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/10/10/git/" class="post-title-link" itemprop="url">git command</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-10-10 17:23:40" itemprop="dateCreated datePublished" datetime="2020-10-10T17:23:40+08:00">2020-10-10</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-03-02 15:27:17" itemprop="dateModified" datetime="2021-03-02T15:27:17+08:00">2021-03-02</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>虽然现在常用sourcetree或者直接在IDE中通过图形界面操作，但是开发中难免遇到一些棘手的问题需要使用git命令去管理项目</p>
-<p>这里列出一些常用的命令，方便查询 <a href="#%E6%9C%AC%E5%9C%B0%E6%93%8D%E4%BD%9C">命令集</a></p>
-<p><strong><em>&lt;更新20201114&gt;</em></strong></p>
-<h2 id="常见场景"><a href="#常见场景" class="headerlink" title="常见场景"></a>常见场景</h2><h3 id="1-撤销本地-暂存区代码"><a href="#1-撤销本地-暂存区代码" class="headerlink" title="1 撤销本地\暂存区代码"></a>1 撤销本地\暂存区代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD &lt;filename&gt;</span><br><span class="line">git checkout -- &lt;filename&gt;</span><br><span class="line">批量撤销：</span><br><span class="line">git reset HEAD</span><br><span class="line">git checkout .</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-撤销已提交的代码"><a href="#2-撤销已提交的代码" class="headerlink" title="2 撤销已提交的代码"></a>2 撤销已提交的代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard commit_id 回到上一个提交的节点（清楚本地代码库）</span><br><span class="line">git reset --soft commit_id 回到上一个提交的节点（保留本地代码库）</span><br><span class="line">查看commit_id（查看命令历史）：git reflog </span><br></pre></td></tr></table></figure>
-
-<h3 id="3-原本版本退回"><a href="#3-原本版本退回" class="headerlink" title="3 原本版本退回"></a>3 原本版本退回</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard commit_id</span><br><span class="line">git push -f origin master</span><br><span class="line">查看commit_id（查看命令历史）：git log</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-创建分支并提交到远程"><a href="#4-创建分支并提交到远程" class="headerlink" title="4 创建分支并提交到远程"></a>4 创建分支并提交到远程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b dev</span><br><span class="line">git push origin dev</span><br><span class="line">删除远端分支：</span><br><span class="line">git push origin --delete dev</span><br><span class="line">删除本地分支：</span><br><span class="line">git branch -d dev</span><br><span class="line">查看本地、远端分支：</span><br><span class="line">git branch -a</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/10/10/git/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/10/07/money-management/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/10/07/money-management/" class="post-title-link" itemprop="url">理财营-学习笔记</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-10-07 18:04:46" itemprop="dateCreated datePublished" datetime="2020-10-07T18:04:46+08:00">2020-10-07</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-10-13 14:33:28" itemprop="dateModified" datetime="2020-10-13T14:33:28+08:00">2020-10-13</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/management/" itemprop="url" rel="index"><span itemprop="name">management</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <!-- ## 小白理财营学习笔记 -->
-
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>国庆期间形成安排比较满，前半段安排了家庭短途自驾旅行，后半段要去外地参加朋友的婚礼。</p>
-<p>没有太多大块的时间可以学习和整理，于是报名参加了一个基础的理财知识的训练营，利用晚上睡前的时间了解一下理财相关的知识、丰富一下自己的知识库。</p>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>课程共12天，所以我也会按每天的内容进行更新。全部学习结束后争取写一写自己的收获和感悟。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/10/07/money-management/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/09/26/0926/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/09/26/0926/" class="post-title-link" itemprop="url">0926</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-09-26 11:40:35" itemprop="dateCreated datePublished" datetime="2020-09-26T11:40:35+08:00">2020-09-26</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-10-07 18:33:48" itemprop="dateModified" datetime="2020-10-07T18:33:48+08:00">2020-10-07</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/something/" itemprop="url" rel="index"><span itemprop="name">something</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>才意识到，原来不是我长大了，而是妈妈真的老了。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/09/26/0926/">
                 阅读全文 &raquo;
               </a>
             </div>
