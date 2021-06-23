@@ -8,7 +8,7 @@
       <link href="2021/06/04/redis-work-mode/"/>
       <url>2021/06/04/redis-work-mode/</url>
       
-        <content type="html"><![CDATA[<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/E179C828-407B-464B-8A86-42434342043E.png"></p>]]></content>
+        <content type="html"><![CDATA[<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/E179C828-407B-464B-8A86-42434342043E.png"></p><p>1 <strong>数据结构</strong>，用什么数据结构存储（哈希、列表、集合、有序集合。底层双端列表、压缩列表、跳表）<br>2 <strong>存储容量</strong>，存储上限<br>3 <strong>清除策略</strong>，到达存储上限后如何清除冷数据（LRU最近最少使用、FIFO先进先出、LFU最近最不常用、SOFT软引用、WEAK弱引用）<br>4 <strong>过期策略</strong>，定时清除、定期清除、惰性删除<br>5 <strong>线程安全</strong>，redis单线程保证线程安全、本地缓存需要通过锁机制保证线程安全，或者线程隔离<br>6 <strong>对外提供简明的API</strong>，见名知意<br>7 <strong>数据持久化方案</strong>，redis（RDB、AOF）、灾难预警和备份<br>8 <strong>穿透键阻塞机制</strong>，防止缓存穿透</p>]]></content>
       
       
       
@@ -248,9 +248,9 @@
       
         <tags>
             
-            <tag> Fibonacci </tag>
-            
             <tag> Stream </tag>
+            
+            <tag> Fibonacci </tag>
             
         </tags>
       
@@ -931,9 +931,9 @@
             
             <tag> algorithm </tag>
             
-            <tag> 滑动窗口 </tag>
-            
             <tag> LeeCode </tag>
+            
+            <tag> 滑动窗口 </tag>
             
         </tags>
       
