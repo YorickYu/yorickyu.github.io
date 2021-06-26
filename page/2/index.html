@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-count">107</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,88 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/05/09/microservices/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/05/09/microservices/" class="post-title-link" itemprop="url">微服务拆分和搭建 SOP</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-09 19:17:49" itemprop="dateCreated datePublished" datetime="2021-05-09T19:17:49+08:00">2021-05-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-06-04 21:18:17" itemprop="dateModified" datetime="2021-06-04T21:18:17+08:00">2021-06-04</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="微服务拆分维度"><a href="#微服务拆分维度" class="headerlink" title="微服务拆分维度"></a>微服务拆分维度</h3><p>1 按系统维度：例如前后台拆分<br>2 按功能维度：例如用户服务、价格服务、商品库存服务<br>3 按读写维度：例如搜索和信息流服务、注册和下单服务</p>
+<p><strong>每个服务也可以由若干服务支持构成</strong></p>
+<h3 id="微服务架构搭建"><a href="#微服务架构搭建" class="headerlink" title="微服务架构搭建"></a>微服务架构搭建</h3><p>一般随着公司业务体量的增长，需要考虑从单体服务拆分成微服务架构。</p>
+<p>微服务架构需要考虑下面几个方面：没有优先级之分（不一定完整）</p>
+<h4 id="数据异构"><a href="#数据异构" class="headerlink" title="数据异构"></a>数据异构</h4><p>1 分库分表：以id分表、以用户分表、以数据热度分表<br>2 数据聚合：请求合并，数据闭环</p>
+<h4 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h4><p>本地缓存、缓存架构、集群、负载</p>
+<h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><p>异步处理、流量削峰、应用解耦<br>考虑消费失败和重复消费场景，需要数据校验和补偿机制<br>最终一致性</p>
+<h4 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h4><p>1 降级、限流、分组和故障隔离<br>降级要做开关，需要动态配置<br>2 流量治理和监控<br>监控不合法的流量来源并隔离治理。如果非法流量无法控制，保留版本回退的能力</p>
+<h4 id="业务安全性"><a href="#业务安全性" class="headerlink" title="业务安全性"></a>业务安全性</h4><p>1 接口幂等<br>2 防重设计<br>3 状态机：正向逆向流程</p>
+<h4 id="监控和预警"><a href="#监控和预警" class="headerlink" title="监控和预警"></a>监控和预警</h4><p>发现问题、定位问题和解决问题<br>全链路埋点：每一个操作经过网络、服务层、中间层都要监控</p>
+<h4 id="网关"><a href="#网关" class="headerlink" title="网关"></a>网关</h4><p>1 动态负载<br>2 服务依赖和治理（优化）</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1012,103 +1094,6 @@
 <h3 id="局部变量赋值"><a href="#局部变量赋值" class="headerlink" title="局部变量赋值"></a>局部变量赋值</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> oldThr = threshold;</span><br><span class="line"><span class="keyword">int</span> oldCap = (oldTab == <span class="keyword">null</span>) ? <span class="number">0</span> : oldTab.length;    </span><br><span class="line"><span class="keyword">int</span> newCap, newThr = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span> ((newCap = oldCap &lt;&lt; <span class="number">1</span>) &lt; MAXIMUM_CAPACITY &amp;&amp; oldCap &gt;= DEFAULT_INITIAL_CAPACITY)</span><br><span class="line">    newThr = oldThr &lt;&lt; <span class="number">1</span>; <span class="comment">// double threshold</span></span><br></pre></td></tr></table></figure>
 
 <p>这种写法在源码中比较常见</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/03/29/mysql-innodb-hash/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/29/mysql-innodb-hash/" class="post-title-link" itemprop="url">MySQL Innodb 自定义Hash索引</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-03-29 09:24:16 / 修改时间：10:58:34" itemprop="dateCreated datePublished" datetime="2021-03-29T09:24:16+08:00">2021-03-29</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>MySQL中，索引是在存储引擎实现的<br>MySQL中，只有 Memory 引擎显式支持哈希索引（非唯一）<br>MySQL中，默认的Innodb引擎是不支持 Hash 索引的</p>
-<h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>哈希索引的数据结构：槽 Slot、值 Value</p>
-<p>每个槽的编号是顺序的，但是值不是。<strong>值存储的是指向 行 的指针</strong></p>
-<p>优点：<br>因为索引自身只需存储对应的哈希值，所以索引的结构十分紧凑，这也让哈希索引查找的速度非常快。</p>
-<p>缺点：<br>1 哈希值是无序的，无法用于排序<br>2 哈希索引只支持等值比较，不支持任何范围查询<br>3 哈希冲突，索引维护操作代价很高<br>4 不支持部分列匹配查找。例如：对数据列（A,B）建立哈希索引，此时查询A列，无法使用该索引</p>
-<p><strong>因为这些限制，哈希索引只适用于某些特定的场合</strong>。而一旦适合哈希索引 ，则它带来性能提升将非常显著。</p>
-<h3 id="大字符串类型索引"><a href="#大字符串类型索引" class="headerlink" title="大字符串类型索引"></a>大字符串类型索引</h3><blockquote>
-<p>这里基于 Innodb 数据引擎讨论</p>
-</blockquote>
-<p>由于索引本身在 Innodb 中是以 B+Tree 的数据结构存在的。如果对于大字符串类型直接建立索引显然是不合理的。（这里不展开介绍 B+ 树在 MySQL 中的相关知识）</p>
-<p>那么，假如现在要对数据列 email 或者 url 这类数据列建立索引。应该如何保证空间和效率？</p>
-<h4 id="前缀索引"><a href="#前缀索引" class="headerlink" title="前缀索引"></a>前缀索引</h4><p>这是一种常见的思路，取大字符串类型的前缀建立索引，节省空间的同时尽可能过滤数据。</p>
-<p>难点在于需要合理定位一个前缀长度，尽可能过滤重复数据。</p>
-<p>此外需要注意的是，前缀索引会导致覆盖索引失效。这里就不详细展开了。</p>
-<h4 id="自定义-Hash-索引"><a href="#自定义-Hash-索引" class="headerlink" title="自定义 Hash 索引"></a>自定义 Hash 索引</h4><p>这个概念其实一直存在于 Innodb 引擎中。</p>
-<blockquote>
-<p>innodb内部做了很多优化：<br>1 读：可预测性预读，自动在内存中创建 <strong>自适应Hash索引</strong> 以加速读操作<br>2 写：加入缓冲区。加速插入操作</p>
-</blockquote>
-<p>上面的内容了解即可，本文中提到的 自定义Hash索引 是在 B+树 的基础上创建一个 <strong>伪哈希索引</strong>。</p>
-<p>思路就是新增一列记录大字符串哈希算法的结（删除原来字符串的索引）。</p>
-<h5 id="哈希算法的选择"><a href="#哈希算法的选择" class="headerlink" title="哈希算法的选择"></a>哈希算法的选择</h5><p>不要使用 SHA1() 和 MD5() 作为哈希函数。因为这两个函数是强加密函数。计算出来的哈希值非常长，浪费空间，索引过程也更慢。他们得设计目的是加密。</p>
-<p>CRC32() 是一个比较好的选择，计算结果较小。但是随着数据量的增多会出现明显的哈希冲突问题。可以在此基础上优化得到适合自己项目需求的哈希算法。</p>
-<h5 id="如何维护哈希值"><a href="#如何维护哈希值" class="headerlink" title="如何维护哈希值"></a>如何维护哈希值</h5><p>由于新增了一列伪哈希数据列。所以对于行数据的更新的插入操作。都是进行相应的哈希操作。</p>
-<p>当然这一列哈希值的维护可以进行手动维护，也可以使用触发器实现。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER // </span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> pseudohash_crc_in s <span class="keyword">BEFORE</span> <span class="keyword">INSERT</span> <span class="keyword">ON</span> pseudohash <span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="keyword">ROW</span> <span class="keyword">BEGIN</span> </span><br><span class="line"><span class="keyword">SET</span> NEW.url_crc=<span class="keyword">crc32</span>(NEW.url); </span><br><span class="line"><span class="keyword">END</span>; </span><br><span class="line">// </span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> pseudohash_crc_upd <span class="keyword">BEFORE</span> <span class="keyword">UPDATE</span> <span class="keyword">ON</span> pseudohash <span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="keyword">ROW</span> <span class="keyword">BEGIN</span> </span><br><span class="line"><span class="keyword">SET</span> NEW.url_crc=<span class="keyword">crc32</span>(NEW.url); </span><br><span class="line"><span class="keyword">END</span>; </span><br><span class="line">//</span><br></pre></td></tr></table></figure>
-
-<h5 id="sql改写"><a href="#sql改写" class="headerlink" title="sql改写"></a>sql改写</h5><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT id FROM url WHERE url=&quot;http://www.mysql.com&quot;;</span><br></pre></td></tr></table></figure>
-
-<p>改进为:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT id FROM url WHERE url=&quot;http://www.mysql.com&quot; AND url_crc=CRC32(&quot;http://www.mysql.com&quot;);</span><br></pre></td></tr></table></figure>
-<p>由于哈希冲突。所以还是需要带有原条件，在伪哈希索引之后再扫描少量的数据。</p>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>本篇文章只是对于大字符串索引优化提供另一种思路。</p>
 
       
     </div>

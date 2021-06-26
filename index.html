@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-count">107</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -346,6 +346,77 @@
 <ul>
 <li>😄 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/YYTODOLIST">YYTODOLIST</a></li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/06/26/abtest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/06/26/abtest/" class="post-title-link" itemprop="url">A/B/nTest搭建 SOP</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-06-26 23:50:48 / 修改时间：23:56:44" itemprop="dateCreated datePublished" datetime="2021-06-26T23:50:48+08:00">2021-06-26</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="AB测试"><a href="#AB测试" class="headerlink" title="AB测试"></a>AB测试</h3><p>AB测试是为Web或App界面或流程制作两个（A/B）或多个（A/B/n）版本，在同一时间维度，分别让组成成分相同（相似）的访客群组（目标人群）随机的访问这些版本，收集各群组的用户体验数据和业务数据，最后分析、评估出最好版本，正式采用。</p>
+<h3 id="搭建流程"><a href="#搭建流程" class="headerlink" title="搭建流程"></a>搭建流程</h3><h4 id="分流方案"><a href="#分流方案" class="headerlink" title="分流方案"></a>分流方案</h4><p>稳定hash算法：murmur、crc</p>
+<h4 id="稳定性方案"><a href="#稳定性方案" class="headerlink" title="稳定性方案"></a>稳定性方案</h4><p>多级缓存：本地、远程、redis</p>
+<h4 id="监控方案"><a href="#监控方案" class="headerlink" title="监控方案"></a>监控方案</h4><p>埋点、日志、合理配置分流算法（每个方案的最少流量应该不少于1000UV）</p>
+<h4 id="容灾方案"><a href="#容灾方案" class="headerlink" title="容灾方案"></a>容灾方案</h4><p>手动降级：手动调整hash分流策略、关闭AB服务<br>自动降级：错误日志过多或系统负载异常时，自动修改hash分流策略，关闭分流。待系统回复后修改回去</p>
+<h4 id="分流数据传递"><a href="#分流数据传递" class="headerlink" title="分流数据传递"></a>分流数据传递</h4><p>根据具体的业务改变，常见在 HTTP header中透出，也可以约定在JSON数据中。</p>
 
       
     </div>
@@ -1037,88 +1108,6 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Guava Maps</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithGuava</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Maps.uniqueIndex(list, Animal::getId);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MapUtils</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithApacheCommons2</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer, Animal&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    MapUtils.populateMap(map, list, Animal::getId);</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MapUtils 处理key冲突 - IllegalStateException</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithApacheCommons2_conflict</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer, Animal&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    MapUtils.populateMap(map, list, Animal::getId, animal -&gt; animal);</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>代码示例：<a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP/blob/main/src/main/java/com/yy/collection/ListToMap.java">ArrayMerge.java</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/05/09/microservices/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/09/microservices/" class="post-title-link" itemprop="url">微服务拆分和搭建 SOP</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-05-09 19:17:49" itemprop="dateCreated datePublished" datetime="2021-05-09T19:17:49+08:00">2021-05-09</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-06-04 21:18:17" itemprop="dateModified" datetime="2021-06-04T21:18:17+08:00">2021-06-04</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="微服务拆分维度"><a href="#微服务拆分维度" class="headerlink" title="微服务拆分维度"></a>微服务拆分维度</h3><p>1 按系统维度：例如前后台拆分<br>2 按功能维度：例如用户服务、价格服务、商品库存服务<br>3 按读写维度：例如搜索和信息流服务、注册和下单服务</p>
-<p><strong>每个服务也可以由若干服务支持构成</strong></p>
-<h3 id="微服务架构搭建"><a href="#微服务架构搭建" class="headerlink" title="微服务架构搭建"></a>微服务架构搭建</h3><p>一般随着公司业务体量的增长，需要考虑从单体服务拆分成微服务架构。</p>
-<p>微服务架构需要考虑下面几个方面：没有优先级之分（不一定完整）</p>
-<h4 id="数据异构"><a href="#数据异构" class="headerlink" title="数据异构"></a>数据异构</h4><p>1 分库分表：以id分表、以用户分表、以数据热度分表<br>2 数据聚合：请求合并，数据闭环</p>
-<h4 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h4><p>本地缓存、缓存架构、集群、负载</p>
-<h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><p>异步处理、流量削峰、应用解耦<br>考虑消费失败和重复消费场景，需要数据校验和补偿机制<br>最终一致性</p>
-<h4 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h4><p>1 降级、限流、分组和故障隔离<br>降级要做开关，需要动态配置<br>2 流量治理和监控<br>监控不合法的流量来源并隔离治理。如果非法流量无法控制，保留版本回退的能力</p>
-<h4 id="业务安全性"><a href="#业务安全性" class="headerlink" title="业务安全性"></a>业务安全性</h4><p>1 接口幂等<br>2 防重设计<br>3 状态机：正向逆向流程</p>
-<h4 id="监控和预警"><a href="#监控和预警" class="headerlink" title="监控和预警"></a>监控和预警</h4><p>发现问题、定位问题和解决问题<br>全链路埋点：每一个操作经过网络、服务层、中间层都要监控</p>
-<h4 id="网关"><a href="#网关" class="headerlink" title="网关"></a>网关</h4><p>1 动态负载<br>2 服务依赖和治理（优化）</p>
 
       
     </div>

@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">106</span>
+        <span class="site-state-item-count">107</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,109 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/12/09/how-to-checkout-running-port/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/12/09/how-to-checkout-running-port/" class="post-title-link" itemprop="url">我的tomcat为什么启不起来？</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-09 23:39:40" itemprop="dateCreated datePublished" datetime="2020-12-09T23:39:40+08:00">2020-12-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-10 22:41:52" itemprop="dateModified" datetime="2020-12-10T22:41:52+08:00">2020-12-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>在测试服务器的使用过程，由于大家的使用没有非常规范，所以经常会出现服务启动不起来的问题。这类问题的产生经常是因为你配置的服务端口号被其他程序占用了。</p>
+<p>那么如何定位一台服务器中端口的使用情况呢？这里推荐两个非常好用的命令</p>
+<h4 id="查看正在使用的端口"><a href="#查看正在使用的端口" class="headerlink" title="查看正在使用的端口"></a>查看正在使用的端口</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -tnlp   </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>-t : 指明显示TCP端口<br>-u : 指明显示UDP端口<br>-l : 显示监听套接字<br>-p : 显示进程标识符和程序名称，每一个套接字都属于一个程序<br>-n : 不进行DNS轮询，显示IP(可以加速操作)<br>-a : 显示全部（包括ESTABLISHED）</p>
+</blockquote>
+<p>套接字就是socket，表示一对IP/PORT的组合。每个套接字对应一个PID，相当于给一个应用程序赋予了收发通讯协议的能力<br>网关，用于匹配目标IP于掩码的与运算结果，网络层完成，寻找下一跳<br>这里关于套接字和网关的信息不展开，等我完全理解以后可能会整理一篇博客</p>
+<p>这里 <code>-u</code> 不是很常用。</p>
+<p>查询结果以我自己的一台服务器为例：</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/netstat.jpg"></p>
+<blockquote>
+<p>上图中本地地址和远端地址的组合对应一个PID，其中本地地址和远端地址的组合就是一个socket。多个socket指向同一个PID，就是多路复用。</p>
+</blockquote>
+<p>上图中本地地址 <code>Local Address</code> 一栏中显示出了目前所有正在监听的端口号。</p>
+<p>以tomcat为例，从最右侧 <code>Program name</code> 为 java 的就是 tomcat。因为它是由 java 开发的一款 servlet 容器。</p>
+<p>通常可以通过 <code>jps</code> 命令查看tomcat的PID。名称为 Bootstrap 。</p>
+<blockquote>
+<p>为什么 tomcat 启动叫 Bootstrap？给大家留个问题，答案在/bin/startup.sh 和 /bin/catalina.sh 中</p>
+</blockquote>
+<p>从上面的图可以看出，我这台机器的tomcat占用了两个端口：8005和8080，前者是用来监听SHUTDOWN指令的。</p>
+<h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>这篇博客没有太多内容，就是分享一个好用的命令行工具，便于大家查看服务器中已经占用的端口号。这样在配置新服务的过程中可以避免因为端口被占用而浪费时间。</p>
+<p>文章中途有一些发散的知识和问题，都是跟网络编程相关的。等我学习完成后再输出。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1067,91 +1170,6 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">	public static int[] intersect(int[] nums1, int[] nums2) &#123;</span><br><span class="line">        Arrays.sort(nums1);</span><br><span class="line">        Arrays.sort(nums2);</span><br><span class="line">        int f1 &#x3D; 0,f2&#x3D;0;</span><br><span class="line">        ArrayList&lt;Integer&gt; arrl &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        while(f1&lt;nums1.length &amp;&amp; f2&lt;nums2.length)&#123;</span><br><span class="line">            if(nums1[f1]&lt;nums2[f2])&#123;</span><br><span class="line">                f1++;</span><br><span class="line">            &#125;else if(nums1[f1]&gt;nums2[f2])&#123;</span><br><span class="line">                f2++;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                arrl.add(nums1[f1]);</span><br><span class="line">                f1++;</span><br><span class="line">                f2++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        int[] jiao &#x3D; new int[arrl.size()];</span><br><span class="line">        for(int i&#x3D;0; i&lt;arrl.size(); i++)</span><br><span class="line">        &#123;</span><br><span class="line">            jiao[i] &#x3D; arrl.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">        return jiao;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>两种方式结果如下：<br>6 小时前    通过    2 ms    38.7 MB<br>6 小时前    通过    5 ms    38.4 MB    </p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2020/11/11/centos-attack/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/11/11/centos-attack/" class="post-title-link" itemprop="url">和挖矿程序拼到底！</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2020-11-11 23:06:00 / 修改时间：23:43:24" itemprop="dateCreated datePublished" datetime="2020-11-11T23:06:00+08:00">2020-11-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>服务器被挖矿了，CPU占用一直是100%。</p>
-<p>没有过多深入研究，照着网上几个处理方式执行了一些命令。无果</p>
-<p>同事给出的建议就是重装系统，但是我偏不</p>
-<p>我要和他拼到底！</p>
-<p>由于是在太影响使用了，我先写个Shell脚本，每2小时清一次。以后有时间再收拾你！</p>
-<h3 id="Shell思路"><a href="#Shell思路" class="headerlink" title="Shell思路"></a>Shell思路</h3><p>由于太久没写过Shell了，所以很简陋，以后再优化。</p>
-<p>大概思路如下：</p>
-<p>1 获取 [用户名] 的进程号</p>
-<p>2 遍历进程号，获取其对应的CPU信息</p>
-<p>3 判断CPU使用量是否大于85，如果大于，则杀死该进程</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">向上取整</span></span><br><span class="line">function ceil()&#123;</span><br><span class="line">  floor=`echo &quot;scale=0;$1/1&quot;|bc -l ` # 向下取整</span><br><span class="line">  add=`awk -v num1=$floor -v num2=$1 &#x27;BEGIN&#123;print(num1&lt;num2)?&quot;1&quot;:&quot;0&quot;&#125;&#x27;`</span><br><span class="line">  echo `expr $floor  + $add`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">定时清理git用户开辟的进程</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">用户名</span></span><br><span class="line">USERNAME=&quot;root&quot;</span><br><span class="line">THRESHOLD=&quot;85&quot;</span><br><span class="line">TIME=$(date &quot;+%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">获取git用户的所有进程号</span></span><br><span class="line">PIDS=`ps -ef | grep $USERNAME | grep -v grep | awk &#x27;&#123;print $2&#125;&#x27;`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">循环PID</span></span><br><span class="line">for PID in $PIDS; do</span><br><span class="line"><span class="meta">	#</span><span class="bash">statements</span></span><br><span class="line">	CPU_DATA=`pgrep java | xargs ps -u --pid $PID | awk &#x27;&#123;print $3&#125;&#x27;`</span><br><span class="line">	for C in $CPU_DATA; do</span><br><span class="line"><span class="meta">		#</span><span class="bash">如果CPU占用大于80%，杀死进程</span></span><br><span class="line">		if [[ $C != &#x27;%CPU&#x27; ]]; then</span><br><span class="line">			CEIL_C=`ceil $C`</span><br><span class="line">			if [[ CEIL_C -gt $THRESHOLD ]]; then</span><br><span class="line">                echo $TIME &gt;&gt; mining.log</span><br><span class="line">				echo &quot;git 用户的 $PID 已占用CPU $C&quot; &gt;&gt; touch mining.log</span><br><span class="line">				kill -9 $PID</span><br><span class="line">				echo &quot;已将 $PID 进程 killed&quot; &gt;&gt; touch mining.log</span><br><span class="line">			fi</span><br><span class="line">		fi</span><br><span class="line">	done</span><br><span class="line">done</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
       
     </div>

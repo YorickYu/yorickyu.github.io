@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>A/B/nTest搭建 SOP</title>
+      <link href="2021/06/26/abtest/"/>
+      <url>2021/06/26/abtest/</url>
+      
+        <content type="html"><![CDATA[<h3 id="AB测试"><a href="#AB测试" class="headerlink" title="AB测试"></a>AB测试</h3><p>AB测试是为Web或App界面或流程制作两个（A/B）或多个（A/B/n）版本，在同一时间维度，分别让组成成分相同（相似）的访客群组（目标人群）随机的访问这些版本，收集各群组的用户体验数据和业务数据，最后分析、评估出最好版本，正式采用。</p><h3 id="搭建流程"><a href="#搭建流程" class="headerlink" title="搭建流程"></a>搭建流程</h3><h4 id="分流方案"><a href="#分流方案" class="headerlink" title="分流方案"></a>分流方案</h4><p>稳定hash算法：murmur、crc</p><h4 id="稳定性方案"><a href="#稳定性方案" class="headerlink" title="稳定性方案"></a>稳定性方案</h4><p>多级缓存：本地、远程、redis</p><h4 id="监控方案"><a href="#监控方案" class="headerlink" title="监控方案"></a>监控方案</h4><p>埋点、日志、合理配置分流算法（每个方案的最少流量应该不少于1000UV）</p><h4 id="容灾方案"><a href="#容灾方案" class="headerlink" title="容灾方案"></a>容灾方案</h4><p>手动降级：手动调整hash分流策略、关闭AB服务<br>自动降级：错误日志过多或系统负载异常时，自动修改hash分流策略，关闭分流。待系统回复后修改回去</p><h4 id="分流数据传递"><a href="#分流数据传递" class="headerlink" title="分流数据传递"></a>分流数据传递</h4><p>根据具体的业务改变，常见在 HTTP header中透出，也可以约定在JSON数据中。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> A/B </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>redis 工作模型</title>
       <link href="2021/06/04/redis-work-mode/"/>
       <url>2021/06/04/redis-work-mode/</url>
