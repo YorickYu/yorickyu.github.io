@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>HotKey 缓存数据结构设计</title>
+      <link href="2021/06/27/hotKey/"/>
+      <url>2021/06/27/hotKey/</url>
+      
+        <content type="html"><![CDATA[<h3 id="热点问题"><a href="#热点问题" class="headerlink" title="热点问题"></a>热点问题</h3><p>概念：某时刻，缓存系统面临巨大的访问量，且访问倾斜在极少的数据上</p><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>1 集群级别：一致性哈希、缓存<br>2 单机级别：多级缓存<br>3 KV存储系统：数组+有序环（HotRing）</p><h3 id="HotRing"><a href="#HotRing" class="headerlink" title="HotRing"></a>HotRing</h3><h4 id="挑战一、热点是动态变化的。如何检测？如何转移？"><a href="#挑战一、热点是动态变化的。如何检测？如何转移？" class="headerlink" title="挑战一、热点是动态变化的。如何检测？如何转移？"></a>挑战一、热点是动态变化的。如何检测？如何转移？</h4><h5 id="随机策略（读时更新）"><a href="#随机策略（读时更新）" class="headerlink" title="随机策略（读时更新）"></a>随机策略（读时更新）</h5><p>下一次访问的节点如果是hotKey，那么不移动；如果不是，随机在环中挑选一个节点<br>这种方案适合热点key集中的场景。随机采样速度快，无需计算</p><h5 id="统计策略（读时更新）"><a href="#统计策略（读时更新）" class="headerlink" title="统计策略（读时更新）"></a>统计策略（读时更新）</h5><p>统计整个有序环的访问次数和环中单个节点的访问次数，并通过公式计算下次移动节点的收益值</p><h5 id="热点继承策略（写时更新）"><a href="#热点继承策略（写时更新）" class="headerlink" title="热点继承策略（写时更新）"></a>热点继承策略（写时更新）</h5><p>如果有序环中有节点被更新，那么head指向这个被更新的节点<br>如果有序环中有节点被删除，那么head指向这个被删除节点的下一个节点</p><h4 id="挑战二、读取要求低延迟。无锁，数据安全"><a href="#挑战二、读取要求低延迟。无锁，数据安全" class="headerlink" title="挑战二、读取要求低延迟。无锁，数据安全"></a>挑战二、读取要求低延迟。无锁，数据安全</h4><h5 id="CAS-gt-Compare-And-Swap"><a href="#CAS-gt-Compare-And-Swap" class="headerlink" title="CAS -&gt; Compare-And-Swap"></a>CAS -&gt; Compare-And-Swap</h5><p>操作系统级别。比较并交换</p><h5 id="RCU-gt-Read-Copy-Update"><a href="#RCU-gt-Read-Copy-Update" class="headerlink" title="RCU -&gt; Read-Copy-Update"></a>RCU -&gt; Read-Copy-Update</h5><p>读不做限制，写时复制COW -&gt; Copy-On-Write</p><h5 id="occupy"><a href="#occupy" class="headerlink" title="occupy"></a>occupy</h5><p>当一个节点被更新或者被删除时，设置为1，操作完成重置为0。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> HotKey </tag>
+            
+            <tag> HotRing </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>A/B/nTest搭建 SOP</title>
       <link href="2021/06/26/abtest/"/>
       <url>2021/06/26/abtest/</url>
