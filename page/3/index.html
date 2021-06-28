@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -277,6 +277,89 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/11/high-performance-mysql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/11/high-performance-mysql/" class="post-title-link" itemprop="url">《高性能MySQL》 归纳整理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-11 00:09:15" itemprop="dateCreated datePublished" datetime="2021-04-11T00:09:15+08:00">2021-04-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-04-15 22:58:31" itemprop="dateModified" datetime="2021-04-15T22:58:31+08:00">2021-04-15</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="逻辑架构"><a href="#逻辑架构" class="headerlink" title="逻辑架构"></a>逻辑架构</h2><p>1 连接/线程处理<br>2 查询缓存+解析器+优化器<br>3 存储引擎</p>
+<h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><p>每个客户端连接都是mysql服务器中的一个线程，服务端会缓存这些线程，因此每个新建的连接不需要创建或销毁线程</p>
+<h3 id="优化-amp-缓存"><a href="#优化-amp-缓存" class="headerlink" title="优化&amp;缓存"></a>优化&amp;缓存</h3><p>优化器不关心表的存储引擎<br>优化包括：重写查询，改变表的读取顺序，选择合适的索引<br>缓存：解析sql前会先检查缓存</p>
+<h2 id="并发控制"><a href="#并发控制" class="headerlink" title="并发控制"></a>并发控制</h2><p>1 读写锁：共享读锁，排他写锁。写锁比读锁有更高的优先级（所以写锁可能插队到读锁前）<br>加锁这个操作本身也需要消耗资源</p>
+<p>2 锁粒度<br>锁定的数据量，锁定的数据量越少，系统并发程度越高<br>2.1 表锁<br>开销小，会锁定整张表<br>2.2 行级锁<br>最大程度支持并发</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/04/11/high-performance-mysql/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1089,102 +1172,6 @@
 <p>2 G1则对删除引用环节进行处理(SATB 原始快照)</p>
 <h4 id="内存分配与回收策略："><a href="#内存分配与回收策略：" class="headerlink" title="内存分配与回收策略："></a>内存分配与回收策略：</h4><p>1 对象优先在Eden分配<br>2 大对象直接进入老年代<br>    -XX:PretenureSizeThreshold=3M 超过3M的对象直接进入老年代<br>3 长期存活的对象将进入老年代<br>    -XX:MaxTenuringThreshold=15 经历多少次Minor GC后进入老年代<br>4 动态对象年龄判定<br>    如果相同年龄的对象大小总和超过幸存区的一般，那么会将他们以及比他们年龄大的对象都移动到老年代。（不一定等到年龄是15）<br>5 空间分配担保<br>    如果在Minor GC时，老年代并没有足够的空间容纳新进的对象，那么在Minor GC后立刻进行一次Full GC。<br>    开启担保 -XX:HandlePromotionFailure=true 后会判断避免这次Full GC，通常会打开担保</p>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/02/09/java/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/09/java/" class="post-title-link" itemprop="url">JVM 类加载器 & 运行时区域</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-02-09 17:17:55" itemprop="dateCreated datePublished" datetime="2021-02-09T17:17:55+08:00">2021-02-09</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-18 15:05:37" itemprop="dateModified" datetime="2021-02-18T15:05:37+08:00">2021-02-18</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h4 id="Class-Loader-和-双亲委派机制"><a href="#Class-Loader-和-双亲委派机制" class="headerlink" title="Class Loader 和 双亲委派机制"></a>Class Loader 和 双亲委派机制</h4><p>寻找类加载器：</p>
-<p>AppClassLoader -&gt; ExtClassLoader -&gt; BootstrapClassLoader(c++中)<br>一直找到最上层的加载器后，检查能否加载当前这个类，如果可以则使用当前加载器。否则，抛出异常向下通知子加载器加载。<br>如果没有加载器可以加载这个类，报异常 <code>ClassNotFoundException</code></p>
-<blockquote>
-<p>注意：向上寻找加载器的过程中有一个判断这个类是否已经被加载的过程。如果加载过了就不用重复加载（保证数据安全）</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Student s = <span class="keyword">new</span> Student().getClass().getClassLoader();</span><br><span class="line">s.getClass() <span class="comment">// class com.yy.string.ClassLoaderTest</span></span><br><span class="line">s.getClass().getClassLoader() <span class="comment">// sun.misc.Launcher$AppClassLoader@18b4aac2</span></span><br><span class="line">s.getClass().getClassLoader().getParent() <span class="comment">// sun.misc.Launcher$ExtClassLoader@5ca881b5</span></span><br><span class="line">s.getClass().getClassLoader().getParent().getParent() <span class="comment">// null，在c++中，获取不到</span></span><br></pre></td></tr></table></figure>
-
-<p>双亲委派机制作用：<br>1 防止重复加载同一个class<br>2 保证源码的class文件不被覆盖篡改（例如:定义一个java.lang.String的类，实例化时依然会加载jdk中的String类）</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jvm.jpg"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/09/java/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 

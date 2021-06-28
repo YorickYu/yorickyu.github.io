@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>常见可分页缓存方案</title>
+      <link href="2021/06/28/pageable-cache/"/>
+      <url>2021/06/28/pageable-cache/</url>
+      
+        <content type="html"><![CDATA[<p>一、缓存key中使用page，size做标记，直接按分页结果缓存<br>适用场景：<br>1 列表长度无法提前预知<br>2 数据排列顺序不经常变更</p><p><strong>定时任务，不断更新前几页的缓存（热）数据。可以搭配JetCache + SQL直接实现多级缓存</strong></p><p>二、缓存整个列表的id（和关键信息），然后根据id获取对象<br>适用场景：<br>1 列表长度有限，且分页情况多变<br>2 对象数据或排序权重频繁更新</p><p><strong>不同的缓存方案需要在性能和数据一致性之间寻找一个平衡点</strong></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>探测 - 单数组解决hash冲突问题</title>
       <link href="2021/06/28/hash-detection/"/>
       <url>2021/06/28/hash-detection/</url>
@@ -301,9 +314,9 @@
       
         <tags>
             
-            <tag> Stream </tag>
-            
             <tag> Fibonacci </tag>
+            
+            <tag> Stream </tag>
             
         </tags>
       
@@ -984,9 +997,9 @@
             
             <tag> algorithm </tag>
             
-            <tag> LeeCode </tag>
-            
             <tag> 滑动窗口 </tag>
+            
+            <tag> LeeCode </tag>
             
         </tags>
       
