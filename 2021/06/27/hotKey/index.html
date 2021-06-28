@@ -24,19 +24,23 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
   </script>
-<meta name="description" content="热点问题概念：某时刻，缓存系统面临巨大的访问量，且访问倾斜在极少的数据上 解决方案1 集群级别：一致性哈希、缓存2 单机级别：多级缓存3 KV存储系统：数组+有序环（HotRing） HotRing挑战一、热点是动态变化的。如何检测？如何转移？随机策略（读时更新）下一次访问的节点如果是hotKey，那么不移动；如果不是，随机在环中挑选一个节点这种方案适合热点key集中的场景。随机采样速度快，无需计">
+<meta name="description" content="热点问题概念：某时刻，缓存系统面临巨大的访问量，且访问倾斜在极少的数据上 解决方案1 集群级别：一致性哈希、缓存2 单机级别：多级缓存3 缓存KV存储引擎：数组+有序环（HotRing） HotRing基于RCU无锁引擎的热点感知型KV系统  挑战一、热点是动态变化的。如何检测？如何转移？随机策略（读时更新）下一次访问的节点如果是hotKey，那么不移动；如果不是，随机在环中挑选一个节点这种方案适">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HotKey 缓存数据结构设计">
 <meta property="og:url" content="http://yloopdaed.icu/2021/06/27/hotKey/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="热点问题概念：某时刻，缓存系统面临巨大的访问量，且访问倾斜在极少的数据上 解决方案1 集群级别：一致性哈希、缓存2 单机级别：多级缓存3 KV存储系统：数组+有序环（HotRing） HotRing挑战一、热点是动态变化的。如何检测？如何转移？随机策略（读时更新）下一次访问的节点如果是hotKey，那么不移动；如果不是，随机在环中挑选一个节点这种方案适合热点key集中的场景。随机采样速度快，无需计">
+<meta property="og:description" content="热点问题概念：某时刻，缓存系统面临巨大的访问量，且访问倾斜在极少的数据上 解决方案1 集群级别：一致性哈希、缓存2 单机级别：多级缓存3 缓存KV存储引擎：数组+有序环（HotRing） HotRing基于RCU无锁引擎的热点感知型KV系统  挑战一、热点是动态变化的。如何检测？如何转移？随机策略（读时更新）下一次访问的节点如果是hotKey，那么不移动；如果不是，随机在环中挑选一个节点这种方案适">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/%20hotring-1.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/hotring-2.png">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/hotring-3.png">
 <meta property="article:published_time" content="2021-06-27T14:59:05.000Z">
-<meta property="article:modified_time" content="2021-06-27T15:02:13.922Z">
+<meta property="article:modified_time" content="2021-06-28T14:12:30.829Z">
 <meta property="article:author" content="yloopdaed">
 <meta property="article:tag" content="HotKey">
 <meta property="article:tag" content="HotRing">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/%20hotring-1.png">
 
 
 <link rel="canonical" href="http://yloopdaed.icu/2021/06/27/hotKey/">
@@ -189,7 +193,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%83%AD%E7%82%B9%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">热点问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HotRing"><span class="nav-number">3.</span> <span class="nav-text">HotRing</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E4%B8%80%E3%80%81%E7%83%AD%E7%82%B9%E6%98%AF%E5%8A%A8%E6%80%81%E5%8F%98%E5%8C%96%E7%9A%84%E3%80%82%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%EF%BC%9F%E5%A6%82%E4%BD%95%E8%BD%AC%E7%A7%BB%EF%BC%9F"><span class="nav-number">3.1.</span> <span class="nav-text">挑战一、热点是动态变化的。如何检测？如何转移？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E7%AD%96%E7%95%A5%EF%BC%88%E8%AF%BB%E6%97%B6%E6%9B%B4%E6%96%B0%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">随机策略（读时更新）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E7%AD%96%E7%95%A5%EF%BC%88%E8%AF%BB%E6%97%B6%E6%9B%B4%E6%96%B0%EF%BC%89"><span class="nav-number">3.1.2.</span> <span class="nav-text">统计策略（读时更新）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%83%AD%E7%82%B9%E7%BB%A7%E6%89%BF%E7%AD%96%E7%95%A5%EF%BC%88%E5%86%99%E6%97%B6%E6%9B%B4%E6%96%B0%EF%BC%89"><span class="nav-number">3.1.3.</span> <span class="nav-text">热点继承策略（写时更新）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E4%BA%8C%E3%80%81%E8%AF%BB%E5%8F%96%E8%A6%81%E6%B1%82%E4%BD%8E%E5%BB%B6%E8%BF%9F%E3%80%82%E6%97%A0%E9%94%81%EF%BC%8C%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8"><span class="nav-number">3.2.</span> <span class="nav-text">挑战二、读取要求低延迟。无锁，数据安全</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CAS-gt-Compare-And-Swap"><span class="nav-number">3.2.1.</span> <span class="nav-text">CAS -&gt; Compare-And-Swap</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RCU-gt-Read-Copy-Update"><span class="nav-number">3.2.2.</span> <span class="nav-text">RCU -&gt; Read-Copy-Update</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#occupy"><span class="nav-number">3.2.3.</span> <span class="nav-text">occupy</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%83%AD%E7%82%B9%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">热点问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HotRing"><span class="nav-number">3.</span> <span class="nav-text">HotRing</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E4%B8%80%E3%80%81%E7%83%AD%E7%82%B9%E6%98%AF%E5%8A%A8%E6%80%81%E5%8F%98%E5%8C%96%E7%9A%84%E3%80%82%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%EF%BC%9F%E5%A6%82%E4%BD%95%E8%BD%AC%E7%A7%BB%EF%BC%9F"><span class="nav-number">3.1.</span> <span class="nav-text">挑战一、热点是动态变化的。如何检测？如何转移？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E7%AD%96%E7%95%A5%EF%BC%88%E8%AF%BB%E6%97%B6%E6%9B%B4%E6%96%B0%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">随机策略（读时更新）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E7%AD%96%E7%95%A5%EF%BC%88%E8%AF%BB%E6%97%B6%E6%9B%B4%E6%96%B0%EF%BC%89"><span class="nav-number">3.1.2.</span> <span class="nav-text">统计策略（读时更新）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%83%AD%E7%82%B9%E7%BB%A7%E6%89%BF%E7%AD%96%E7%95%A5%EF%BC%88%E5%86%99%E6%97%B6%E6%9B%B4%E6%96%B0%EF%BC%89"><span class="nav-number">3.1.3.</span> <span class="nav-text">热点继承策略（写时更新）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E4%BA%8C%E3%80%81%E8%AF%BB%E5%8F%96%E8%A6%81%E6%B1%82%E4%BD%8E%E5%BB%B6%E8%BF%9F%E3%80%82%E6%97%A0%E9%94%81%EF%BC%8C%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8"><span class="nav-number">3.2.</span> <span class="nav-text">挑战二、读取要求低延迟。无锁，数据安全</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CAS-gt-Compare-And-Swap"><span class="nav-number">3.2.1.</span> <span class="nav-text">CAS -&gt; Compare-And-Swap</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RCU-gt-Read-Copy-Update"><span class="nav-number">3.2.2.</span> <span class="nav-text">RCU -&gt; Read-Copy-Update</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#occupy"><span class="nav-number">3.2.3.</span> <span class="nav-text">occupy</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E4%B8%89%E3%80%81%E6%97%A0%E9%94%81rehash%EF%BC%88%E6%89%A9%E5%AE%B9%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">挑战三、无锁rehash（扩容）</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -205,7 +209,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -315,10 +319,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-06-27 22:59:05 / 修改时间：23:02:13" itemprop="dateCreated datePublished" datetime="2021-06-27T22:59:05+08:00">2021-06-27</time>
+      <time title="创建时间：2021-06-27 22:59:05" itemprop="dateCreated datePublished" datetime="2021-06-27T22:59:05+08:00">2021-06-27</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-06-28 22:12:30" itemprop="dateModified" datetime="2021-06-28T22:12:30+08:00">2021-06-28</time>
+      </span>
 
   
 </div>
@@ -331,13 +341,20 @@
     
     <div class="post-body" itemprop="articleBody">
         <h3 id="热点问题"><a href="#热点问题" class="headerlink" title="热点问题"></a>热点问题</h3><p>概念：某时刻，缓存系统面临巨大的访问量，且访问倾斜在极少的数据上</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>1 集群级别：一致性哈希、缓存<br>2 单机级别：多级缓存<br>3 KV存储系统：数组+有序环（HotRing）</p>
-<h3 id="HotRing"><a href="#HotRing" class="headerlink" title="HotRing"></a>HotRing</h3><h4 id="挑战一、热点是动态变化的。如何检测？如何转移？"><a href="#挑战一、热点是动态变化的。如何检测？如何转移？" class="headerlink" title="挑战一、热点是动态变化的。如何检测？如何转移？"></a>挑战一、热点是动态变化的。如何检测？如何转移？</h4><h5 id="随机策略（读时更新）"><a href="#随机策略（读时更新）" class="headerlink" title="随机策略（读时更新）"></a>随机策略（读时更新）</h5><p>下一次访问的节点如果是hotKey，那么不移动；如果不是，随机在环中挑选一个节点<br>这种方案适合热点key集中的场景。随机采样速度快，无需计算</p>
-<h5 id="统计策略（读时更新）"><a href="#统计策略（读时更新）" class="headerlink" title="统计策略（读时更新）"></a>统计策略（读时更新）</h5><p>统计整个有序环的访问次数和环中单个节点的访问次数，并通过公式计算下次移动节点的收益值</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>1 集群级别：一致性哈希、缓存<br>2 单机级别：多级缓存<br>3 缓存KV存储引擎：数组+有序环（HotRing）</p>
+<h3 id="HotRing"><a href="#HotRing" class="headerlink" title="HotRing"></a>HotRing</h3><p>基于RCU无锁引擎的热点感知型KV系统</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/%20hotring-1.png"></p>
+<h4 id="挑战一、热点是动态变化的。如何检测？如何转移？"><a href="#挑战一、热点是动态变化的。如何检测？如何转移？" class="headerlink" title="挑战一、热点是动态变化的。如何检测？如何转移？"></a>挑战一、热点是动态变化的。如何检测？如何转移？</h4><h5 id="随机策略（读时更新）"><a href="#随机策略（读时更新）" class="headerlink" title="随机策略（读时更新）"></a>随机策略（读时更新）</h5><p>下一次访问的节点如果是hotKey，那么不移动；如果不是，随机在环中挑选一个节点<br>这种方案<strong>适合热点key集中的场景</strong>。随机采样速度快，无需计算</p>
+<h5 id="统计策略（读时更新）"><a href="#统计策略（读时更新）" class="headerlink" title="统计策略（读时更新）"></a>统计策略（读时更新）</h5><p>统计整个有序环的访问次数和环中单个节点的访问次数，并通过公式计算下次移动节点的收益值<br>这种方案<strong>适合热点key多个的场景</strong>。会有一定的分析开销</p>
 <h5 id="热点继承策略（写时更新）"><a href="#热点继承策略（写时更新）" class="headerlink" title="热点继承策略（写时更新）"></a>热点继承策略（写时更新）</h5><p>如果有序环中有节点被更新，那么head指向这个被更新的节点<br>如果有序环中有节点被删除，那么head指向这个被删除节点的下一个节点</p>
 <h4 id="挑战二、读取要求低延迟。无锁，数据安全"><a href="#挑战二、读取要求低延迟。无锁，数据安全" class="headerlink" title="挑战二、读取要求低延迟。无锁，数据安全"></a>挑战二、读取要求低延迟。无锁，数据安全</h4><h5 id="CAS-gt-Compare-And-Swap"><a href="#CAS-gt-Compare-And-Swap" class="headerlink" title="CAS -&gt; Compare-And-Swap"></a>CAS -&gt; Compare-And-Swap</h5><p>操作系统级别。比较并交换</p>
 <h5 id="RCU-gt-Read-Copy-Update"><a href="#RCU-gt-Read-Copy-Update" class="headerlink" title="RCU -&gt; Read-Copy-Update"></a>RCU -&gt; Read-Copy-Update</h5><p>读不做限制，写时复制COW -&gt; Copy-On-Write</p>
-<h5 id="occupy"><a href="#occupy" class="headerlink" title="occupy"></a>occupy</h5><p>当一个节点被更新或者被删除时，设置为1，操作完成重置为0。</p>
+<h5 id="occupy"><a href="#occupy" class="headerlink" title="occupy"></a>occupy</h5><p>当一个节点被更新或者被删除时，设置为1，操作完成重置为0</p>
+<p>无锁并发访问：<br>1 并发增，可能造成新增节点数据丢失。解决：CAS<br>2 并发改，可能造成更新节点数据错误。解决：RCU<br>3 并发增、改，可能造成新增节点数据丢失。解决：occupy<br>4 并发删、改，可能造成更新节点的数据丢失。解决：occupy</p>
+<h4 id="挑战三、无锁rehash（扩容）"><a href="#挑战三、无锁rehash（扩容）" class="headerlink" title="挑战三、无锁rehash（扩容）"></a>挑战三、无锁rehash（扩容）</h4><p><strong>扩容条件</strong>是查询所需的平均内存访问次数 access overhead &gt; 2 时触发rehash</p>
+<p>三个过程：初始化、分裂、删除</p>
+<p>整个过程会在后台创建一个rehash线程处理</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/hotring-2.png"><br><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/hotring-3.png"></p>
 
     </div>
 
@@ -360,6 +377,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2021/06/28/hash-detection/" rel="next" title="探测 - 单数组解决hash冲突问题">
+                  探测 - 单数组解决hash冲突问题 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
