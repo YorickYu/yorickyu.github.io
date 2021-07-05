@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">109</span>
+        <span class="site-state-item-count">112</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,81 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/05/27/list-distinctBy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/05/27/list-distinctBy/" class="post-title-link" itemprop="url">数组去重</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-05-27 23:18:55 / 修改时间：23:24:46" itemprop="dateCreated datePublished" datetime="2021-05-27T23:18:55+08:00">2021-05-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><strong>数组多条件去重</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// predicate to filter the duplicates by the given key extractor.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Predicate&lt;T&gt; <span class="title">distinctByKey</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, Object&gt; keyExtractor)</span> </span>&#123;</span><br><span class="line">    Map&lt;Object, Boolean&gt; uniqueMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">return</span> t -&gt; uniqueMap.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>or</em></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// use Set interface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Predicate&lt;T&gt; <span class="title">distinctByKey</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, ?&gt; keyExtractor)</span> </span>&#123;</span><br><span class="line">    Set&lt;Object&gt; seen = ConcurrentHashMap.newKeySet();</span><br><span class="line">    <span class="keyword">return</span> t -&gt; seen.add(keyExtractor.apply(t));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>用例</em></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Animal pig = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;pig&quot;</span>).setId(<span class="number">1</span>);</span><br><span class="line">Animal dog1 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;dog&quot;</span>).setId(<span class="number">2</span>);</span><br><span class="line">Animal dog2 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;dog&quot;</span>).setId(<span class="number">4</span>);</span><br><span class="line">Animal cat1 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;cat1&quot;</span>).setId(<span class="number">3</span>);</span><br><span class="line">Animal cat2 = <span class="keyword">new</span> Animal().setName(<span class="string">&quot;cat2&quot;</span>).setId(<span class="number">3</span>);</span><br><span class="line">List&lt;Animal&gt; list = Arrays.asList(pig, dog1, dog2, cat1, cat2);</span><br><span class="line"></span><br><span class="line">List&lt;Animal&gt; res = list.stream().filter(distinctByKey(Animal::getId)).filter(distinctByKey(Animal::getName)).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>result</em></strong>: [Animal(id=1, name=pig), Animal(id=2, name=dog), Animal(id=3, name=cat1)]</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -993,87 +1068,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/15/i-dont-know-java/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/04/15/i-dont-know-java/" class="post-title-link" itemprop="url">Java 2年的感受</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-04-15 23:16:08" itemprop="dateCreated datePublished" datetime="2021-04-15T23:16:08+08:00">2021-04-15</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-04-20 00:09:37" itemprop="dateModified" datetime="2021-04-20T00:09:37+08:00">2021-04-20</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>全投入转向Java开发已经差不多2年多了。</p>
-<p>分享谈不上，说有一些感触。</p>
-<hr>
-<p>跟面试中造的卫星来比，工作中确实很少有机会去解决核心并棘手的问题。但是即便如此，日常的工作也不会像几年前那么容易摸鱼了。</p>
-<p>互联网最珍贵的就是开源思想。随着大厂成熟解决方案的下放和真实业务场景复杂度的提高，对开发者的要求也会越来越高。</p>
-<p>尤为重要的是大数据，高并发，高可用的解决方案。除此之外目前你应该熟悉：</p>
-<p><strong>服务发现与注册、流量控制和统计、降级与熔断、安全控制、分布式存储和计算、机器学习模型等</strong></p>
-<p>每天都有相关框架的演变和更替。这也是对开发者高要求的体现。</p>
-<p>我之前提到过，要做一个 <a href="https://yloopdaed.icu/2021/03/08/all-life-study">终生学习者</a>。不断更新自己的技术栈，挖掘自己的技术深度和高度。</p>
-<p>最后，享受这个过程。反正你也改变不了它</p>
-
       
     </div>
 

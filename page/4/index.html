@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">109</span>
+        <span class="site-state-item-count">112</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -277,6 +277,149 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/02/11/jvm-gc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/02/11/jvm-gc/" class="post-title-link" itemprop="url">堆 & 垃圾回收机制</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-02-11 14:15:58" itemprop="dateCreated datePublished" datetime="2021-02-11T14:15:58+08:00">2021-02-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-02-19 12:24:08" itemprop="dateModified" datetime="2021-02-19T12:24:08+08:00">2021-02-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>堆内存中可以细分为三个区域：<br>1 新生代Young：伊甸园区Eden、幸存0区from、幸存1区to<br>2 老年代Old：默认一个对象经历了15次GC还没被回收，会进入老年代，可以通过<code>-XX:MaxTenuringThreshold</code>更改次数<br>3 永久代Perm：方法区（1.7）/元数据区（1.8）</p>
+<blockquote>
+<p>永久代有两种理解：<br>1 把他理解成与堆是分开的独立区域<br>2 把他理解在堆内，逻辑上存在，物理上不占用堆内空间</p>
+</blockquote>
+<p>堆内存溢出OOM：OutOfMemoryError:Java heap space<br>处理堆OOM：<br>1 扩大堆内存<br>2 分析内存，找问题（定位简单，调优难）</p>
+<p>常用调试工具：<br>1 JProfiler工具<br>2 Eclipse自带的MAT<br>3 在Java的Jdk中 jconsole.exe 和 jvisualvm.exe<br>4 <a target="_blank" rel="noopener" href="https://github.com/alibaba/arthas">arthas</a></p>
+<p>Jprofiler使用：<br>1 分析Dump内存文件<br>2 查看堆中的数据信息<br>3 查看堆中的线程信息</p>
+<h4 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String s = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">        s += <span class="keyword">new</span> Random().nextDouble();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">catch</span> (Error e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>配置运行参数：<code>-Xms1m -Xmx1m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDetails</code></p>
+</blockquote>
+<h5 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h5><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/oom-error.jpg"></p>
+<h5 id="分析Dump文件"><a href="#分析Dump文件" class="headerlink" title="分析Dump文件"></a>分析Dump文件</h5><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jprofiler-obj.jpg" alt="Object"></p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/jprofiler-thread.jpg" alt="Thread"></p>
+<h5 id="常用调优参数"><a href="#常用调优参数" class="headerlink" title="常用调优参数"></a>常用调优参数</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">常见的如下：</span><br><span class="line">-Xms64m 最小堆内存 64m.</span><br><span class="line">-Xmx128m 最大堆内存 128m.</span><br><span class="line">-XX:NewSize&#x3D;30m 新生代初始化大小为30m.</span><br><span class="line">-XX:MaxNewSize&#x3D;40m 新生代最大大小为40m.</span><br><span class="line">-Xss&#x3D;256k 线程栈大小。</span><br><span class="line">-XX:+PrintGCDetails 显示堆内存信息和GC信息</span><br><span class="line">-XX:+PrintHeapAtGC 当发生 GC 时打印内存布局。</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError 发送内存溢出时 dump 内存。</span><br><span class="line"></span><br><span class="line">新生代和老年代的默认比例为 1:2，也就是说新生代占用 1&#x2F;3的堆内存，而老年代占用 2&#x2F;3 的堆内存。</span><br><span class="line">可以通过参数 -XX:NewRatio&#x3D;2 来设置老年代&#x2F;新生代的比例。</span><br></pre></td></tr></table></figure>
+
+<h4 id="分代收集理论"><a href="#分代收集理论" class="headerlink" title="分代收集理论"></a>分代收集理论</h4><p>符合大多数成熟运营的实际情况的经验法则。<br>将Java堆划分成不同的区域，根据回收对象的年龄（经历的垃圾回收次数）分配到不同区域存储。</p>
+<p>三大假说：<br>1 弱分代假说：绝大多数对象都是朝生夕灭<br>2 强分代假说：熬过越多次垃圾收集过程的对象就越难以清除<br>3 跨代引用假说：跨代引用相对同代引用来说占极少数</p>
+<blockquote>
+<p>堆划分成新生代和老年代，分代收集时对象不是孤立的，对象之间存在跨代引用<br>思考：Minor GC时一个新生代中的对象回收时被老年代引用，此时是否需要额外遍历整个老年代？<br>根据第3条假说，具体做法是：在新生代上建立一个全局数据结构（记忆集 Remembered Set），这个结构把老年代划分成若干小块，标志出哪一块存在跨代引用。只遍历这一小块即可</p>
+</blockquote>
+<p>不同区域的垃圾回收类型：<br>1 Minor GC：新生代收集<br>2 Major GC ：老年代收集。CMS收集器独有<br><strong>3 Mixed GC：混合收集，新生代+部分老年代。G1收集器独有</strong><br>4 Full GC：整堆收集，收集Java堆和方法区（元数据区）</p>
+<h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><h5 id="标记-复制算法：将存活的对象进行复制和移动"><a href="#标记-复制算法：将存活的对象进行复制和移动" class="headerlink" title="标记-复制算法：将存活的对象进行复制和移动"></a>标记-复制算法：将存活的对象进行复制和移动</h5><p>每次Minor GC都会清空Eden区和幸存to区：<br>1 将Eden中存活的对象复制到幸存to区。<br>2 将原本幸存from区中存活的对象复制到幸存to区，并交换幸存from和to区。所以最后幸存to区是空的。<br>优点：没有内存碎片<br>缺点：两个幸存区永远有一个是空的。浪费了一半的空间</p>
+<h5 id="标记-清除算法：两次扫描"><a href="#标记-清除算法：两次扫描" class="headerlink" title="标记-清除算法：两次扫描"></a>标记-清除算法：两次扫描</h5><p>第一次扫描全部对象，对存活的对象进行标记。<br>第二次扫描全部对象，对没有标记的对象进行清除<br>优点：不浪费额外的空间<br>缺点：两次扫描，浪费时间。会产生内存碎片</p>
+<h5 id="标记-在整理-压缩算法：在标记清除的基础上，防止内存碎片。"><a href="#标记-在整理-压缩算法：在标记清除的基础上，防止内存碎片。" class="headerlink" title="标记-在整理/压缩算法：在标记清除的基础上，防止内存碎片。"></a>标记-在整理/压缩算法：在标记清除的基础上，防止内存碎片。</h5><p>再次扫描全部对象（清除过后的对象），向一端移动存活的对象（移动对象有一定开销）<br>可以在多次标记清除算法后，再执行一次标记压缩，节省开销。<br>缺点：移动存活对象，更新引用要全程暂停程序（STW Stop The World）。<br>其实，标记-清除算法也存在STW，只是停顿的时间很短而已<br>这是为了保证结果的准确性（不然在分析或回收过程中，对象引用关系还在不断变化）</p>
+<h5 id="引用计数器"><a href="#引用计数器" class="headerlink" title="引用计数器"></a>引用计数器</h5><p>很少用，与iOS中的引用计数器原理基本相同。实例每建立一个强引用就会给对应的引用计数器加一。其实类似的思想在JUC源码中有很多体现。缺点就是要维护一个引用变量。</p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>时间复杂度（从低到高）：复制算法 &gt; 标记清除法 &gt; 标记压缩法<br>内存整齐度：复制算法 = 标记压缩法 &gt; 标记清除法<br>内存利用率：标记压缩法 = 标记清除法 &gt; 复制算法</p>
+<p><strong><em>复制算法</em></strong> 最佳使用场景：对象存活度较低的区域——新生代</p>
+<p><strong><em>标记清除 + 标记压缩</em></strong> 最佳使用场景：对象存活率高，空间大的区域——老年代</p>
+<h4 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h4><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/gc_collector.png"></p>
+<p>没有<strong>最好的</strong>收集器，更不存在<strong>万能的</strong>收集器，值有<strong>最合适的</strong>收集器</p>
+<h5 id="Serial-收集器（新生代收集器）"><a href="#Serial-收集器（新生代收集器）" class="headerlink" title="Serial 收集器（新生代收集器）"></a>Serial 收集器（新生代收集器）</h5><p>一个<strong>单线程工作</strong>的收集器：进行垃圾收集时，必须暂停其他所有工作线程，直至收集结束。<br>特点：简单而高效，没有线程交互的开销。<br>应用：微服务应用中（虚拟机，内存小的场景）</p>
+<h5 id="ParNew-收集器（新生代收集器）"><a href="#ParNew-收集器（新生代收集器）" class="headerlink" title="ParNew 收集器（新生代收集器）"></a>ParNew 收集器（新生代收集器）</h5><p>Serial收集器的<strong>多线程并行</strong>版本<br>收集算法、对象分配规则、回收策略等都一样，代码很多共用</p>
+<h5 id="CMS-收集器（老年代收集器）"><a href="#CMS-收集器（老年代收集器）" class="headerlink" title="CMS 收集器（老年代收集器）"></a>CMS 收集器（老年代收集器）</h5><p>首次实现了让<strong>垃圾收集线程与用户线程同时工作</strong><br>但是它只能与Serial或者ParNew配合（默认）工作。</p>
+<blockquote>
+<p>相关命令：<br>-XX:+UseConcMarkSweepGC 启用CMS<br>-XX:+/-UseParNewGC 指定或禁止使用ParNew收集器。<br>-XX:ParallelGCThreads 限制垃圾收集的线程数</p>
+</blockquote>
+<p><strong>四个步骤：</strong><br>1 初始标记：标记一下GC Roots能直接关联的对象，速度很快<br>2 并发标记：从上面的直连对象开始遍历整个对象图，不需要STW<br>3 重新标记：修正并发标记期间变动的对象，时间也很短<br>4 并发清除：清除被标记死亡的对象，不需移动存活对象，所以不需要STW<br><strong>步骤1和3会STW</strong></p>
+<p>缺点：<br>1 对处理器资源非常敏感，处理器核心数不足4个时不建议使用<br>2 无法处理“浮动垃圾”— 因为CMS在并发标记和清除时无需停止用户线程，有可能出现本次收集过程中出现新的垃圾对象。<br>由于浮动垃圾的问题，CMS必须预留一些内存空间（并不是老年代满了才进行垃圾回收）。CMS开始执行是到达68%空间后执行<br>3 基于标记-清除算法会产生大量内存碎片<br>解决：在多次进行标记清除后执行一次标记整理<br>-XX:+UseCMS-CompactAtFullCollection 默认开启，JDK9废除<br>-XX:CMSFullGCsBeforeCompaction 默认0，几次标记清除后执行标记整理，JDK9废除</p>
+<h5 id="Parallel-Scavenge-收集器（新生代收集器）"><a href="#Parallel-Scavenge-收集器（新生代收集器）" class="headerlink" title="Parallel Scavenge 收集器（新生代收集器）"></a>Parallel Scavenge 收集器（新生代收集器）</h5><p>与Serial和ParNew一样，都是基于标记-复制算法，也是<strong>多线程并行</strong>的<br>与其他收集器的侧重点不同：其他关注用户线程的停顿时间，而PS侧重于吞吐量=用户代码时间/总消耗时间。<br>自适应调节策略：-XX:+UseAdaptiveSizePolicy。区别于ParNew的一个重要特性</p>
+<h5 id="Serial-Old-收集器（老年代收集器）"><a href="#Serial-Old-收集器（老年代收集器）" class="headerlink" title="Serial Old 收集器（老年代收集器）"></a>Serial Old 收集器（老年代收集器）</h5><p>是Serial收集器的老年代版本。一个<strong>单线程</strong>收集器，基于标记-整理</p>
+<h5 id="Parallel-Old-收集器（老年代收集器）"><a href="#Parallel-Old-收集器（老年代收集器）" class="headerlink" title="Parallel Old 收集器（老年代收集器）"></a>Parallel Old 收集器（老年代收集器）</h5><p>是Parallel Scavenge 收集器的老年代版本。支持<strong>多线程并发</strong>收集，基于标记-整理</p>
+<h5 id="G1-收集器（分区模型）"><a href="#G1-收集器（分区模型）" class="headerlink" title="G1 收集器（分区模型）"></a>G1 收集器（分区模型）</h5><p>JDK9，服务端模式下默认的垃圾收集器，取代PS+PO组合<br>Mixed GC，不区分新生代和老年代，而是把Java堆划分为多个大小相等的独立区域（Region，单次回收的最小单元），看回收哪块内存的收益最大。<br>G1可以根据需要将这些Region扮演成不同的空间，新生代的Eden空间、Survivor空间或者老年代空间和<strong>Humongous空间</strong>，不同的空间采用不同的策略去处理。<br><strong>Humongous空间，专门用来存储大对象（超过一个Region的一半的对象），可以把这个空间理解成老年代的一部分</strong></p>
+<p>可预测停顿时间：<br>因为G1将Region作为单次回收的最小单元。每次回收的内存空间都是Region的整数倍。<br>后台维护了一个优先级列表（优先级，回收的空间和耗时计算得出），优先处理回收价值最大的Region</p>
+<p>问题：<br>1 跨Region引用对象如何解决？ 解决：记忆集<br>2 并发标记阶段如何保证收集线程和用户线程互不干扰？解决：SATB原始快照<br>3 如何建立起可靠的停顿预测模型？解决：衰减均值</p>
+<p>四个步骤：<br>1 初始标记：标记一下GC Roots能直接关联的对象，并修改TAMS指针的值，速度很快<br>2 并发标记：从 GC Root开始对对重的对象进行可达性分析，递归扫描整个对象图<br>3 最终标记：处理并发标记遗留的少量SATB记录<br>4 筛选回收：对各个Region进行优先级排序，<strong>根据用户期望的停顿时间来制定回收计划</strong>，复制部分Region的存活对象到空Region，最后清理Region。必须暂停用户线程。<br><strong>步骤1,3,4都会STW</strong></p>
+<p>缺点：<br>垃圾收集时产生的内存占用和运行时额外执行负载都比CMS高</p>
+<p>与CMS对比总结：<br>哪款收集器好，要针对具体的场景定量比较。小内存应用上CMS的表现会优于G1。反之G1在大内存应用上可以发挥优势。这个平衡点6-8G。<br>不过就趋势而言，随着G1的不断优化，结果必定会向G1倾斜。</p>
+<h4 id="三色标记"><a href="#三色标记" class="headerlink" title="三色标记"></a>三色标记</h4><p>黑色：自己已经标记，且关联对象都标记完成，垃圾回收器不会再查询该节点<br>灰色：自己标记完成，但关联对象未标记<br>白色：没有遍历到的节点</p>
+<p>CMS和G1都是采用三色标记法来标记对象。</p>
+<p>通过之前的介绍，已知在CMS和G1收集器中，并发标记阶段时收集线程和用户线程是同时在工作的。与之对应的步骤三种的问题如下：</p>
+<h5 id="浮动垃圾"><a href="#浮动垃圾" class="headerlink" title="浮动垃圾"></a>浮动垃圾</h5><blockquote>
+<p>A -&gt; B -&gt; D</p>
+</blockquote>
+<p>并发标记过程中，标记完D节点后，B-&gt;D的引用消失了，产生浮动垃圾。下次垃圾回收器标记时再处理D垃圾</p>
+<h5 id="对象漏标"><a href="#对象漏标" class="headerlink" title="对象漏标"></a>对象漏标</h5><blockquote>
+<p>A -&gt; B<br>A -&gt; D</p>
+</blockquote>
+<p>当A节点被标记为黑色之后，又建立了对D的引用。因为黑色节点不会再被垃圾回收器处理。所以D节点会被垃圾回收器清除</p>
+<h5 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h5><p>1 CMS对增加引用环节进行处理（Increment Update）<br>当黑色节点新增引用时，把黑色节点编程灰色，这样下次回收器标及时会扫描它的fields节点（但是在多线程标记时依然会出现漏标。<br>所以，CMS的remark阶段，必须从头扫描一遍，会产生严重的STW</p>
+<p>2 G1则对删除引用环节进行处理(SATB 原始快照)</p>
+<h4 id="内存分配与回收策略："><a href="#内存分配与回收策略：" class="headerlink" title="内存分配与回收策略："></a>内存分配与回收策略：</h4><p>1 对象优先在Eden分配<br>2 大对象直接进入老年代<br>    -XX:PretenureSizeThreshold=3M 超过3M的对象直接进入老年代<br>3 长期存活的对象将进入老年代<br>    -XX:MaxTenuringThreshold=15 经历多少次Minor GC后进入老年代<br>4 动态对象年龄判定<br>    如果相同年龄的对象大小总和超过幸存区的一般，那么会将他们以及比他们年龄大的对象都移动到老年代。（不一定等到年龄是15）<br>5 空间分配担保<br>    如果在Minor GC时，老年代并没有足够的空间容纳新进的对象，那么在Minor GC后立刻进行一次Full GC。<br>    开启担保 -XX:HandlePromotionFailure=true 后会判断避免这次Full GC，通常会打开担保</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1049,103 +1192,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/01/19/custom-thread-pool/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/01/08/rabbitmq/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/01/08/rabbitmq/" class="post-title-link" itemprop="url">RabbitMQ 查询笔记</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-01-08 12:18:40" itemprop="dateCreated datePublished" datetime="2021-01-08T12:18:40+08:00">2021-01-08</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-23 14:54:58" itemprop="dateModified" datetime="2021-02-23T14:54:58+08:00">2021-02-23</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>此文档在 <a target="_blank" rel="noopener" href="https://www.baizhiedu.xin/front/index#/main">百知</a> 的RabbitMQ视频教程笔记基础上改动而来。</p>
-</blockquote>
-<h2 id="MQ引言"><a href="#MQ引言" class="headerlink" title="MQ引言"></a>MQ引言</h2><h3 id="什么是MQ"><a href="#什么是MQ" class="headerlink" title="什么是MQ"></a>什么是MQ</h3><p><code>MQ</code>(Message Quene) :  翻译为 <code>消息队列</code>,通过典型的 <code>生产者</code>和<code>消费者</code>模型,生产者不断向消息队列中生产消息，消费者不断的从队列中获取消息。因为消息的生产和消费都是异步的，而且只关心消息的发送和接收，没有业务逻辑的侵入,轻松的实现系统间解耦。别名为 <code>消息中间件</code>    通过利用高效可靠的消息传递机制进行平台无关的数据交流，并基于数据通信来进行分布式系统的集成。</p>
-<h3 id="MQ有哪些"><a href="#MQ有哪些" class="headerlink" title="MQ有哪些"></a>MQ有哪些</h3><p>当今市面上有很多主流的消息中间件，如老牌的<code>ActiveMQ</code>、<code>RabbitMQ</code>，炙手可热的<code>Kafka</code>，阿里巴巴自主开发<code>RocketMQ</code>等。</p>
-<h3 id="不同MQ特点"><a href="#不同MQ特点" class="headerlink" title="不同MQ特点"></a>不同MQ特点</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="strong">**1.ActiveMQ**</span></span><br><span class="line">ActiveMQ 是Apache出品，最流行的，能力强劲的开源消息总线。它是一个完全支持JMS规范的的消息中间件。丰富的API,多种集群架构模式让ActiveMQ在业界成为老牌的消息中间件,在中小型企业颇受欢迎!</span><br><span class="line"></span><br><span class="line"><span class="strong">**2.Kafka**</span></span><br><span class="line">Kafka是LinkedIn开源的分布式发布-订阅消息系统，目前归属于Apache顶级项目。Kafka主要特点是基于Pull的模式来处理消息消费，追求高吞吐量，一开始的目的就是用于日志收集和传输。0.8版本开始支持复制，不支持事务，对消息的重复、丢失、错误没有严格要求，适合产生大量数据的互联网服务的数据收集业务。</span><br><span class="line"></span><br><span class="line"><span class="strong">**3.RocketMQ**</span></span><br><span class="line">RocketMQ是阿里开源的消息中间件，它是纯Java开发，具有高吞吐量、高可用性、适合大规模分布式系统应用的特点。RocketMQ思路起源于Kafka，但并不是Kafka的一个Copy，它对消息的可靠传输及事务性做了优化，目前在阿里集团被广泛应用于交易、充值、流计算、消息推送、日志流式处理、binglog分发等场景。</span><br><span class="line"></span><br><span class="line"><span class="strong">**4.RabbitMQ**</span></span><br><span class="line">RabbitMQ是使用Erlang语言开发的开源消息队列系统，基于AMQP协议来实现。AMQP的主要特征是面向消息、队列、路由（包括点对点和发布/订阅）、可靠性、安全。AMQP协议更多用在企业系统内对数据一致性、稳定性和可靠性要求很高的场景，对性能和吞吐量的要求还在其次。</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>RabbitMQ比Kafka可靠，Kafka更适合IO高吞吐的处理，一般应用在大数据日志处理或对实时性（少量延迟），可靠性（少量丢数据）要求稍低的场景使用，比如ELK日志收集。</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/01/08/rabbitmq/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

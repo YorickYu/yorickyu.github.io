@@ -4,6 +4,29 @@
   
     
     <entry>
+      <title>数据迁移（不停机、分片）</title>
+      <link href="2021/07/06/migrate-data/"/>
+      <url>2021/07/06/migrate-data/</url>
+      
+        <content type="html"><![CDATA[<h4 id="双写开启"><a href="#双写开启" class="headerlink" title="双写开启"></a>双写开启</h4><p>insert： 新老库同时写入<br>update：<br>    1 新库已存在这条数据 -&gt; 更新<br>    2 新库不存在这条数据 -&gt; 写入并更新</p><blockquote><p>双写提前开启也是为了保证迁移失败时数据可回滚</p></blockquote><h4 id="全量数据迁移-daemon"><a href="#全量数据迁移-daemon" class="headerlink" title="全量数据迁移 daemon"></a>全量数据迁移 daemon</h4><p>记录任务开始和结束的 timestamp(start ~ end)</p><p>读老库，写新库<br>    1 新库已存在这条数据 -&gt; 判断 gmt_modified &gt; start timestamp -&gt; 更新<br>    2 新库不存在这条数据 -&gt; 写入</p><h4 id="增量数据迁移-xxljob"><a href="#增量数据迁移-xxljob" class="headerlink" title="增量数据迁移 xxljob"></a>增量数据迁移 xxljob</h4><p>循环校验新老库的数据，如果存在不一致，将数据同步:</p><pre><code class="java">UPDATE 新表名称 SET 列名称 = 新值 WHERE gmt_modified &lt; end timestamp</code></pre><p>这个定时任务可以持续几天，对数据校验及修正</p><h4 id="切流"><a href="#切流" class="headerlink" title="切流"></a>切流</h4><p>将读取数据流量切换到新库</p><h4 id="双写关闭，完整迁移"><a href="#双写关闭，完整迁移" class="headerlink" title="双写关闭，完整迁移"></a>双写关闭，完整迁移</h4><h4 id="其他事项"><a href="#其他事项" class="headerlink" title="其他事项"></a>其他事项</h4><p>1 binlog读取 — canal</p><p>增量数据迁移常见的解决方式为 MySQL binlog读取。可以借助运维工具 <code>canal</code></p><p>2 分片后的主键</p><p>通常设计一个大表时，可以预留分表可用主键，因为需要保证单次查询的原子性，但是分表后又很难兼顾复杂情况的查询。</p><p>所以可以在设计表时预先根据表中高频查询的字段建立索引规则。然后将这个规则融合在主键中。</p><blockquote><p>如果没有预先埋好分表策略的主键，可以临时做一个mapping表做检索，也可以解决分表后的复杂查询问题<br>ps: 通常这种索引表可以支撑亿级数据</p></blockquote><p>3 服务拆分</p><p>将迁移服务独立拆分，避免以后重复造轮子。（迁移方案可以使用策略模式，兼容不同的情况）</p><p>4 使用游标</p><p>使用游标的方式从旧库分批select数据，经过rehash后批量插入（batch insert）到新库，此处需要配置jdbc连接串参数rewriteBatchedStatements=true才能使批处理操作生效。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> migrate </tag>
+            
+            <tag> sharding </tag>
+            
+            <tag> 一致性hash </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>常见可分页缓存方案</title>
       <link href="2021/06/28/pageable-cache/"/>
       <url>2021/06/28/pageable-cache/</url>
