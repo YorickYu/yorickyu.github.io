@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title>数据清洗SOP</title>
+      <title>数据清洗 SOP</title>
       <link href="2021/07/08/cover-data/"/>
       <url>2021/07/08/cover-data/</url>
       
@@ -12,12 +12,18 @@
       
       
       
+        <tags>
+            
+            <tag> SOP </tag>
+            
+        </tags>
+      
     </entry>
     
     
     
     <entry>
-      <title>数据迁移SOP（不停机、分片）</title>
+      <title>数据迁移 SOP（不停机、分片）</title>
       <link href="2021/07/06/migrate-data/"/>
       <url>2021/07/06/migrate-data/</url>
       
@@ -26,6 +32,8 @@
       
       
         <tags>
+            
+            <tag> SOP </tag>
             
             <tag> migrate </tag>
             
@@ -97,7 +105,9 @@
       
         <tags>
             
-            <tag> A/B </tag>
+            <tag> SOP </tag>
+            
+            <tag> A/B test </tag>
             
         </tags>
       
