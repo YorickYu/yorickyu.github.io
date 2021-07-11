@@ -124,9 +124,9 @@
       
         <tags>
             
-            <tag> SOP </tag>
-            
             <tag> A/B test </tag>
+            
+            <tag> SOP </tag>
             
         </tags>
       
@@ -307,9 +307,9 @@
       
         <tags>
             
-            <tag> Microservices </tag>
-            
             <tag> SOP </tag>
+            
+            <tag> Microservices </tag>
             
         </tags>
       
