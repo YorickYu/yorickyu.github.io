@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">81</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -212,7 +212,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">112</span>
+        <span class="site-state-item-count">113</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -346,6 +346,87 @@
 <ul>
 <li>😄 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/YYTODOLIST">YYTODOLIST</a></li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/07/11/effective-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/07/11/effective-java/" class="post-title-link" itemprop="url">Effective-java 笔记</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-07-11 16:40:01 / 修改时间：16:45:28" itemprop="dateCreated datePublished" datetime="2021-07-11T16:40:01+08:00">2021-07-11</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="使用枚举类型强化单例模式"><a href="#使用枚举类型强化单例模式" class="headerlink" title="使用枚举类型强化单例模式"></a>使用枚举类型强化单例模式</h4><p>单元素的枚举类型已经成为实现Singleton的最佳方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 单例的一种写法</span></span><br><span class="line"><span class="comment">* 解决线程同步问题，可以防止反序列化</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">SingletonEnum</span> </span>&#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">m</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ... </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">使用：</span><br><span class="line">SingletonEnum.INSTANCE.m();</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h4><p>多个构造器参数可变时考虑建造者模式</p>
+<p>Lombok中@Builder注解支持</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Builder</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Integer code = <span class="number">200</span>;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 编译后：</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">    User(String username, String password) &#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username; <span class="keyword">this</span>.password = password;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> User.<span class="function">UserBuilder <span class="title">builder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> User.UserBuilder();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">UserBuilder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String username;</span><br><span class="line">        <span class="keyword">private</span> String password;</span><br><span class="line">        UserBuilder() &#123;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> User.<span class="function">UserBuilder <span class="title">username</span><span class="params">(String username)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.username = username;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">public</span> User.<span class="function">UserBuilder <span class="title">password</span><span class="params">(String password)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.password = password;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> User <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> User(<span class="keyword">this</span>.username, <span class="keyword">this</span>.password);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;User.UserBuilder(username=&quot;</span> + <span class="keyword">this</span>.username + <span class="string">&quot;, password=&quot;</span> + <span class="keyword">this</span>.password + <span class="string">&quot;)&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="避免创建不必要的对象"><a href="#避免创建不必要的对象" class="headerlink" title="避免创建不必要的对象"></a>避免创建不必要的对象</h4><p>1 String类型合理利用元空间，不要创建String实例 （JVM）</p>
+<p>2 不可变类尽量使用静态工厂方法而非构造器。例如 Boolean.valueOf() 优于 new Boolean()</p>
+<p>3 评估是否有必要使用延迟初始化，延迟初始化常见在创建单例时使用，有静态内部类和DCL两种方式 （<a href="https://yloopdaed.icu/2021/04/01/cavil/?highlight=dcl">DCL单例</a>）</p>
+<p>4 避免在循环中误用自动拆箱装箱</p>
+<p>5 如果是非常重量级的对象，可以考虑维护自己的对象池来避免对象频繁创建 （数据库连接池）</p>
+<h4 id="避免内存泄漏"><a href="#避免内存泄漏" class="headerlink" title="避免内存泄漏"></a>避免内存泄漏</h4><p>1 正确编写代码，可以查阅一些网上常见的内存泄漏案例<br>例如：HashMap中使用自定义类型时要实现hashCode和equals方法，这是个老生常谈的问题了</p>
+<p>2 使用缓存时要合理定义缓存的粒度，最重要是不论使用什么缓存架构，都要设置过期时间和过期策略（<a href="https://yloopdaed.icu/2021/04/10/cache-structure/">缓存架构概念篇</a>）</p>
+<p>3 对于监听器或流的使用，主要利用try finally进行显示关闭</p>
 
       
     </div>
@@ -1041,107 +1122,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/06/03/async-in-use/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/06/03/async-in-use/" class="post-title-link" itemprop="url">CompletableFuture + @Async 并行</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-06-03 22:56:07" itemprop="dateCreated datePublished" datetime="2021-06-03T22:56:07+08:00">2021-06-03</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-06-04 21:10:54" itemprop="dateModified" datetime="2021-06-04T21:10:54+08:00">2021-06-04</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>CompletableFuture + @Async 实现 <strong>串行改并行</strong> </p>
-<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>1 配置一个自定义线程池</p>
-<p>注意标记上 <code>@EnableAsync</code>，表示这个配置类中的线程池可以配合 <code>@Async</code> 使用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAsync</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PoolConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean(&quot;pool&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Executor <span class="title">taskExecutor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ThreadPoolTaskExecutor executor = <span class="keyword">new</span> ThreadPoolTaskExecutor();</span><br><span class="line">        executor.setCorePoolSize(<span class="number">2</span>);</span><br><span class="line">        executor.setMaxPoolSize(<span class="number">2</span>);</span><br><span class="line">        executor.setQueueCapacity(<span class="number">500</span>);</span><br><span class="line">        executor.setThreadNamePrefix(<span class="string">&quot;GithubLookup-&quot;</span>);</span><br><span class="line">        executor.initialize();</span><br><span class="line">        <span class="keyword">return</span> executor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>当然这里配置的线程池也可以直接通过 <code>spring</code> 使用</p>
-</blockquote>
-<p>2 异步任务层</p>
-<p>独立于 <code>Controller层</code> 和 <code>Service层</code> 做一个专门管理并行任务的类，可以将所有的并行操作放在这里。</p>
-<p>注意：<code>@Async</code> 修饰的方法必须与调用它的方法在不同类文件中并且一定要交给 <code>spring</code> 管理，否则相当于方法调用，并不会使用代理类产生异步的效果注意</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncTestService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SneakyThrows</span></span><br><span class="line">    <span class="meta">@Async(&quot;pool&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CompletableFuture&lt;Integer&gt; <span class="title">testFutureTask</span><span class="params">(Integer idx)</span> </span>&#123;</span><br><span class="line">        Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        <span class="keyword">return</span> CompletableFuture.completedFuture(idx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>3 用例</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;Integer&gt; arrayList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>);</span><br><span class="line">CompletableFuture&lt;Integer&gt;[] completableFutureArray = <span class="keyword">new</span> CompletableFuture[list.size()];</span><br><span class="line"></span><br><span class="line">LocalTime startTime = LocalTime.now();</span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    <span class="keyword">if</span> (integer == <span class="number">5</span>) &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 串行改并行</span></span><br><span class="line">    CompletableFuture&lt;Integer&gt; integerCompletableFuture = asyncTestService.testFutureTask(integer);</span><br><span class="line">    completableFutureArray[list.indexOf(integer)] = integerCompletableFuture;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// future 数组健壮性处理</span></span><br><span class="line">CompletableFuture&lt;Integer&gt;[] futures = removeArrayEmptyElement(completableFutureArray);</span><br><span class="line">CompletableFuture.allOf(futures).join();</span><br><span class="line"></span><br><span class="line">LocalTime endTime = LocalTime.now();</span><br><span class="line">Duration between = Duration.between(startTime, endTime);</span><br><span class="line">System.out.println(<span class="string">&quot;测试耗时：&quot;</span> + between.toMillis());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理真实数据</span></span><br><span class="line"><span class="keyword">for</span> (CompletableFuture&lt;Integer&gt; future : futures) &#123;</span><br><span class="line">    Integer integer = future.get();</span><br><span class="line">    arrayList.add(integer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP/tree/main/src/main/java/com/yy/async">代码</a></p>
-<h4 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h4><p>1 循环调用 <code>@Async</code> 标记的方法。并将返回的 <code>CompletableFuture</code> 用数组接收。方便后续 <code>CompletableFuture&lt;Void&gt; allOf(CompletableFuture&lt;?&gt;... cfs)</code> 处理。</p>
-<p>2 在循环调用 <code>@Async</code> 标记的方法时难免做一些过滤处理。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (integer == <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>例如在循环中，过滤掉integer数组中等于5的元素。</p>
-<p>那么在 arr[] 中就会空缺一个元素，那么交给 <code>CompletableFuture&lt;Void&gt; allOf(CompletableFuture&lt;?&gt;... cfs)</code> 处理时就会产生异常。</p>
-<p>解决：做一个 arr[] 空元素的过滤处理即可</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> CompletableFuture&lt;Integer&gt;[] removeArrayEmptyElement(CompletableFuture&lt;Integer&gt;[] arr) &#123;</span><br><span class="line">    List&lt;CompletableFuture&lt;Integer&gt;&gt; list = Arrays.asList(arr);</span><br><span class="line">    List&lt;CompletableFuture&lt;Integer&gt;&gt; listNew = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;list.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (list.get(i)!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            listNew.add(list.get(i));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    CompletableFuture&lt;Integer&gt;[] arrayNew = listNew.toArray(<span class="keyword">new</span> CompletableFuture[listNew.size()]);</span><br><span class="line">    <span class="keyword">return</span> arrayNew;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>3 如果在 <code>@Async</code> 标记的方法中嵌套执行并行操作，那么切记需要 <strong>使用不同的自定义线程池</strong>，否则会产生死锁</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://spring.io/guides/gs/async-method/">async-method</a></p>
-<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/47351435/spring-async-with-completablefuture">spring-async-with-completablefuture</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
