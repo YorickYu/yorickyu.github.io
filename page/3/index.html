@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -277,6 +277,96 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/04/23/inner-stream/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/23/inner-stream/" class="post-title-link" itemprop="url">Stream 底层实现</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-04-23 22:05:44 / 修改时间：22:36:07" itemprop="dateCreated datePublished" datetime="2021-04-23T22:05:44+08:00">2021-04-23</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="Java的演变"><a href="#Java的演变" class="headerlink" title="Java的演变"></a>Java的演变</h3><p>一直致力于让并发编程更容易、出错更少。<br><strong>Java1</strong>：线程和锁<br><strong>Java5</strong>：线程池和并发集合<br><strong>Java7</strong>：Fork/Join 分支合并框架<br><strong>Java8</strong>：Stream 流（并行）</p>
+<h3 id="Stream并行流"><a href="#Stream并行流" class="headerlink" title="Stream并行流"></a>Stream并行流</h3><p>parallelStream，就是把内容分成多个数据块，并用不同的线程分别处理每个数据块的流</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">parallelSum</span><span class="params">(<span class="keyword">long</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.iterate(<span class="number">1L</span>, i -&gt; i + <span class="number">1</span>)</span><br><span class="line">            .limit(n)</span><br><span class="line">            .parallel() <span class="comment">// 在内部实际上就是设了一个boolean标志，调用后开始并行执行</span></span><br><span class="line">            .reduce(<span class="number">0L</span>, Long::sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>内部使用了默认的 <code>ForkJoinPool</code>，<strong>默认线程数量是你处理器的数量</strong></p>
+<blockquote>
+<p>通过 Runtime.getRuntime().availableProcessors()得到处理器数<br>通过 System.setProperty(“java.util.concurrent.ForkJoinPool.common.parallelism”,”12”); 修改系统默认线程池大小</p>
+</blockquote>
+<p><strong>分支/合并框架</strong> 中通过RecursiveTask进行任务切分。</p>
+<h3 id="性能和安全性"><a href="#性能和安全性" class="headerlink" title="性能和安全性"></a>性能和安全性</h3><p>并行化并不是没有代价的。并行化过程本身需要对流做递归划分，把每个子流的归纳操作分配到不同的线程，然后把这些操作的结果合并成一个值。但在多个内核之间移动数据的代价也可能比你想的要大，所以很重要的一点是要保证在内核中并行执行工作的时间比在内核之间传输数据的时间长。</p>
+<h3 id="parallel建议"><a href="#parallel建议" class="headerlink" title="parallel建议"></a>parallel建议</h3><p>1 测量。并行流不一定比顺序流块。最重要的建议就是用适当的基准来测量性能<br>2 留意装箱。自动装箱和拆箱操作会大大降低性能。可以用原始类型流（数值流）<br>3 熟悉方法的使用场景。limit和findFirst这种依赖顺序的操作不适合在并行流使用。findAny可以在并行中使用<br>4 考虑流中的数据结构是否易于拆分。ArrayList拆分效率比LinkedList高得多</p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-2.png"></p>
+<h3 id="fork-join建议"><a href="#fork-join建议" class="headerlink" title="fork/join建议"></a>fork/join建议</h3><p>1 对一个任务调用join方法会阻塞调用方，直到该任务做出结果。<br>2 不应该在RecursiveTask内部使用ForkJoinPool的invoke方法。<br>3 对子任务调用fork方法可以把它排进ForkJoinPool。</p>
+<h3 id="工作窃取"><a href="#工作窃取" class="headerlink" title="工作窃取"></a>工作窃取</h3><p>划分并行任务时，应该让每个任务都用完全相同的时间完成，让所有的CPU内核都同样繁忙</p>
+<p><strong>分支/合并框架</strong> 工程用一种称为 <strong>工作窃取（work stealing）</strong> 的技术来解决这个问题</p>
+<blockquote>
+<p>工作窃取（work stealing）<br>之前在 RabbitMq 的学习中，有一种消息模型 - Task Queues。这种模型下也可以设置一种模式叫：能者多劳。和工作窃取的原理类似。</p>
+</blockquote>
+<h3 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h3><h4 id="RecursiveTask-递归"><a href="#RecursiveTask-递归" class="headerlink" title="RecursiveTask 递归"></a>RecursiveTask<R> 递归</h4><p>需要手动编写逻辑，相关代码 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP/tree/main/src/main/java/com/yy/forkjoin">Task</a></p>
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-1.png"></p>
+<h4 id="Spliterator-可分迭代器"><a href="#Spliterator-可分迭代器" class="headerlink" title="Spliterator 可分迭代器"></a>Spliterator 可分迭代器</h4><p>parallel并行流中拆分机制</p>
+<p>Java 8已经为集合框架中包含的所有数据结构提供了一个默认的Spliterator实现。集合实现了Spliterator接口，接口提供了一个spliterator方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Spliterator</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">tryAdvance</span><span class="params">(Consumer&lt;? <span class="keyword">super</span> T&gt; action)</span></span>;</span><br><span class="line">    <span class="function">Spliterator&lt;T&gt; <span class="title">trySplit</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">estimateSize</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">characteristics</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/stream-3.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1010,110 +1100,6 @@
 <h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>去探索一下redis单机性能的极限在哪里？</p>
 <p>1 如果没有管道，最大承受qps是多少？<br>2 通过管道，最大承受qps是多少？</p>
 <p>证实一下为什么redis性能瓶颈不取决于CPU，而是IO。<br>这也能换个角度更好的理解为什么redis要使用单线程模型。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/03/18/redis-mysql-cp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/18/redis-mysql-cp/" class="post-title-link" itemprop="url">蚂蚁金服初试：双写一致性延伸</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-03-18 23:45:57" itemprop="dateCreated datePublished" datetime="2021-03-18T23:45:57+08:00">2021-03-18</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-03-19 00:30:10" itemprop="dateModified" datetime="2021-03-19T00:30:10+08:00">2021-03-19</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>今天有幸参加了蚂蚁金服的线上初试，获益良多。</p>
-<p>记录下来</p>
-<h3 id="第一个问题"><a href="#第一个问题" class="headerlink" title="第一个问题"></a>第一个问题</h3><p>挑选您项目中比较有亮点的部分介绍一下?</p>
-<blockquote>
-<p>这个问题也许大家经常遇到，也没有足够的重视。其实这个问题在我个人看来是整场面试最关键的问题。<br>因为你有机会通过这个问题介绍一个成熟的解决方案！有时候打动面试官只需要一个成熟的解决方案。<br>这不仅仅说明你在业务上横向的全局思考能力，也体现了纵向的技术理解深度。</p>
-</blockquote>
-<p><strong>所以这个问题，一定要好好利用。</strong></p>
-<h3 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h3><p>整场面试的重点是由 redis和mysql的双写一致性 引出的。</p>
-<p><strong>问题是：如果mysql完成了数据更新，但是随后更新redis时失败了。如何处理？</strong></p>
-<p>我当时没有很好的回答这个问题，思考过后与大家分享一个解决方案。</p>
-<p>首先假设一个场景是购物车系统。使用redis hash维护了一个简单的购物车，同时持久化在mysql数据库中。</p>
-<p>那么对于用户在购物车的操作需要反馈给数据库。</p>
-<blockquote>
-<p>PS：这里考虑借鉴缓冲池的思想，对用户的操作做一些预处理后再真实发生请求。尽量减少无效请求的次数。</p>
-</blockquote>
-<p>但是最终通过接口同步数据的时候发生了问题：mysql更新成功，随后redis写入失败。</p>
-<blockquote>
-<p>PS：这里先不讨论其他的双写一致性方案，比如：先删除redis数据，再更新数据库。<br>其次这里举例redis可能发生写入失败的场景：redis宕机、redis内存打满。</p>
-</blockquote>
-<p>此时，已经发生了redis和mysql数据不一致的情况。那么如何解决这个问题？</p>
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>首先要进一步优化redis集群，保证redis高可用，从根源解决问题。</p>
-<p>其次我的想法是借鉴分布式事务中 <code>最终一致性</code> 原则去解决这个问题。</p>
-<p>这个场景中，先更新mysql，再更新redis，同时向mq中发送一条变更指令。mq会在后台消费这个变更指令，达到数据的最终一致性。</p>
-<p>在此期间，如果用于有读请求发生，可以先去判断一下这个mq中是否存在未被消费的信息。如果有，这条读请求就直接打到数据库中。并更新redis（同时是否能让mq中的消息标记处理）</p>
-<p>我感觉这样处理应该是可以最终保持数据一致性的。当然mq本身也要做集群高可用处理。</p>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>整理一下正常面试的流程吧，说不定对大家有帮助。</p>
-<p>1 从项目出发，面试官会根据项目中的业务场景发问，这需要你非常熟悉自己的项目，并且有比较完善的处理。</p>
-<p>2 线上同步编码，会通过一个共享的编辑器窗口，现场完成几个简单的编程题。（算法、编程能力）</p>
-<p>3 最后会问一些底层的问题：源码、JVM等</p>
-<p>整个面试过程大约2个小时。</p>
-<p>最主要的收获：</p>
-<p>珍惜项目中遇到的每一个问题，提出解决方案，并不断的优化。</p>
-<p>长久如此，肯定会有收获。</p>
 
       
     </div>

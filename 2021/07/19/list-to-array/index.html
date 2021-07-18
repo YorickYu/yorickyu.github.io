@@ -24,23 +24,23 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yloopdaed.icu","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1}};
   </script>
-<meta name="description" content="根据一定的规则将 list 转成 map 12345678910111213141516171819202122232425@Data@Accessors(chain &#x3D; true)public static class Animal &amp;#123;    private int id;    private String name;&amp;#125;&#x2F;&#x2F; Java8之前public static Map">
+<meta name="description" content="建议 方法1 数组要求是引用类型 123456&#x2F;&#x2F; 使用空数组初始化（推荐）Foo[] array &#x3D; list.toArray(new Foo[0]);或：&#x2F;&#x2F; 使用list大小初始化，然后将list填充至arrayFoo[] array &#x3D; new Foo[list.size()];list.toArray(array); &amp;#x2F">
 <meta property="og:type" content="article">
-<meta property="og:title" content="list to map">
-<meta property="og:url" content="http://yloopdaed.icu/2021/05/21/list-to-map/index.html">
+<meta property="og:title" content="list to array[]（集合转数组）">
+<meta property="og:url" content="http://yloopdaed.icu/2021/07/19/list-to-array/index.html">
 <meta property="og:site_name" content="yloopdaed">
-<meta property="og:description" content="根据一定的规则将 list 转成 map 12345678910111213141516171819202122232425@Data@Accessors(chain &#x3D; true)public static class Animal &amp;#123;    private int id;    private String name;&amp;#125;&#x2F;&#x2F; Java8之前public static Map">
+<meta property="og:description" content="建议 方法1 数组要求是引用类型 123456&#x2F;&#x2F; 使用空数组初始化（推荐）Foo[] array &#x3D; list.toArray(new Foo[0]);或：&#x2F;&#x2F; 使用list大小初始化，然后将list填充至arrayFoo[] array &#x3D; new Foo[list.size()];list.toArray(array); &amp;#x2F">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-05-20T16:55:58.000Z">
-<meta property="article:modified_time" content="2021-07-18T17:12:04.914Z">
+<meta property="og:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/list-to-array.png">
+<meta property="article:published_time" content="2021-07-18T17:11:23.000Z">
+<meta property="article:modified_time" content="2021-07-18T17:14:52.476Z">
 <meta property="article:author" content="yloopdaed">
-<meta property="article:tag" content="Guava">
-<meta property="article:tag" content="Java 8">
-<meta property="article:tag" content="MapUtils">
+<meta property="article:tag" content="iOS JAVA">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/list-to-array.png">
 
 
-<link rel="canonical" href="http://yloopdaed.icu/2021/05/21/list-to-map/">
+<link rel="canonical" href="http://yloopdaed.icu/2021/07/19/list-to-array/">
 
 
 <script class="page-configurations">
@@ -52,7 +52,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>list to map | yloopdaed</title>
+<title>list to array[]（集合转数组） | yloopdaed</title>
   
 
 
@@ -177,7 +177,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -190,6 +190,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%BA%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">建议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%90%AC%E8%BF%90"><span class="nav-number">3.</span> <span class="nav-text">搬运</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -291,7 +292,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/05/21/list-to-map/">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/07/19/list-to-array/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -304,7 +305,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          list to map
+          list to array[]（集合转数组）
         </h1>
 
         <div class="post-meta-container">
@@ -315,16 +316,10 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2021-05-21 00:55:58" itemprop="dateCreated datePublished" datetime="2021-05-21T00:55:58+08:00">2021-05-21</time>
+      <time title="创建时间：2021-07-19 01:11:23 / 修改时间：01:14:52" itemprop="dateCreated datePublished" datetime="2021-07-19T01:11:23+08:00">2021-07-19</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-07-19 01:12:04" itemprop="dateModified" datetime="2021-07-19T01:12:04+08:00">2021-07-19</time>
-      </span>
 
   
 </div>
@@ -336,12 +331,14 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>根据一定的规则将 list 转成 map</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Accessors(chain = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java8之前</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListBeforeJava8</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer, Animal&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (Animal animal : list) &#123;</span><br><span class="line">        map.put(animal.getId(), animal);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java8之后</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListAfterJava8</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().collect(Collectors.toMap(Animal::getId, animal -&gt; animal));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java8之后 处理key冲突 - IllegalStateException</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListAfterJava8_conflict</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().collect(Collectors.toMap(Animal::getId, animal -&gt; animal, (ov, nv) -&gt; nv));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h4 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h4><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/list-to-array.png"></p>
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><p>1 数组要求是引用类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 使用空数组初始化（推荐）</span><br><span class="line">Foo[] array &#x3D; list.toArray(new Foo[0]);</span><br><span class="line">或：</span><br><span class="line">&#x2F;&#x2F; 使用list大小初始化，然后将list填充至array</span><br><span class="line">Foo[] array &#x3D; new Foo[list.size()];</span><br><span class="line">list.toArray(array); &#x2F;&#x2F; fill the array</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Guava Maps</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithGuava</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Maps.uniqueIndex(list, Animal::getId);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MapUtils</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithApacheCommons2</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer, Animal&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    MapUtils.populateMap(map, list, Animal::getId);</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MapUtils 处理key冲突 - IllegalStateException</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer, Animal&gt; <span class="title">convertListWithApacheCommons2_conflict</span><span class="params">(List&lt;Animal&gt; list)</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer, Animal&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    MapUtils.populateMap(map, list, Animal::getId, animal -&gt; animal);</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2 数组是基本数据类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">使用for循环</span><br><span class="line">List&lt;Integer&gt; list &#x3D; ...;</span><br><span class="line">int[] array &#x3D; new int[list.size()];</span><br><span class="line">for(int i &#x3D; 0; i &lt; list.size(); i++) &#123;</span><br><span class="line">    array[i] &#x3D; list.get(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>代码示例：<a target="_blank" rel="noopener" href="https://github.com/YorickYu/JPP/blob/main/src/main/java/com/yy/collection/ListToMap.java">ArrayMerge.java</a></p>
+<h4 id="搬运"><a href="#搬运" class="headerlink" title="搬运"></a>搬运</h4><p>Starkoverflow</p>
 
     </div>
 
@@ -350,24 +347,16 @@
     
 
     <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Guava/" rel="tag"># Guava</a>
-              <a href="/tags/Java-8/" rel="tag"># Java 8</a>
-              <a href="/tags/MapUtils/" rel="tag"># MapUtils</a>
-          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/05/09/microservices/" rel="prev" title="微服务拆分和搭建 SOP">
-                  <i class="fa fa-chevron-left"></i> 微服务拆分和搭建 SOP
+                <a href="/2021/07/11/effective-java/" rel="prev" title="《Effective-java》 归纳整理">
+                  <i class="fa fa-chevron-left"></i> 《Effective-java》 归纳整理
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/05/25/refactor-service/" rel="next" title="服务重构 SOP">
-                  服务重构 SOP <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>

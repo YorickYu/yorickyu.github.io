@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>list to array[]（集合转数组）</title>
+      <link href="2021/07/19/list-to-array/"/>
+      <url>2021/07/19/list-to-array/</url>
+      
+        <content type="html"><![CDATA[<h4 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h4><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/list-to-array.png"></p><h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><p>1 数组要求是引用类型</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 使用空数组初始化（推荐）</span><br><span class="line">Foo[] array &#x3D; list.toArray(new Foo[0]);</span><br><span class="line">或：</span><br><span class="line">&#x2F;&#x2F; 使用list大小初始化，然后将list填充至array</span><br><span class="line">Foo[] array &#x3D; new Foo[list.size()];</span><br><span class="line">list.toArray(array); &#x2F;&#x2F; fill the array</span><br></pre></td></tr></table></figure><p>2 数组是基本数据类型</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">使用for循环</span><br><span class="line">List&lt;Integer&gt; list &#x3D; ...;</span><br><span class="line">int[] array &#x3D; new int[list.size()];</span><br><span class="line">for(int i &#x3D; 0; i &lt; list.size(); i++) &#123;</span><br><span class="line">    array[i] &#x3D; list.get(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="搬运"><a href="#搬运" class="headerlink" title="搬运"></a>搬运</h4><p>Starkoverflow</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>《Effective-java》 归纳整理</title>
       <link href="2021/07/11/effective-java/"/>
       <url>2021/07/11/effective-java/</url>
@@ -274,7 +287,7 @@
     
     
     <entry>
-      <title>list-to-map</title>
+      <title>list to map</title>
       <link href="2021/05/21/list-to-map/"/>
       <url>2021/05/21/list-to-map/</url>
       
@@ -1064,9 +1077,9 @@
             
             <tag> algorithm </tag>
             
-            <tag> LeeCode </tag>
-            
             <tag> 滑动窗口 </tag>
+            
+            <tag> LeeCode </tag>
             
         </tags>
       

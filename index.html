@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -346,6 +346,79 @@
 <ul>
 <li>😄 <a target="_blank" rel="noopener" href="https://github.com/YorickYu/YYTODOLIST">YYTODOLIST</a></li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/07/19/list-to-array/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="yloopdaed">
+      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yloopdaed">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/07/19/list-to-array/" class="post-title-link" itemprop="url">list to array[]（集合转数组）</a>
+        </h2>
+
+        <div class="post-meta-container">
+          
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-07-19 01:11:23 / 修改时间：01:14:52" itemprop="dateCreated datePublished" datetime="2021-07-19T01:11:23+08:00">2021-07-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h4><p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/list-to-array.png"></p>
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><p>1 数组要求是引用类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 使用空数组初始化（推荐）</span><br><span class="line">Foo[] array &#x3D; list.toArray(new Foo[0]);</span><br><span class="line">或：</span><br><span class="line">&#x2F;&#x2F; 使用list大小初始化，然后将list填充至array</span><br><span class="line">Foo[] array &#x3D; new Foo[list.size()];</span><br><span class="line">list.toArray(array); &#x2F;&#x2F; fill the array</span><br></pre></td></tr></table></figure>
+
+<p>2 数组是基本数据类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">使用for循环</span><br><span class="line">List&lt;Integer&gt; list &#x3D; ...;</span><br><span class="line">int[] array &#x3D; new int[list.size()];</span><br><span class="line">for(int i &#x3D; 0; i &lt; list.size(); i++) &#123;</span><br><span class="line">    array[i] &#x3D; list.get(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="搬运"><a href="#搬运" class="headerlink" title="搬运"></a>搬运</h4><p>Starkoverflow</p>
 
       
     </div>
@@ -976,136 +1049,6 @@
     <div class="post-body" itemprop="articleBody">
           <p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/E179C828-407B-464B-8A86-42434342043E.png"></p>
 <p>1 <strong>数据结构</strong>，用什么数据结构存储（哈希、列表、集合、有序集合。底层双端列表、压缩列表、跳表）<br>2 <strong>存储容量</strong>，存储上限<br>3 <strong>清除策略</strong>，到达存储上限后如何清除冷数据（LRU最近最少使用、FIFO先进先出、LFU最近最不常用、SOFT软引用、WEAK弱引用）<br>4 <strong>过期策略</strong>，定时清除、定期清除、惰性删除<br>5 <strong>线程安全</strong>，redis单线程保证线程安全、本地缓存需要通过锁机制保证线程安全，或者线程隔离<br>6 <strong>对外提供简明的API</strong>，见名知意<br>7 <strong>数据持久化方案</strong>，redis（RDB、AOF）、灾难预警和备份<br>8 <strong>穿透键阻塞机制</strong>，防止缓存穿透</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yloopdaed.icu/2021/06/04/fastjson-smart-match/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="yloopdaed">
-      <meta itemprop="description" content="可能是个非典型程序员吧 ^ ^">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yloopdaed">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/06/04/fastjson-smart-match/" class="post-title-link" itemprop="url">fastjson smart match</a>
-        </h2>
-
-        <div class="post-meta-container">
-          
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-06-04 20:32:14 / 修改时间：20:34:31" itemprop="dateCreated datePublished" datetime="2021-06-04T20:32:14+08:00">2021-06-04</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="下划线转驼峰"><a href="#下划线转驼峰" class="headerlink" title="下划线转驼峰"></a>下划线转驼峰</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">static class Demo &#123;</span><br><span class="line">	private String productId;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/fastjson/issues/523">反序列化时属性能否支持下划线格式对驼峰格式的自动转换 #523</a></p>
-<h4 id="before-version-1-2-20"><a href="#before-version-1-2-20" class="headerlink" title="before version 1.2.20"></a>before version 1.2.20</h4><p>1 @JSONField</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@JSONField(name = &quot;product_id&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String productId;</span><br></pre></td></tr></table></figure>
-
-<p>2 PropertyNamingStrategy</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ParserConfig.getGlobalInstance().propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;</span><br><span class="line">JSON.parseObject(str, RespOrderDTO.class);</span><br></pre></td></tr></table></figure>
-
-<p>参考：<a target="_blank" rel="noopener" href="https://github.com/alibaba/fastjson/wiki/PropertyNamingStrategy_cn">PropertyNamingStrategy_cn</a></p>
-<h4 id="after-version-1-2-20"><a href="#after-version-1-2-20" class="headerlink" title="after version 1.2.20"></a>after version 1.2.20</h4><p>支持自动转换</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String json = <span class="string">&quot;&#123;\&quot;product_id\&quot;: \&quot;5ad557f3c0a1eab4458b45f1\&quot;&#125;&quot;</span>;</span><br><span class="line">JSON.parseObject(json, Demo.class);</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="源码跟踪"><a href="#源码跟踪" class="headerlink" title="源码跟踪"></a>源码跟踪</h3><p>JSON.java -&gt; parseObject 方法 -&gt; line 395</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parseObject -&gt; T value = (T) parser.parseObject(clazz, <span class="keyword">null</span>);	</span><br></pre></td></tr></table></figure>
-
-
-
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20210604145957990.png"></p>
-<p>DefaultJSONParser.java -&gt; parseObject 方法 -&gt; line 698</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> (T) ((JavaBeanDeserializer) deserializer).deserialze(<span class="keyword">this</span>, type, fieldName, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20210604150145774.png"></p>
-<h3 id="deserialze-方法"><a href="#deserialze-方法" class="headerlink" title="deserialze 方法"></a>deserialze 方法</h3><p>JavaBeanDeserializer.java -&gt; deserialze 方法 -&gt; line 545</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] name_chars = fieldInfo.name_chars;</span><br></pre></td></tr></table></figure>
-
-<p>这里默认的规则是先根据类的字段名做反序列化</p>
-<p>JavaBeanDeserializer.java -&gt; deserialze 方法 -&gt; line 845</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">object = createInstance(parser, type);</span><br></pre></td></tr></table></figure>
-
-<p>这个方法会将将目标类的class还原成对象</p>
-<p>JavaBeanDeserializer.java -&gt; deserialze 方法 -&gt; line 892</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> match = parseField(parser, key, object, type,</span><br><span class="line">        fieldValues == <span class="keyword">null</span> ? <span class="keyword">new</span> HashMap&lt;String, Object&gt;(<span class="keyword">this</span>.fieldDeserializers.length) : fieldValues, setFlags);</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="parseField-核心"><a href="#parseField-核心" class="headerlink" title="parseField (核心)"></a>parseField (核心)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fieldDeserializer = smartMatch(key, setFlags);</span><br></pre></td></tr></table></figure>
-
-
-
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20210604141506608.png"></p>
-<p>JavaBeanDeserializer.java -&gt; smartMatch 方法调用 -&gt; line 1313</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20210604165042526.png"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static long fnv1a_64_extract(String key)&#123;</span><br><span class="line">    long hashCode &#x3D; 0xcbf29ce484222325L;</span><br><span class="line">    for(int i &#x3D; 0; i &lt; key.length(); ++i)&#123;</span><br><span class="line">        char ch &#x3D; key.charAt(i);</span><br><span class="line">        if(ch &#x3D;&#x3D; &#39;_&#39; || ch &#x3D;&#x3D; &#39;-&#39;)&#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        if(ch &gt;&#x3D; &#39;A&#39; &amp;&amp; ch &lt;&#x3D; &#39;Z&#39;)&#123;</span><br><span class="line">            ch &#x3D; (char) (ch + 32);</span><br><span class="line">        &#125;</span><br><span class="line">        hashCode ^&#x3D; ch;</span><br><span class="line">        hashCode *&#x3D; 0x100000001b3L;</span><br><span class="line">    &#125;</span><br><span class="line">    return hashCode;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>JavaBeanDeserializer.java -&gt; parseField 接口调用 -&gt; line 1277</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fieldDeserializer.parseField(parser, object, objectType, fieldValues);</span><br></pre></td></tr></table></figure>
-
-
-
-<p>DefaultFieldDeserializer.java -&gt; parseField 方法 -&gt; line 86</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20210604145434459.png"></p>
-<p>将value取出</p>
-<p>DefaultFieldDeserializer.java -&gt; parseField 方法 -&gt; line 124</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20210604165608225.png"></p>
-<p>setValue装配</p>
-<h3 id="调用链路"><a href="#调用链路" class="headerlink" title="调用链路"></a>调用链路</h3><p>最后附上一张调用链路的断点图片，想要深入读源码的同学可以自己追踪一下</p>
-<p><img src="https://yloopdaed-oss.oss-cn-beijing.aliyuncs.com/image-20210604165752495.png"></p>
 
       
     </div>
